@@ -66,7 +66,7 @@ scripts/python/
 
 All generated artifacts land in `scripts/python/_outputs/`:
 
-- **Cleaned/interim data:** `.parquet` (columnar, typed, fast) for the Python-internal chain; **also write `.dta` via `pyreadstat`** when the data hands off to Stata, or `.feather`/`.parquet` for R (`arrow`). The cross-language handoff convention is the Phase 3 `/cross-check` contract.
+- **Cleaned/interim data:** `.parquet` (columnar, typed, fast) for the Python-internal chain; **also write `.dta` via `pyreadstat`** when the data hands off to Stata, or `.feather`/`.parquet` for R (`arrow`). Follow the cross-language handoff convention in [`replication-protocol.md`](replication-protocol.md) (never CSV; one producer per file) — it is what [`/cross-check`](../skills/cross-check/SKILL.md) compares against.
 - **Estimation objects:** pickle the fitted results (`joblib.dump`) so tables/figures load pre-computed objects instead of re-fitting — the Python analogue of R's `saveRDS()` pattern.
 - **Tables:** `.tex` for direct `\input{}` in the manuscript (see §5).
 - **Environment:** `uv export` + `uv.lock` captured for the replication package.
@@ -112,7 +112,7 @@ fig.savefig(OUT / "fig_event.png", dpi=200, transparent=True, bbox_inches="tight
 
 ## 7. Data-prep validation battery (mandatory in `02_clean.py`)
 
-Every cleaning script ends with explicit assertions on the cleaned frame — this is half of the "verify the prep is accurate" requirement (the other half, independent cross-language re-implementation, is Phase 3 `/cross-check`):
+Every cleaning script ends with explicit assertions on the cleaned frame — this is half of the "verify the prep is accurate" requirement (the other half, independent cross-language re-implementation, is [`/cross-check --data`](../skills/cross-check/SKILL.md) for high-stakes datasets):
 
 ```python
 assert df["id"].is_unique, "id is not a primary key"                 # key uniqueness
@@ -165,6 +165,7 @@ Headline rules (mirror `r-code-conventions.md` §8 / `r-reviewer` Category 11):
 
 - [`/python-analysis`](../skills/python-analysis/SKILL.md) — emits pipelines conforming to this rule (analogue of `/data-analysis` for R, `/stata-replication` for Stata).
 - [`/review-python`](../skills/review-python/SKILL.md) + the `python-reviewer` agent — read-only review against this rule.
+- [`/cross-check`](../skills/cross-check/SKILL.md) — independent re-implementation in a second language (auto after estimation; `--data` mode for prep).
 - [`/audit-reproducibility`](../skills/audit-reproducibility/SKILL.md) — reads `.parquet`/`.dta` outputs; cross-checks manuscript numbers.
 - [`replication-protocol.md`](replication-protocol.md) — cross-language tolerance contract (R / Stata / Python).
 - [`r-code-conventions.md`](r-code-conventions.md) · [`stata-code-conventions.md`](stata-code-conventions.md) — sibling disciplines.

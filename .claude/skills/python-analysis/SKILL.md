@@ -1,7 +1,7 @@
 ---
 name: python-analysis
 description: End-to-end Python data analysis pipeline — exploration → cleaning (with a validation battery) → estimation → publication-ready tables and figures. The Python analogue of /data-analysis (R) and /stata-replication (Stata); the default for prep-heavy work. Use when user says "analyze this in Python", "run a regression in Python", "explore this CSV/parquet", "pandas analysis", "statsmodels/linearmodels/pyfixest regression", or points at data and wants Python results. Produces numbered .py scripts in scripts/python/ with outputs in scripts/python/_outputs/.
-argument-hint: "[dataset path or description of analysis goal]"
+argument-hint: "[dataset path or description of analysis goal] [--no-crosscheck]"
 allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task", "Monitor"]
 ---
 
@@ -57,7 +57,15 @@ Produce the cleaned frame, then **end `02_clean.py` with the validation battery*
 - Panel/FE/IV → `pyfixest` (`feols`) or `linearmodels`; general → `statsmodels`; ML-causal → `econml`/`doubleml`.
 - **Clustered SEs at the assignment level, documented.** Start simple, add controls progressively across specs.
 - Pickle fitted results to `_outputs/`.
-- *(Phase 3 of the customization adds an automatic cross-language cross-check here — until then, note where it will attach.)*
+
+### Phase 4b: Auto cross-check (mandatory unless opted out)
+
+After the **final specifications** are estimated, invoke [`/cross-check`](../cross-check/SKILL.md) on each headline result, targeting the project's **cross-check language role** (CLAUDE.md "Project Language Roles"). The cross-check re-implements the spec independently in that language and compares coef/SE/N against the `replication-protocol.md` tolerances; a DIVERGENT verdict (out of tolerance, no named culprit) blocks Phase 6 — do not present the result as verified.
+
+Skip when:
+- `--no-crosscheck` was passed (quick exploratory runs);
+- the work lives under `explorations/` (fast-track threshold applies by default);
+- the result is an intermediate spec, not a headline estimate (cross-check final specs only — each check doubles the estimation cost).
 
 ### Phase 5: Publication Output
 - **Tables:** emit `.tex` from the estimation (`pyfixest .etable`, `statsmodels.summary_col`, `stargazer`, or `pystout`) for `\input{}`. Coeffs, SEs, stars (`* .10 ** .05 *** .01`), N, R².
@@ -76,6 +84,7 @@ For fits/bootstraps/simulations over a couple of minutes, background-launch (`uv
 
 ## Companion skills
 - [`/data-analysis`](../data-analysis/SKILL.md) (R) · [`/stata-replication`](../stata-replication/SKILL.md) (Stata) — same pipeline shape, different language.
+- [`/cross-check`](../cross-check/SKILL.md) — the Phase 4b independent re-implementation (also has a `--data` mode for high-stakes prep).
 - [`/review-python`](../review-python/SKILL.md) — code review · [`/audit-reproducibility`](../audit-reproducibility/SKILL.md) — numeric verification.
 
 ## Anti-patterns

@@ -22,7 +22,7 @@ Compare numeric claims in a manuscript (point estimates, standard errors, p-valu
 ## Inputs
 
 - `$0` — path to the manuscript (`.tex`, `.qmd`, `.md`, `.pdf`). Required.
-- `$1` — path to the outputs directory. Defaults to `scripts/R/_outputs/`. Recognised alternatives: `scripts/stata/_outputs/` (Stata pipelines built by [`/stata-replication`](../stata-replication/SKILL.md)), `_targets/objects/` (R `targets` workflows), any directory the user-specified outputs live in.
+- `$1` — path to the outputs directory. Defaults to `scripts/R/_outputs/`. Recognised alternatives: `scripts/python/_outputs/` (Python pipelines built by [`/python-analysis`](../python-analysis/SKILL.md)), `scripts/stata/_outputs/` (Stata pipelines built by [`/stata-replication`](../stata-replication/SKILL.md)), `_targets/objects/` (R `targets` workflows), any directory the user-specified outputs live in. For a **mixed pipeline** (e.g. prep = Python, estimation = Stata), point `$1` at the directory holding the outputs the manuscript actually cites — usually the estimation language's `_outputs/`.
 
 ## Workflow
 
@@ -231,6 +231,7 @@ See [`.claude/rules/replication-protocol.md`](../../rules/replication-protocol.m
 
 - [`.claude/rules/replication-protocol.md`](../../rules/replication-protocol.md) — the tolerance contract + passport schema.
 - [`templates/passport-template.yaml`](../../../templates/passport-template.yaml) — starter file to copy for a new paper.
+- [`.claude/skills/cross-check/SKILL.md`](../cross-check/SKILL.md) — the per-result counterpart: this skill checks *manuscript vs outputs*; `/cross-check` checks *outputs vs an independent re-implementation in a second language*. Both run before submission.
 - [`.claude/skills/review-r/SKILL.md`](../review-r/SKILL.md) — catches code-style issues; this skill catches NUMERICAL reproducibility.
 - [`.claude/skills/diagnose/SKILL.md`](../diagnose/SKILL.md) — when a claim resolves to **FAIL** and you need to localize *which* pipeline step produced the out-of-tolerance value, hand off to `/diagnose` (single-claim root-cause: reproduce → minimise → bisect).
 - [`.claude/skills/review-paper/SKILL.md`](../review-paper/SKILL.md) — content review; pair with this skill for a full pre-submission audit.

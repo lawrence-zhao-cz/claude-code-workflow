@@ -48,7 +48,7 @@ Write `replication_package/README.md` (the AEA template, fields below). Leave a 
 Generate the dependency lockfile(s) and an environment snapshot for each detected language. Prefer [`/capture-environment`](../capture-environment/SKILL.md) if available; otherwise produce them directly:
 
 - **R** — `renv::snapshot()` → `renv.lock`; `sessionInfo()` → `output/sessionInfo.txt`.
-- **Python** — `pip freeze` → `requirements.txt` (or export the conda `environment.yml`); record `python --version`.
+- **Python** — `uv export` → `requirements.txt` + commit `uv.lock` (the project default per [`python-code-conventions.md`](../../rules/python-code-conventions.md); fall back to `pip freeze` / conda `environment.yml` for non-uv projects); record `python --version`.
 - **Stata** — `creturn list` / `about` → `output/stata_version.txt`; confirm every `.do` pins `version NN` (per [`stata-code-conventions.md`](../../rules/stata-code-conventions.md)).
 - **Container (recommended by DCAS for non-trivial setups)** — scaffold a `Dockerfile` pinning the base image + language version.
 
@@ -123,7 +123,8 @@ replication_package/  (tree + README + checklist)
 - [`.claude/skills/audit-reproducibility/SKILL.md`](../audit-reproducibility/SKILL.md) — the Phase 3 gate; proves claims reproduce.
 - [`.claude/rules/confidential-data.md`](../../rules/confidential-data.md) — restricted-data deposit rules driving Phase 5.
 - [`templates/passport-template.yaml`](../../../templates/passport-template.yaml) — source of the Table/Figure → program:line map when present.
-- [`.claude/skills/data-analysis/SKILL.md`](../data-analysis/SKILL.md) · [`.claude/skills/stata-replication/SKILL.md`](../stata-replication/SKILL.md) — the R / Stata pipelines whose outputs this skill packages.
+- [`.claude/skills/data-analysis/SKILL.md`](../data-analysis/SKILL.md) · [`.claude/skills/python-analysis/SKILL.md`](../python-analysis/SKILL.md) · [`.claude/skills/stata-replication/SKILL.md`](../stata-replication/SKILL.md) — the R / Python / Stata pipelines whose outputs this skill packages; in a mixed pipeline, include every language's scripts and the cross-language handoff files (see `replication-protocol.md`).
+- [`.claude/skills/cross-check/SKILL.md`](../cross-check/SKILL.md) — `90_crosscheck_*` scripts and their reports are deposit-worthy evidence of independent verification; include them in `code/`.
 - [`.claude/skills/simulation-study/SKILL.md`](../simulation-study/SKILL.md) — seeded Monte Carlo outputs are packaged the same way (seeds + per-rep raw results belong in `output/`).
 - [`.claude/skills/preregister/SKILL.md`](../preregister/SKILL.md) — for RCTs, the PAP belongs in the deposit alongside the analysis.
 

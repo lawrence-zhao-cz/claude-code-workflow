@@ -188,7 +188,7 @@ This workflow is designed as a **single hub for an entire research program** —
 ## What's Included
 
 <details>
-<summary><strong>20 agents, 54 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
+<summary><strong>20 agents, 55 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
 
 ### Agents (`.claude/agents/`)
 
@@ -275,6 +275,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/respond-to-eval` (v2.0) | Teaching analogue of `/respond-to-referees` — clusters course-eval comments into themes, weights by frequency (signal vs noise), classifies Keep / Change / Investigate / Out-of-scope, and drafts concrete changes mapped to the syllabus + slide decks; saves the plan to `quality_reports/teaching/` |
 | `/scaffold-exercises` (v2.0) | Scaffold a graded problem set across analytical/empirical/coding types, with worked solutions and "why this matters" explainers emitted to a separate solution key |
 | `/new-skill` (v2.0) | Scaffold a new skill that follows this repo's conventions — interviews for purpose, triggers, and tools, writes `.claude/skills/<name>/SKILL.md` from the template with frontmatter/body that pass `check-skill-integrity.py` first try, then reminds to add the surface-table rows |
+| `/cross-check` (v2.0) | Independent re-implementation of a result in a second language (any Python ↔ Stata ↔ R pair) compared against `replication-protocol.md` tolerances, with culprit diagnosis on divergence (clustering df, FE/singleton handling, SE type, seed/sort, missing-value filters); `--data` mode compares independently produced cleaned datasets; auto-invoked after estimation by `/python-analysis` and `/stata-replication` |
 
 ### Research Workflow
 

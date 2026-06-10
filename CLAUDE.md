@@ -100,11 +100,11 @@ The full table of all skills lives in [README.md](README.md#skills-claudeskills)
 
 - **Slides / teaching:** `/create-lecture` `/compile-latex` `/deploy` `/qa-quarto` `/slide-excellence` `/syllabus` `/teach-from-paper` `/scaffold-exercises`
 - **Papers / review:** `/review-paper` (`--peer`) `/seven-pass-review` `/respond-to-referees` `/verify-claims` `/proofread` `/humanize`
-- **Data / reproducibility:** `/data-analysis` `/did-event-study` `/simulation-study` `/audit-reproducibility` `/diagnose` `/replication-package` `/capture-environment` `/power-analysis` `/disclosure-check`
+- **Data / reproducibility:** `/python-analysis` `/stata-replication` `/cross-check` `/data-analysis` `/did-event-study` `/simulation-study` `/audit-reproducibility` `/diagnose` `/replication-package` `/capture-environment` `/power-analysis` `/disclosure-check`
 - **Research / writing:** `/interview-me` `/lit-review` `/research-ideation` `/preregister` `/grant-proposal` `/data-management-plan`
 - **Meta / workflow:** `/commit` `/learn` `/new-skill` `/checkpoint` `/context-status` `/deep-audit` `/coauthor-brief` `/triage-inbox`
 
-Stata (`/stata-replication`), R packages (`/r-package-check`), TikZ (`/extract-tikz`, `/new-diagram`), and more — see the README for the complete index.
+R packages (`/r-package-check`), TikZ (`/extract-tikz`, `/new-diagram`), and more — see the README for the complete index.
 
 ---
 
@@ -137,7 +137,7 @@ Language is chosen **per project, by task** — skills read these roles. This is
 | --- | --- | --- |
 | **Data prep** | **Python** (pandas/polars) | Best for messy, multi-source, API/text data → `/python-analysis` |
 | **Estimation** | **Stata** (`reghdfe`/`csdid`/`ivreghdfe`, `esttab`) | Canonical applied-micro estimators + referee/AEA norms → `/stata-replication` |
-| **Cross-check / replication** | **R** (`fixest`/`did`/`DRDID`) | Independent of Stata + reference implementations → `/cross-check` *(Phase 3)* |
+| **Cross-check / replication** | **R** (`fixest`/`did`/`DRDID`) | Independent of Stata + reference implementations → `/cross-check` |
 
 Replication is **continuous**: data-prep validation battery + independent re-implementation (`/cross-check`), auto cross-check after every estimation, full pre-submission audit (`/audit-reproducibility`), and the accepted-article deposit (`/replication-package`).
 

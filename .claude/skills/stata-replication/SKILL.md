@@ -3,7 +3,7 @@ name: stata-replication
 description: End-to-end Stata replication pipeline — scaffolds numbered `.do` files in `scripts/stata/`, executes them via the `stata-mcp` MCP server, captures logs and outputs to `scripts/stata/_outputs/`, and produces publication-ready tables (esttab) and figures (graph export). Mirrors `/data-analysis` for R-first projects. Use when user says "stata replication", "set up Stata pipeline", "scaffold the .do files", "run Stata analysis", "AEA replication package in Stata", or when a project's analysis language is Stata not R.
 author: Claude Code Academic Workflow
 version: 1.0.0
-argument-hint: "[paper-or-data-pointer] [--from-r] [--no-execute]"
+argument-hint: "[paper-or-data-pointer] [--from-r] [--no-execute] [--no-crosscheck]"
 disable-model-invocation: true
 allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "Task"]
 ---
@@ -22,7 +22,7 @@ Build a complete Stata replication pipeline in `scripts/stata/`: numbered `.do` 
 ## When NOT to use
 
 - Your project is R-first. Use [`/data-analysis`](../data-analysis/SKILL.md).
-- Your project is Python-first. Neither this skill nor `/data-analysis` is the right fit; consider extending the convention rule for Python or porting one of these skills.
+- Your project is Python-first. Use [`/python-analysis`](../python-analysis/SKILL.md) — or, in a mixed pipeline (prep = Python, estimation = Stata per the CLAUDE.md language roles), let `/python-analysis` produce the `.dta` handoff and run this skill for the estimation phase.
 - You're doing quick exploratory work. The numbered-pipeline scaffold is for replication packages, not scratch notebooks.
 
 ## Prerequisite: `stata-mcp` installed
@@ -81,19 +81,21 @@ For long-running scripts (> 2 minutes), use the **Monitor tool** to stream stdou
 3. Run `/audit-reproducibility` if a manuscript exists — it now handles Stata `.dta` outputs via `haven`/`pyreadstat` (Pass 4.3).
 4. Report scripts run, outputs produced, any warnings from Stata.
 
-### Phase 4 (optional): R cross-check
+### Phase 4: Auto cross-check (mandatory unless opted out)
 
-If `--from-r` was set, run the R version of the same analysis (assumed to live at `scripts/R/`) and compare:
+After the **final specifications** in `03_analyze.do` run, invoke [`/cross-check`](../cross-check/SKILL.md) on each headline result, targeting the project's **cross-check language role** (CLAUDE.md "Project Language Roles"). It re-implements the spec independently in that language — any Python ↔ Stata ↔ R pair — and compares coef/SE/N against the `replication-protocol.md` tolerances, naming the usual culprits on divergence (clustering df, FE/singleton handling, default SE type, seed/sort, logit vs probit PS). A DIVERGENT verdict (out of tolerance, no named culprit) blocks the verify phase — do not present the result as verified.
 
-- Point estimates: should match to ~0.01 (per `replication-protocol.md` tolerance).
-- Standard errors: should match to ~0.05 (clustering df adjustments can differ slightly between Stata and R).
-- Sample sizes: must match exactly.
+Skip when:
+- `--no-crosscheck` was passed (quick exploratory runs);
+- the work lives under `explorations/` (fast-track threshold applies by default).
 
-Discrepancies are surfaced for the user to investigate — typical culprits: clustering df, default options (logit vs probit for PS), bootstrap seed handling.
+If `--from-r` was set, the existing R pipeline at `scripts/R/` *is* the cross-check counterpart — `/cross-check` compares against it directly instead of writing a fresh `90_crosscheck` script.
 
 ## Companion skills
 
 - [`/data-analysis`](../data-analysis/SKILL.md) — R analogue. Same pipeline shape, different language.
+- [`/python-analysis`](../python-analysis/SKILL.md) — Python analogue; in mixed pipelines it produces the `.dta` handoff this skill estimates from.
+- [`/cross-check`](../cross-check/SKILL.md) — the Phase 4 independent re-implementation (any Python ↔ Stata ↔ R pair; `--data` mode for prep verification).
 - [`/audit-reproducibility`](../audit-reproducibility/SKILL.md) — reads both `.rds` and `.dta` outputs. Cross-checks manuscript claims against the produced values. Updated in v1.9.0 to handle Stata outputs.
 - [`/review-paper`](../review-paper/SKILL.md) — if the paper exists and cites tables/figures produced by this pipeline, `/review-paper` auto-invokes `/audit-reproducibility` (per `cross-artifact-review.md`).
 

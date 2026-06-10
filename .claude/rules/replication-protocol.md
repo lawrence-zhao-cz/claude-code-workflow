@@ -1,6 +1,8 @@
 ---
 paths:
   - "scripts/**/*.R"
+  - "scripts/**/*.py"
+  - "scripts/**/*.do"
   - "Figures/**/*.R"
 ---
 
@@ -47,6 +49,50 @@ Before writing any R code:
 | `areg y x, absorb(id)` | `feols(y ~ x \| id)` | Check demeaning method matches |
 | `probit` for PS | `glm(family=binomial(link="probit"))` | R default logit != Stata default in some commands |
 | `bootstrap, reps(999)` | Depends on method | Match seed, reps, and bootstrap type exactly |
+
+### Stata to Python Translation Pitfalls
+
+| Stata | Python | Trap |
+|-------|--------|------|
+| `if x > 100` | `df[df.x > 100]` | **Stata `.` sorts as +∞** — the Stata filter *keeps* missings, pandas drops NaN → N diverges before any estimation |
+| `reghdfe y x, absorb(id year) cluster(id)` | `pyfixest.feols("y ~ x \| id + year", vcov={"CRV1": "id"})` | Singleton-group handling and small-sample df adjustments can differ — check both packages' settings |
+| `merge 1:1 id using b, assert(3)` | `pd.merge(..., indicator=True)` + assert | pandas has no `assert()` arg — replicate the match-rate assertion explicitly (the §7 battery) |
+| `aweight` / `fweight` / `pweight` | `weights=` kwarg | Weight *types* differ; confirm which normalization the Python estimator applies |
+| `i.x` factor expansion | `C(x)` / `pd.get_dummies` | Reference-level choice can differ — fix the omitted category explicitly on both sides |
+| Date constants | `pd.Timestamp` | Stata's epoch is 1960-01-01; Unix/pandas is 1970-01-01 — off-by-3653-days on raw numeric dates |
+| `probit` for PS | `statsmodels` default | Match link functions explicitly (logit vs probit) |
+
+### Python to R Translation Pitfalls
+
+| Python | R | Trap |
+|--------|---|------|
+| `pyfixest.feols(...)` | `fixest::feols(...)` | Closest pair available (same lineage) — divergence here usually means data, not estimator: check the handoff file is current |
+| `NaN` | `NA` | `NaN == NaN` is False in both, but aggregation defaults differ (`skipna=True` in pandas vs `na.rm = FALSE` in R) — state both explicitly |
+| `pd.Categorical` order | `factor()` levels | Reference level: pandas takes first observed/declared, R takes first alphabetical — set explicitly on both sides |
+| `np.random.default_rng(seed)` | `set.seed(seed)` | Different RNG algorithms — identical seeds do NOT give identical draws; compare bootstrap results by tolerance, never by digit |
+| Integer division `//` | `%/%` | Negative-operand rounding differs from C-style truncation; avoid in derived variables |
+| `read_parquet` dtypes | `arrow::read_parquet` | Parquet round-trips types faithfully — prefer it over CSV (which re-guesses types on every read) |
+
+---
+
+## Cross-Language Handoff Convention
+
+A mixed pipeline (e.g. prep = Python → estimate = Stata → cross-check = R, per the language-roles table in `CLAUDE.md`) keeps its reproducibility chain unbroken by exchanging data **only** through typed, on-disk handoff files in the producing language's `_outputs/` directory:
+
+| Producer | Consumer | Format | Write with | Read with |
+|---|---|---|---|---|
+| Python | Stata | `.dta` | `pyreadstat.write_dta()` | `use` |
+| Python | R | `.parquet` (or `.feather`) | `df.to_parquet()` | `arrow::read_parquet()` |
+| Stata | Python / R | `.dta` | `save` | `pyreadstat.read_dta()` / `haven::read_dta()` |
+| R | Python | `.parquet` | `arrow::write_parquet()` | `pd.read_parquet()` |
+| R | Stata | `.dta` | `haven::write_dta()` | `use` |
+
+Rules:
+
+- **Never exchange via CSV** — type re-guessing on read silently corrupts dtypes, dates, and leading-zero IDs.
+- **The handoff file is a derived artifact** — regenerate it from the producing script whenever that script changes (a cross-check against a stale handoff verifies nothing).
+- **Value labels / categoricals:** `.dta` carries value labels; parquet carries categoricals. Confirm the consumer decodes them the same way the producer encoded them (labeled integers vs strings is a classic silent divergence).
+- **One direction per dataset.** A file is written by exactly one script in one language; consumers only read. Mirrors the "single source of truth" principle.
 
 ---
 
@@ -110,7 +156,11 @@ After replication is verified (all targets PASS):
 
 ## Enforcement
 
-This rule is enforced by the [`/audit-reproducibility`](../skills/audit-reproducibility/SKILL.md) skill. It parses numeric claims from a manuscript, locates matching values in `scripts/R/_outputs/` (or the user-specified outputs directory), and compares against the tolerance thresholds above. Run it:
+This rule is enforced at two layers:
+
+**Per result, continuously** — the [`/cross-check`](../skills/cross-check/SKILL.md) skill re-implements a result (or, with its `--data` mode, a cleaned dataset) independently in a second language (any Python ↔ Stata ↔ R pair) and compares against the tolerance thresholds above. `/python-analysis` and `/stata-replication` invoke it automatically after estimation, targeting the project's cross-check language role; opt out per run with their `--no-crosscheck` flag (exploratory work in `explorations/` is exempt by default).
+
+**Per manuscript, before submission** — the [`/audit-reproducibility`](../skills/audit-reproducibility/SKILL.md) skill parses numeric claims from a manuscript, locates matching values in `scripts/R/_outputs/` (or the user-specified outputs directory), and compares against the tolerance thresholds above. Run it:
 
 - **Before submission** — `/audit-reproducibility path/to/manuscript.tex`
 - **Before releasing a replication package** — same invocation; aim for zero FAILs.
