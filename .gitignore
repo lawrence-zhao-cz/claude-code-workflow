@@ -41,6 +41,9 @@ Thumbs.db
 .claude/state/
 CLAUDE.local.md
 
+# stata-mcp runtime dir (logs, temp do-files, captured output)
+.statamcp/
+
 # IDE
 # .vscode/settings.json ships in the template (carries shipped Claude Code permission-mode
 # recommendations — see TROUBLESHOOTING.md "Permissions / bypass / statusline" for the typo

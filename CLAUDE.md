@@ -5,9 +5,10 @@
      Keep this file under ~150 lines — Claude loads it every session.
      See the guide at docs/workflow-guide.html for full documentation. -->
 
-**Project:** [YOUR PROJECT NAME]
-**Institution:** [YOUR INSTITUTION]
+**Project:** Academic Research Workflow (Python / Stata)
+**Institution:** Texas Tech University
 **Branch:** main
+**Default analysis language:** Python and Stata are first-class; R is secondary (kept, not removed).
 
 ---
 
@@ -26,16 +27,20 @@ Cross-session context lives in [MEMORY.md](MEMORY.md); past plans, specs, and se
 ## Folder Structure
 
 ```
-[YOUR-PROJECT]/
+ClaudeWorkFlow/
 ├── CLAUDE.MD                    # This file
 ├── .claude/                     # Rules, skills, agents, hooks
+├── .mcp.json                    # MCP servers (stata-mcp for Stata execution)
 ├── Bibliography_base.bib        # Centralized bibliography
 ├── Figures/                     # Figures and images
 ├── Preambles/header.tex         # LaTeX headers
 ├── Slides/                      # Beamer .tex files
 ├── Quarto/                      # RevealJS .qmd files + theme
 ├── docs/                        # GitHub Pages (auto-generated)
-├── scripts/                     # Utility scripts + R code
+├── scripts/                     # Utility scripts + analysis code
+│   ├── python/                  # Python pipeline (.py) + _outputs/  [default]
+│   ├── stata/                   # Stata pipeline (.do) + _outputs/   [default]
+│   └── R/                       # R pipeline (secondary)
 ├── quality_reports/             # Plans, session logs, merge reports, decision records
 ├── explorations/                # Research sandbox (see rules)
 ├── templates/                   # Session log, quality report templates
@@ -52,6 +57,13 @@ cd Slides && TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode 
 BIBINPUTS=..:$BIBINPUTS bibtex file
 TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode file.tex
 TEXINPUTS=../Preambles:$TEXINPUTS xelatex -interaction=nonstopmode file.tex
+
+# Python environment (uv; lockfile = uv.lock, export requirements.txt via `uv export`)
+uv venv && uv pip install -r requirements.txt   # or: uv sync (if pyproject.toml)
+uv run python scripts/python/00_run_all.py
+
+# Stata runs via the stata-mcp MCP server (see .mcp.json); diagnose with:
+uvx stata-mcp doctor
 
 # Deploy Quarto to GitHub Pages
 ./scripts/sync_to_docs.sh LectureN
