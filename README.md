@@ -188,7 +188,7 @@ This workflow is designed as a **single hub for an entire research program** —
 ## What's Included
 
 <details>
-<summary><strong>18 agents, 51 skills, 32 rules, 7 hooks</strong> (click to expand)</summary>
+<summary><strong>19 agents, 53 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
 
 ### Agents (`.claude/agents/`)
 
@@ -199,6 +199,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `slide-auditor` | Visual layout audit (overflow, font consistency, spacing) |
 | `pedagogy-reviewer` | 13-pattern pedagogical review (narrative arc, notation density, pacing) |
 | `r-reviewer` | R code quality, reproducibility, and domain correctness |
+| `python-reviewer` | Python code quality, reproducibility, pandas/estimation idioms, numerical discipline |
 | `tikz-reviewer` | Merciless TikZ diagram visual critique |
 | `beamer-translator` | Beamer-to-Quarto translation specialist |
 | `quarto-critic` | Adversarial QA comparing Quarto against Beamer benchmark |
@@ -226,6 +227,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/visual-audit` | Launch slide-auditor on a file |
 | `/pedagogy-review` | Launch pedagogy-reviewer on a file |
 | `/review-r` | Launch R code reviewer |
+| `/review-python` | Launch Python code reviewer |
 | `/qa-quarto` | Adversarial critic-fixer loop (loops until dry; 5-round cap is a fallback) |
 | `/slide-excellence` | Combined multi-agent review |
 | `/translate-to-quarto` | Full 11-phase Beamer-to-Quarto translation |
@@ -238,6 +240,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/interview-me` | Interactive interview to formalize a research idea |
 | `/review-paper` | Manuscript review: structure, econometrics, referee objections |
 | `/data-analysis` | End-to-end R analysis with publication-ready output |
+| `/python-analysis` | End-to-end Python analysis (pandas/statsmodels/linearmodels/pyfixest) with publication-ready output |
 | `/learn` | Extract non-obvious discoveries into persistent skills |
 | `/context-status` | Show session health and context usage |
 | `/deep-audit` | Repository-wide consistency audit |

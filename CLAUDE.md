@@ -129,6 +129,18 @@ Stata (`/stata-replication`), R packages (`/r-package-check`), TikZ (`/extract-t
 
 ---
 
+## Project Language Roles
+
+Language is chosen **per project, by task** — skills read these roles. This is what "Python/Stata as defaults" means operationally (not running both redundantly). **Default template** (a project may override in its row below):
+
+| Role | Default | Why / tooling |
+| --- | --- | --- |
+| **Data prep** | **Python** (pandas/polars) | Best for messy, multi-source, API/text data → `/python-analysis` |
+| **Estimation** | **Stata** (`reghdfe`/`csdid`/`ivreghdfe`, `esttab`) | Canonical applied-micro estimators + referee/AEA norms → `/stata-replication` |
+| **Cross-check / replication** | **R** (`fixest`/`did`/`DRDID`) | Independent of Stata + reference implementations → `/cross-check` *(Phase 3)* |
+
+Replication is **continuous**: data-prep validation battery + independent re-implementation (`/cross-check`), auto cross-check after every estimation, full pre-submission audit (`/audit-reproducibility`), and the accepted-article deposit (`/replication-package`).
+
 ## Current Project State
 
 | Lecture | Beamer | Quarto | Key Content |
