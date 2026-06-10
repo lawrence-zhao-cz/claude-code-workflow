@@ -5239,7 +5239,7 @@ Decision point (1-2 hours):
 </section>
 <section id="pattern-11-research-skills" class="level3" data-number="5.9.3">
 <h3 data-number="5.9.3" class="anchored" data-anchor-id="pattern-11-research-skills"><span class="header-section-number">5.9.3</span> Pattern 11: Research Skills</h3>
-<p>Five skills support the research workflow beyond slide development:</p>
+<p>These skills support the research workflow beyond slide development:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 21%">
@@ -5275,13 +5275,13 @@ Decision point (1-2 hours):
 <td>Before submission or after a draft</td>
 </tr>
 <tr class="odd">
-<td><code>/data-analysis [data]</code></td>
-<td>End-to-end R analysis: explore, regress, produce publication-ready output</td>
+<td><code>/python-analysis [data]</code> · <code>/stata-replication</code> · <code>/data-analysis [data]</code> (R)</td>
+<td>End-to-end analysis pipeline in your project’s language(s): explore, clean (with validation), estimate, produce publication-ready output</td>
 <td>Empirical analysis phase</td>
 </tr>
 </tbody>
 </table>
-<p>These skills produce structured reports saved to <code>quality_reports/</code>. The <code>/data-analysis</code> skill also generates R scripts (saved to <code>scripts/R/</code>) and runs the r-reviewer agent automatically.</p>
+<p>These skills produce structured reports saved to <code>quality_reports/</code>. The three analysis skills share one pipeline shape in three languages — pick per project via the language-roles table in <code>CLAUDE.md</code> (e.g. prep = Python, estimation = Stata, cross-check = R). Each generates numbered scripts (<code>scripts/python/</code>, <code>scripts/stata/</code>, <code>scripts/R/</code>), runs its language’s reviewer agent automatically, and invokes <code>/cross-check</code> after estimation to re-verify headline results in a second language.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -6166,7 +6166,7 @@ research-spec.md  ─────────────→  preregistration-dr
 <h2 data-number="6.7" class="anchored" data-anchor-id="stata-mcp-mcp-server-for-stata-execution"><span class="header-section-number">6.7</span> stata-mcp: MCP server for Stata execution</h2>
 <p><strong>Repository:</strong> <a href="https://github.com/SepineTam/stata-mcp">SepineTam/stata-mcp</a> <strong>Author:</strong> SepineTam (171+ stars, 91 releases, v1.17.3 as of May 2026)</p>
 <p>A mature MCP server that lets Claude Code execute Stata <code>.do</code> files via a command-guarded interface — refuses destructive shell ops (<code>!/shell/erase</code> etc.), monitors RAM, and pairs with the Stata Language Server. <strong>Install once per user:</strong> <code>claude mcp add stata-mcp --scope user -- uvx stata-mcp</code> (requires <code>uv</code> and a local Stata install).</p>
-<p><strong>Why it matters for this template:</strong> v1.9.0 added <a href="#sec-appendix"><code>/stata-replication</code></a> for Stata-first projects, which depends on this MCP server. R-first projects (the original template focus) continue to use <a href="#sec-appendix"><code>/data-analysis</code></a>; the two skills are parallel — same pipeline shape, different source language. AEA submissions where the original replication package is in Stata are the canonical use case.</p>
+<p><strong>Why it matters for this template:</strong> <a href="#sec-appendix"><code>/stata-replication</code></a> (v1.9.0) depends on this MCP server, and so does the Stata leg of <a href="#sec-appendix"><code>/cross-check</code></a>. The analysis pipeline comes in three parallel languages — <a href="#sec-appendix"><code>/python-analysis</code></a>, <code>/stata-replication</code>, and <a href="#sec-appendix"><code>/data-analysis</code></a> (R) — same pipeline shape, picked per project via the language-roles table in <code>CLAUDE.md</code>. AEA submissions where the replication package is in Stata are the canonical use case for this server.</p>
 <p>For end-to-end Stata workflows, see <a href=".claude/rules/stata-code-conventions.md"><code>.claude/rules/stata-code-conventions.md</code></a> (header scaffold, numbered pipeline, esttab tables, clustering discipline, AEA Data Editor compliance).</p>
 </section>
 <section id="claudecodetools-the-editor-persona" class="level2" data-number="6.8">
@@ -6619,6 +6619,16 @@ research-spec.md  ─────────────→  preregistration-dr
 <td>R code quality, reproducibility</td>
 </tr>
 <tr class="odd">
+<td>Python Reviewer</td>
+<td><code>.claude/agents/python-reviewer.md</code></td>
+<td>Python code quality, reproducibility, pandas/estimation idioms, numerical discipline (v2.0)</td>
+</tr>
+<tr class="even">
+<td>Stata Reviewer</td>
+<td><code>.claude/agents/stata-reviewer.md</code></td>
+<td>Stata reproducibility scaffolding, clustering/inference discipline, data-handling traps, esttab/AEA compliance (v2.0)</td>
+</tr>
+<tr class="odd">
 <td>TikZ Reviewer</td>
 <td><code>.claude/agents/tikz-reviewer.md</code></td>
 <td>Diagram visual quality</td>
@@ -6748,6 +6758,16 @@ research-spec.md  ─────────────→  preregistration-dr
 <td>Run R code review agent</td>
 </tr>
 <tr class="odd">
+<td><code>/review-python</code></td>
+<td><code>.claude/skills/review-python/</code></td>
+<td>Run Python code review agent (v2.0)</td>
+</tr>
+<tr class="even">
+<td><code>/review-stata</code></td>
+<td><code>.claude/skills/review-stata/</code></td>
+<td>Run Stata code review agent (v2.0)</td>
+</tr>
+<tr class="odd">
 <td><code>/qa-quarto</code></td>
 <td><code>.claude/skills/qa-quarto/</code></td>
 <td>Critic-fixer adversarial loop</td>
@@ -6813,9 +6833,19 @@ research-spec.md  ─────────────→  preregistration-dr
 <td>End-to-end R analysis</td>
 </tr>
 <tr class="even">
+<td><code>/python-analysis</code></td>
+<td><code>.claude/skills/python-analysis/</code></td>
+<td>End-to-end Python analysis (pandas/statsmodels/linearmodels/pyfixest) with a mandatory data-prep validation battery (v2.0)</td>
+</tr>
+<tr class="odd">
 <td><code>/audit-reproducibility</code></td>
 <td><code>.claude/skills/audit-reproducibility/</code></td>
 <td>Enforce replication tolerance thresholds on paper ↔︎ code</td>
+</tr>
+<tr class="even">
+<td><code>/diagnose</code></td>
+<td><code>.claude/skills/diagnose/</code></td>
+<td>Root-cause a wrong or failing empirical result: reproduce → minimise → hypothesise → instrument → fix (v2.0)</td>
 </tr>
 <tr class="odd">
 <td><code>/learn</code></td>
@@ -6875,7 +6905,12 @@ research-spec.md  ─────────────→  preregistration-dr
 <tr class="even">
 <td><code>/stata-replication</code></td>
 <td><code>.claude/skills/stata-replication/</code></td>
-<td>End-to-end Stata pipeline scaffold + execution via the <code>stata-mcp</code> MCP server (mirrors <code>/data-analysis</code> for R-first projects; v1.9.0)</td>
+<td>End-to-end Stata pipeline scaffold + execution via the <code>stata-mcp</code> MCP server (the Stata member of the R/Python/Stata pipeline triad; v1.9.0)</td>
+</tr>
+<tr class="odd">
+<td><code>/cross-check</code></td>
+<td><code>.claude/skills/cross-check/</code></td>
+<td>Independent re-implementation of a result in a second language (any Python ↔︎ Stata ↔︎ R pair) against <code>replication-protocol.md</code> tolerances; <code>--data</code> mode for cleaned datasets; auto-invoked after estimation (v2.0)</td>
 </tr>
 <tr class="odd">
 <td><code>/simulation-study</code></td>
