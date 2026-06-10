@@ -20,7 +20,7 @@ File:       NN_descriptive_name.do
 Purpose:    [one-sentence description]
 Inputs:     [path to inputs]
 Outputs:    [path to outputs]
-Run order:  Standalone | After NN_prior.do
+Sequence:   Standalone | After NN_prior.do
 ------------------------------------------------------------*/
 
 version 18                        // pin Stata semantics
@@ -32,6 +32,8 @@ cap log close
 cap log close _all                // belt-and-suspenders
 log using "scripts/stata/_outputs/NN_log.smcl", replace
 ```
+
+> **Use `Sequence:`, not `Run order:`.** The `stata-mcp` command guard matches `^\s*run\s+` (the Stata `run` command) and a header line beginning "Run order:" trips it on *every* `.do` file — the guard refuses to execute and reports a false positive. Any header field whose first word is `run` (case-insensitive, followed by a space) has the same problem.
 
 Why each line:
 
@@ -170,7 +172,7 @@ The [AEA Data Editor checklist](https://aeadataeditor.github.io/) requires:
 
 - [`/stata-replication`](../skills/stata-replication/SKILL.md) is the analogue of `/data-analysis` for Stata. It emits .do files conforming to this convention.
 - [`/audit-reproducibility`](../skills/audit-reproducibility/SKILL.md) handles Stata `.dta` outputs alongside R `.rds` (via `haven` or `pyreadstat`).
-- [`/review-r`](../skills/review-r/SKILL.md) is R-specific; a Stata-equivalent is on the v2.0-backlog.
+- [`/review-stata`](../skills/review-stata/SKILL.md) + the `stata-reviewer` agent run a read-only review against this convention (the Stata analogue of `/review-r` and `/review-python`).
 
 ## Cross-references
 

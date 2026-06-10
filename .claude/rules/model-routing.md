@@ -13,7 +13,7 @@ paths:
 | Share | Tier | Use for |
 |---:|---|---|
 | ~70% | **Haiku 4.5** | Mechanical work — file renames, citation-format conversion, TikZ extraction, bib validation, proofread-fix application, simple grep / file lookups |
-| ~20% | **Sonnet 4.6** | Review and critique — `r-reviewer`, `python-reviewer`, `slide-auditor`, `proofreader`, `quarto-fixer`, `humanize-auditor` |
+| ~20% | **Sonnet 4.6** | Review and critique — `r-reviewer`, `python-reviewer`, `stata-reviewer`, `slide-auditor`, `proofreader`, `quarto-fixer`, `humanize-auditor` |
 | ~10% | **Opus 4.8** | High-judgment work — `editor`, `methods-referee`, `domain-referee`, `claim-verifier`, `quarto-critic`, `tikz-reviewer`, `domain-reviewer`, `verifier` for non-trivial gates |
 
 Set per-agent via `model:` in the agent's YAML frontmatter:
@@ -57,6 +57,7 @@ Cost reduction on routed skills is typically **50–80%** with no quality loss o
 
 - **R code review** (`r-reviewer`).
 - **Python code review** (`python-reviewer`).
+- **Stata code review** (`stata-reviewer`).
 - **Slide layout audit** (`slide-auditor`).
 - **Proofread inspection** (`proofreader`).
 - **Quarto fix application** when the fix is a `quarto-critic`-driven edit.

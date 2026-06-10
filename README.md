@@ -88,7 +88,7 @@ You describe a task. For complex or ambiguous requests, Claude first creates a r
 
 ### Specialized Agents
 
-Instead of one general-purpose reviewer, 18 focused agents each check one dimension. A representative sample:
+Instead of one general-purpose reviewer, 20 focused agents each check one dimension. A representative sample:
 
 - **proofreader** — grammar/typos
 - **slide-auditor** — visual layout
@@ -188,7 +188,7 @@ This workflow is designed as a **single hub for an entire research program** —
 ## What's Included
 
 <details>
-<summary><strong>19 agents, 53 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
+<summary><strong>20 agents, 54 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
 
 ### Agents (`.claude/agents/`)
 
@@ -200,6 +200,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `pedagogy-reviewer` | 13-pattern pedagogical review (narrative arc, notation density, pacing) |
 | `r-reviewer` | R code quality, reproducibility, and domain correctness |
 | `python-reviewer` | Python code quality, reproducibility, pandas/estimation idioms, numerical discipline |
+| `stata-reviewer` | Stata reproducibility, clustering/inference, data-handling traps, esttab, AEA compliance |
 | `tikz-reviewer` | Merciless TikZ diagram visual critique |
 | `beamer-translator` | Beamer-to-Quarto translation specialist |
 | `quarto-critic` | Adversarial QA comparing Quarto against Beamer benchmark |
@@ -228,6 +229,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/pedagogy-review` | Launch pedagogy-reviewer on a file |
 | `/review-r` | Launch R code reviewer |
 | `/review-python` | Launch Python code reviewer |
+| `/review-stata` | Launch Stata code reviewer |
 | `/qa-quarto` | Adversarial critic-fixer loop (loops until dry; 5-round cap is a fallback) |
 | `/slide-excellence` | Combined multi-agent review |
 | `/translate-to-quarto` | Full 11-phase Beamer-to-Quarto translation |
