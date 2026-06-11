@@ -68,13 +68,16 @@ scripts/stata/
 ├── 00_install.do        # ssc install, set globals, paths, sessionInfo capture
 ├── 01_clean.do          # raw → cleaned panel; ends with assert-based validation:
 │                        #   merge ..., assert(3) · isid key check · assert _N == ...
+│                        #   value-range asserts (assert inrange(share, 0, 1))
 │                        #   misstable summarize snapshot (the Stata twin of the §7 battery)
 ├── 02_descriptive.do    # summary stats + distributions (summarize, detail / histogram),
 │                        #   missingness, time patterns for panels; balance (iebaltab) +
 │                        #   attrition as the RCT-specific extras
 ├── 03_analyze.do        # main specs (reghdfe / ivreg2): documented cluster level,
 │                        #   progressive specifications across columns, standardized
-│                        #   effects where meaningful; ends with estimates save
+│                        #   effects where meaningful; diagnostics before trusting a
+│                        #   spec (estat vif, influential obs, perfect prediction/
+│                        #   separation); ends with estimates save
 │                        #   scripts/stata/_outputs/est_<spec>.ster per spec
 ├── 04_robustness.do     # alt specs, sensitivity
 ├── 05_tables_figures.do # estimates use + esttab .tex (never re-runs models);
@@ -125,6 +128,12 @@ If `--from-r` was set, the existing R pipeline at `scripts/R/` *is* the cross-ch
 - [`/cross-check`](../cross-check/SKILL.md) — the Phase 4 independent re-implementation (any Python ↔ Stata ↔ R pair; `--data` mode for prep verification).
 - [`/audit-reproducibility`](../audit-reproducibility/SKILL.md) — reads both `.rds` and `.dta` outputs. Cross-checks manuscript claims against the produced values. Updated in v1.9.0 to handle Stata outputs.
 - [`/review-paper`](../review-paper/SKILL.md) — if the paper exists and cites tables/figures produced by this pipeline, `/review-paper` auto-invokes `/audit-reproducibility` (per `cross-artifact-review.md`).
+
+## Important
+
+- **Reproduce, don't guess.** If the user specifies a spec, run exactly that.
+- **Show your work.** Present the descriptives (`02_descriptive.do` output) before the estimates.
+- **Use relative paths; no hardcoded values.** Globals for sample restrictions, date ranges, etc.
 
 ## Anti-patterns
 

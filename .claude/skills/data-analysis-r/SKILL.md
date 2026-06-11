@@ -1,7 +1,7 @@
 ---
 name: data-analysis-r
 description: End-to-end R data analysis pipeline — exploration → cleaning (with validation assertions) → estimation → publication-ready tables and figures. The R member of the analysis triad (/data-analysis-python, /data-analysis-stata); R is this project's default cross-check language. Use when user says "analyze this in R", "run a regression on X", "explore this CSV", "full analysis workflow", "fixest/modelsummary analysis", or points at a `.csv`/`.rds`/`.dta` and asks for R results. Produces numbered R scripts in `scripts/R/` and outputs to `scripts/R/_outputs/`.
-argument-hint: "[dataset path or description of analysis goal] [--prep-only] [--no-crosscheck]"
+argument-hint: "[dataset path or description of analysis goal] [--prep-only] [--no-crosscheck] [--no-execute]"
 allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task", "Monitor"]
 ---
 
@@ -153,6 +153,8 @@ scripts/R/
 
 **Small/exploratory jobs** may instead use a single script with numbered section comments — the template below. Graduate it to the numbered pipeline once results feed a paper or deck.
 
+`--no-execute` scaffolds the scripts without running them (dry run — same lever as the Stata sibling); useful for reviewing the pipeline shape before a long run.
+
 ```r
 # ============================================================
 # [Descriptive Title]
@@ -199,6 +201,7 @@ dir.create("scripts/R/_outputs/analysis", recursive = TRUE, showWarnings = FALSE
 
 ## Important
 
+- **Halt on failures — never auto-fix substantive errors.** If a script errors, stop; fix only trivial parse-time typos and re-run. Substantive failures (non-convergence, singular matrices, missing covariates, dropped observations) are surfaced to the user, never silently patched — same discipline as the Stata sibling's execute phase.
 - **Reproduce, don't guess.** If the user specifies a regression, run exactly that.
 - **Show your work.** Print summary statistics before jumping to regression.
 - **Check for issues.** Look for multicollinearity, outliers, perfect prediction.

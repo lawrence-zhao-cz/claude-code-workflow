@@ -1,7 +1,7 @@
 ---
 name: data-analysis-python
 description: End-to-end Python data analysis pipeline — exploration → cleaning (with a validation battery) → estimation → publication-ready tables and figures. The Python analogue of /data-analysis-r (R) and /data-analysis-stata (Stata); the default for prep-heavy work. Use when user says "analyze this in Python", "run a regression in Python", "explore this CSV/parquet", "pandas analysis", "statsmodels/linearmodels/pyfixest regression", or points at data and wants Python results. Produces numbered .py scripts in scripts/python/ with outputs in scripts/python/_outputs/.
-argument-hint: "[dataset path or description of analysis goal] [--prep-only] [--no-crosscheck]"
+argument-hint: "[dataset path or description of analysis goal] [--prep-only] [--no-crosscheck] [--no-execute]"
 allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task", "Monitor"]
 ---
 
@@ -21,6 +21,9 @@ Run an end-to-end analysis in Python: load, explore, clean (with validation), es
 - **Use the project palette** for figures (transparent bg, `.pdf` + `.png`).
 - **Run the `python-reviewer` agent** on generated scripts before presenting results.
 - **Respect the project's language roles** (CLAUDE.md "Project Language Roles"): if Python is the *prep* language and Stata the *estimation* language, this skill produces the cleaned-data handoff (`.dta`/`.parquet`) and stops before estimation. `--prep-only` forces this stop regardless of roles — the explicit "data cleaning only" entry point (Phases 0–3, ending with the validation battery + handoff export).
+- **Halt on failures — never auto-fix substantive errors.** If a script errors, stop; fix only trivial parse-time typos and re-run. Substantive failures (non-convergence, singular matrices, missing covariates, dropped observations) are surfaced to the user, never silently patched.
+- **Reproduce, don't guess; show your work.** If the user specifies a spec, run exactly that; print/inspect summaries before presenting estimates.
+- `--no-execute` scaffolds the numbered scripts without running them (dry run — same lever as the R and Stata siblings).
 
 ---
 
