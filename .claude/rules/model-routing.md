@@ -13,8 +13,8 @@ paths:
 | Share | Tier | Use for |
 |---:|---|---|
 | ~70% | **Haiku 4.5** | Mechanical work — file renames, citation-format conversion, TikZ extraction, bib validation, proofread-fix application, simple grep / file lookups |
-| ~20% | **Sonnet 4.6** | Review and critique — `r-reviewer`, `python-reviewer`, `slide-auditor`, `proofreader`, `quarto-fixer`, `humanize-auditor` |
-| ~10% | **Opus 4.8** | High-judgment work — `editor`, `methods-referee`, `domain-referee`, `claim-verifier`, `quarto-critic`, `tikz-reviewer`, `domain-reviewer`, `stata-reviewer`, `verifier` for non-trivial gates |
+| ~20% | **Sonnet 4.6** | Review and critique — `slide-auditor`, `proofreader`, `pedagogy-reviewer`, `quarto-fixer`, `humanize-auditor`, `r-package-reviewer` |
+| ~10% | **Opus 4.8** | High-judgment work — `editor`, `methods-referee`, `domain-referee`, `claim-verifier`, `quarto-critic`, `tikz-reviewer`, `domain-reviewer`, the `r`/`python`/`stata` code reviewers, `verifier` for non-trivial gates |
 
 Set per-agent via `model:` in the agent's YAML frontmatter:
 
@@ -55,8 +55,6 @@ Cost reduction on routed skills is typically **50–80%** with no quality loss o
 
 ### Review / critique (Sonnet 4.6)
 
-- **R code review** (`r-reviewer`).
-- **Python code review** (`python-reviewer`).
 - **Slide layout audit** (`slide-auditor`).
 - **Proofread inspection** (`proofreader`).
 - **Quarto fix application** when the fix is a `quarto-critic`-driven edit.
@@ -71,7 +69,7 @@ Cost reduction on routed skills is typically **50–80%** with no quality loss o
 - **Quarto critic** (`quarto-critic`) — adversarial parity QA needs the high-judgment lens to catch subtle visual drift.
 - **TikZ reviewer** (`tikz-reviewer`) — measurement-rule enforcement requires precise spatial reasoning.
 - **Domain reviewer** (`domain-reviewer`).
-- **Stata code review** (`stata-reviewer`) — promoted from Sonnet 2026-06-11: LLMs are weakest on Stata of the three analysis languages, its failure modes are the quietest (missing-as-+∞, bare `capture`, df adjustments), and it reviews the project's default *estimation* language.
+- **Analysis-code review** (`r-reviewer`, `python-reviewer`, `stata-reviewer`) — all three promoted from Sonnet (2026-06-11): the main loop drafts on a frontier model, so surviving code errors are the subtle, judgment-heavy kind (cluster level, estimand, weights); `/cross-check` re-implements *from the same spec* and therefore cannot catch a correctly-implemented wrong spec. Opus reviewers are the spec-level net between drafting and the submission-time referees. Stata additionally: LLMs weakest on it, quietest failure modes (missing-as-+∞, bare `capture`, df adjustments).
 - **Verifier** (`verifier`) when gating non-trivial commits.
 
 ## When inheritance still makes sense

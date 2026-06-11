@@ -2,7 +2,7 @@
 name: python-reviewer
 description: Python code reviewer for academic analysis scripts. Checks code quality, reproducibility, pandas/estimation idioms, numerical discipline, and figure/table conventions. Use after writing or modifying Python analysis scripts.
 tools: Read, Grep, Glob
-model: sonnet
+model: opus
 effort: high
 ---
 
