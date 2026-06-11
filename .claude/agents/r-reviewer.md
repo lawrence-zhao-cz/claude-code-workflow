@@ -61,12 +61,15 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 ### 5. DOMAIN CORRECTNESS
 <!-- Customize this section for your field -->
 - [ ] Estimator implementations match the formulas shown on slides
-- [ ] Standard errors use the appropriate method
+- [ ] **SEs clustered at the level of treatment assignment**, documented — never default heteroskedastic-only without justification
+- [ ] **Few clusters (<~50):** wild cluster bootstrap (`fwildclusterboot`) not naive clustering — see `inference-robustness.md`
+- [ ] Multiple-testing correction where a family of hypotheses is tested (`wildrwolf`, sharpened q-values) — see `inference-robustness.md`
+- [ ] DiD uses the right modern estimator (`did`/`DRDID`) where staggered timing matters — not naive TWFE
 - [ ] DGP specifications in simulations match the paper being replicated
 - [ ] Treatment effects are the correct estimand (e.g., ATT vs ATE)
 - [ ] Check `.claude/rules/r-code-conventions.md` for known pitfalls
 
-**Flag:** Implementation doesn't match theory, wrong estimand, known bugs.
+**Flag:** Implementation doesn't match theory, wrong cluster level, naive cluster with few groups, no multiple-testing adjustment for a family, naive TWFE under staggered adoption, wrong estimand.
 
 ### 6. FIGURE QUALITY
 - [ ] Consistent color palette (check your project's standard colors)
@@ -102,8 +105,9 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 - [ ] Failed replications counted and reported
 - [ ] Division by zero guarded where relevant
 - [ ] Parallel backend registered AND unregistered
+- [ ] **Cleaning scripts end with validation assertions** (`stopifnot` battery: key uniqueness, row count, value ranges, merge match rate, missingness snapshot) — a cleaning script with no post-conditions is HIGH severity (silent prep errors propagate to every result)
 
-**Flag:** No NA handling, unregistered parallel backends, memory risks.
+**Flag:** No NA handling, unregistered parallel backends, memory risks, cleaning without post-conditions.
 
 ### 10. PROFESSIONAL POLISH
 - [ ] Consistent indentation (2 spaces, no tabs)

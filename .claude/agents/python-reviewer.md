@@ -59,10 +59,13 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 <!-- Customize for your field -->
 - [ ] Estimator matches the intended spec (FE absorption, IV first stage, event-study reference period).
 - [ ] **Clustered SEs at the assignment level**, documented — not default heteroskedastic-only.
+- [ ] **Few clusters (<~50):** wild cluster bootstrap (`pyfixest` wildboottest) not naive clustering — see `inference-robustness.md`.
+- [ ] Multiple-testing correction where a family of hypotheses is tested (Romano–Wolf / sharpened q-values) — see `inference-robustness.md`.
+- [ ] DiD uses the right modern estimator where staggered timing matters (Sun–Abraham via `pyfixest`, or defer to `/did-event-study`) — not naive TWFE.
 - [ ] Correct estimand (ATT vs ATE); weights handled correctly.
 - [ ] Package choice sound (`pyfixest`/`linearmodels`/`statsmodels`) for the design.
 
-**Flag:** Wrong SE/cluster level, wrong estimand, spec ≠ stated model.
+**Flag:** Wrong SE/cluster level, naive cluster with few groups, no multiple-testing adjustment for a family, naive TWFE under staggered adoption, wrong estimand, spec ≠ stated model.
 
 ### 6. PANDAS / DATA IDIOMS
 - [ ] No chained assignment (`df[mask]["col"] = ...`); use `.loc`.
@@ -100,8 +103,10 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 - [ ] Pre-allocate in hot loops; vectorize.
 - [ ] Deterministic bootstrap via `rng.spawn(B)` / `seed+b`, never reseed in-loop.
 - [ ] Explicit `skipna=` / `dropna()`; never rely on pandas NA defaults.
+- [ ] Simulation/bootstrap results checked for `NaN`/`Inf`; **failed replications counted and reported**, never silently dropped.
+- [ ] Division by zero guarded where relevant; parallel pools/executors closed (context manager / `joblib` defaults).
 
-**Flag:** Float `==`, unguarded CDF, implicit NA handling, in-loop reseeding.
+**Flag:** Float `==`, unguarded CDF, implicit NA handling, in-loop reseeding, uncounted failed reps, leaked parallel pools.
 
 ### 11. PROFESSIONAL POLISH
 - [ ] `ruff` clean; consistent style; lines ≤ 100 (math-dense carve-out per conventions §7/§9).

@@ -47,6 +47,7 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 - [ ] **Few clusters (<~50):** wild cluster bootstrap (`boottest`) not naive `, cluster()`.
 - [ ] Multiple-testing correction where a family of hypotheses is tested (`rwolf`, sharpened `qvalue`) — see `inference-robustness.md`.
 - [ ] Bootstrap reps reproducible: `set seed` + `bootstrap, reps(N) seed(X)`.
+- [ ] Failed bootstrap/`simulate` replications **counted and reported** (check `e(N_reps)` vs requested), never silently dropped.
 
 **Flag:** Default `, robust`, wrong cluster level, naive cluster with few groups, no multiple-testing adjustment for a hypothesis family.
 
@@ -63,15 +64,17 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 - [ ] `replace` never silently mutates observed data without inspection; prefer `gen new = ...`.
 - [ ] `egen total()` (modern) over deprecated `egen sum()`; `bysort` keys correct.
 - [ ] Reshape/collapse verified (row counts, uniqueness) after the operation.
+- [ ] **Cleaning scripts end with assert-based validation** (`isid` key check, `assert _N == ...` row count, `assert inrange(...)` value ranges, `misstable summarize` snapshot) — a cleaning script with no post-conditions is HIGH severity (silent prep errors propagate to every result).
 
-**Flag:** `merge` without `assert`, missing-as-+∞ inequality bugs, silent `replace`, unverified reshape.
+**Flag:** `merge` without `assert`, missing-as-+∞ inequality bugs, silent `replace`, unverified reshape, cleaning without post-conditions.
 
 ### 6. TABLES
 - [ ] Results tables emitted via `esttab`/`estout` to `.tex` for `\input{}` — **never hand-formatted in LaTeX**.
+- [ ] **Persistence discipline:** estimation ends with `estimates save`; table scripts build from `estimates use` — tables never re-run models (the Stata twin of saveRDS/pickle).
 - [ ] Stars convention `* 0.10 ** 0.05 *** 0.01` stated in the table note.
 - [ ] Variable labels set; N, R² reported.
 
-**Flag:** hand-built LaTeX tables, undocumented stars, missing N/labels.
+**Flag:** hand-built LaTeX tables, re-running estimation inside table scripts, undocumented stars, missing N/labels.
 
 ### 7. FIGURES
 - [ ] `graph export` to both `.pdf` (paper) and `.png` (slides); not relying on `.gph`.
@@ -95,8 +98,9 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 ### 10. POLISH
 - [ ] Comments explain WHY, not WHAT; no dead code.
 - [ ] Consistent indentation; `quietly:` used to suppress noise, not to hide errors.
+- [ ] **No bare `capture` swallowing errors** — every `capture` is followed by an `_rc` check (or documented as intentionally tolerant); `cap drop` idioms are fine.
 
-**Flag:** WHAT-comments, dead code, suppressed-but-failing estimation.
+**Flag:** WHAT-comments, dead code, suppressed-but-failing estimation, unchecked `capture` blocks.
 
 ### 11. NUMERICAL DISCIPLINE
 *(Mirrors r-reviewer Category 11 / python-reviewer's numerical category — same pitfalls, Stata syntax.)*

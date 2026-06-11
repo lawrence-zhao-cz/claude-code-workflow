@@ -14,7 +14,7 @@ Run the comprehensive Stata code review protocol. The Stata analogue of `/review
 1. **Identify scripts to review:**
    - If `$ARGUMENTS` is a specific `.do` filename: review that file only.
    - If `$ARGUMENTS` is a directory: review all `.do` scripts under it.
-   - If `$ARGUMENTS` is `all`: review all Stata scripts in `scripts/stata/`.
+   - If `$ARGUMENTS` is `all`: review all Stata scripts in `scripts/stata/` and `Figures/*/`.
 
 2. **For each script, launch the `stata-reviewer` agent** with instructions to:
    - Follow the full protocol in the agent instructions.
