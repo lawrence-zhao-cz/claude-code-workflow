@@ -188,7 +188,7 @@ This workflow is designed as a **single hub for an entire research program** —
 ## What's Included
 
 <details>
-<summary><strong>20 agents, 55 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
+<summary><strong>21 agents, 56 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
 
 ### Agents (`.claude/agents/`)
 
@@ -215,6 +215,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `promote-memory-council` (v1.9.0) | Five-critic council for `[LEARN]` promotion to MEMORY.md |
 | `sim-reviewer` (v1.10.0) | Monte Carlo simulation reviewer — DGP/estimand match, Monte Carlo SE, coverage-vs-truth, claims↔tables parity |
 | `r-package-reviewer` (v1.10.0) | R package-source reviewer — DESCRIPTION/NAMESPACE hygiene, roxygen completeness, testthat coverage, CRAN-policy red flags |
+| `plan-auditor` (v2.1) | Fresh-context fidelity audit of analysis plans against the user's verbatim interview log (MATCHES/DIVERGES/UNSUPPORTED-ADDITION/OMISSION) |
 
 ### Skills (`.claude/skills/`)
 
@@ -276,6 +277,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/scaffold-exercises` (v2.0) | Scaffold a graded problem set across analytical/empirical/coding types, with worked solutions and "why this matters" explainers emitted to a separate solution key |
 | `/new-skill` (v2.0) | Scaffold a new skill that follows this repo's conventions — interviews for purpose, triggers, and tools, writes `.claude/skills/<name>/SKILL.md` from the template with frontmatter/body that pass `check-skill-integrity.py` first try, then reminds to add the surface-table rows |
 | `/cross-check` (v2.0) | Independent re-implementation of a result in a second language (any Python ↔ Stata ↔ R pair) compared against `replication-protocol.md` tolerances, with culprit diagnosis on divergence (clustering df, FE/singleton handling, SE type, seed/sort, missing-value filters); `--data` mode compares independently produced cleaned datasets; auto-invoked after estimation by `/data-analysis-python` and `/data-analysis-stata` |
+| `/analysis-plan` (v2.1) | Living analysis plan — cleaning filters, specification table (R1…/A1…), output registry; pipelines execute by ID, `plan-auditor` verifies fidelity to your verbatim words; `--amend` / `--log-adhoc` / `--no-verify` |
 
 ### Research Workflow
 

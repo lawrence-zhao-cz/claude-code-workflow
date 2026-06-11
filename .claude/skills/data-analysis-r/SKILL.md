@@ -55,6 +55,8 @@ Output block (in your response to the user, before Phase 1):
 
 If any input cannot be read (missing file, unreadable format), stop and ask the user before proceeding.
 
+**Analysis plan integration:** if `scripts/analysis_plans/<slug>.md` exists for this project, load it — it is **authoritative** (`single-source-of-truth.md`). Execute specifications **by ID** (the Pre-Flight reports "executing R3–R7" instead of re-interpreting prose). A requested regression not in the plan → log it first via `/analysis-plan --log-adhoc` (never silently bypass). After runs, update the plan (spec Status → RUN; output paths into the registry). Mid-analysis spec changes go through `/analysis-plan --amend` — document first, code second.
+
 ### Phase 1: Setup and Data Loading
 
 1. Create R script with proper header (title, author, purpose, inputs, outputs)
@@ -131,6 +133,8 @@ Skip when:
 Delegate to the r-reviewer agent:
 "Review the script at scripts/R/[script_name].R"
 ```
+If an analysis plan exists, include its path and the spec IDs the script implements in the dispatch — the reviewer checks the code against the **plan rows**, not the script's self-written header.
+
 
 4. Address any Critical or High issues from the review.
 

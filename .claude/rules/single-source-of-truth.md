@@ -67,3 +67,7 @@ Re-extract ALL TikZ diagrams when:
 [ ] No added content: Quarto does not invent slides not in Beamer
 [ ] No dropped content: every Beamer idea appears in Quarto
 ```
+
+## Analyses: the analysis plan is authoritative
+
+The same principle applies to empirical work: when `scripts/analysis_plans/<slug>.md` exists ([`/analysis-plan`](../skills/analysis-plan/SKILL.md)), it is the single source of truth for what gets cleaned, estimated, and tabulated. Code follows the plan, never the reverse — spec changes go through `/analysis-plan --amend` (document first, §5 amendment log, then code), and one-off regressions are logged via `--log-adhoc` before they run. A pipeline skill must never silently diverge from the plan.

@@ -31,7 +31,7 @@ The source language is inferred from the artifact (`.pickle`/`.parquet` → Pyth
 
 Re-implement from the **specification**, not by transliterating the source script line-by-line:
 
-1. Extract the spec from the source artifact and its producing script: outcome, regressors, fixed effects, sample filter, weights, cluster level, SE type, estimator (and, in `--data` mode: raw inputs, merge keys, filters, derived-variable definitions).
+1. Extract the spec — from the analysis-plan row when one exists (see Phase 0), else from the source artifact and its producing script: outcome, regressors, fixed effects, sample filter, weights, cluster level, SE type, estimator (and, in `--data` mode: raw inputs, merge keys, filters, derived-variable definitions).
 2. Write the target-language script **from that spec**, using the target language's *canonical* package — never a hand-rolled estimator (same principle as `/did-event-study`):
 
    | Estimator | Python | Stata | R |
@@ -48,7 +48,8 @@ Re-implement from the **specification**, not by transliterating the source scrip
 
 1. Read `replication-protocol.md` (tolerances + language-pair pitfalls tables) and the language-roles table in `CLAUDE.md`.
 2. Verify the target toolchain: Python → `uv` resolves; R → `Rscript --version`; Stata → the `stata-mcp` MCP server is registered (halt with install instructions if not: `claude mcp add stata-mcp --scope user -- uvx stata-mcp`).
-3. Read the source artifact and its producing script; emit a one-paragraph **spec summary** (outcome, regressors, FE, cluster, sample, N expected) so the user can catch a mis-extracted spec before any code is written.
+3. **Spec-source priority:** if `scripts/analysis_plans/<slug>.md` exists and the result maps to a spec ID, extract the spec **from the plan row** (the user-approved document, per `/analysis-plan`) — both implementations then derive from the *user's* words, making intent errors visible to this skill for the first time. Fall back to the script header otherwise.
+4. Read the source artifact and its producing script; emit a one-paragraph **spec summary** (outcome, regressors, FE, cluster, sample, N expected) so the user can catch a mis-extracted spec before any code is written.
 
 ### Phase 1: Write the cross-check script
 

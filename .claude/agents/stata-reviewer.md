@@ -55,6 +55,7 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 - [ ] Estimator matches the intended spec (FE absorption, IV first stage, event-study reference period).
 - [ ] Correct estimand (ATT vs ATE); weights handled correctly.
 - [ ] DiD uses the right modern estimator (`csdid`/`drdid`) where staggered timing matters — not naive TWFE.
+- [ ] **Plan fidelity:** if the dispatch names an analysis plan (`scripts/analysis_plans/`) and spec IDs, check the code against the **plan rows** (outcome, regressors, FE, cluster, sample, weights, estimator) — not merely against the script's own header, which the same drafter wrote.
 
 **Flag:** spec ≠ stated model, wrong estimand, naive TWFE under staggered adoption.
 

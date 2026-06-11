@@ -156,7 +156,9 @@ After replication is verified (all targets PASS):
 
 ## Enforcement
 
-This rule is enforced at two layers:
+This rule is enforced at three layers:
+
+**Per intent, before any code** — the [`/analysis-plan`](../skills/analysis-plan/SKILL.md) document (`scripts/analysis_plans/<slug>.md`) is the user-approved specification: the pipelines execute it by ID, the reviewers check code against its rows, `/cross-check` re-implements from it, and the `plan-auditor` verifies it against the user's verbatim words.
 
 **Per result, continuously** — the [`/cross-check`](../skills/cross-check/SKILL.md) skill re-implements a result (or, with its `--data` mode, a cleaned dataset) independently in a second language (any Python ↔ Stata ↔ R pair) and compares against the tolerance thresholds above. `/data-analysis-python` and `/data-analysis-stata` invoke it automatically after estimation, targeting the project's cross-check language role; opt out per run with their `--no-crosscheck` flag (exploratory work in `explorations/` is exempt by default).
 

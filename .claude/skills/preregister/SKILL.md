@@ -169,3 +169,5 @@ Include the registry URL: OSF → `osf.io/registries`, AsPredicted → `aspredic
 **Different registries asking for different things** — use the registry's own template if this skill's mapping is too coarse. The three styles cover ~90% of social-science preregistrations; edge cases (PROSPERO, ClinicalTrials.gov, ISRCTN) need the registry's native form.
 
 **Output dir doesn't exist** — `quality_reports/preregistrations/.gitkeep` should exist on a fresh fork; if missing, the skill will create the directory before writing.
+
+> **Specification source:** when `scripts/analysis_plans/<slug>.md` exists ([`/analysis-plan`](../analysis-plan/SKILL.md)), use its specification table (§2) as the PAP's pre-specified analyses — the plan's amendment log doubles as the deviation record.

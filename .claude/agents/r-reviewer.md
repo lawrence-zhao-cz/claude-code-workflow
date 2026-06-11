@@ -67,6 +67,7 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 - [ ] DiD uses the right modern estimator (`did`/`DRDID`) where staggered timing matters — not naive TWFE
 - [ ] DGP specifications in simulations match the paper being replicated
 - [ ] Treatment effects are the correct estimand (e.g., ATT vs ATE)
+- [ ] **Plan fidelity:** if the dispatch names an analysis plan (`scripts/analysis_plans/`) and spec IDs, check the code against the **plan rows** (outcome, regressors, FE, cluster, sample, weights, estimator) — not merely against the script's own header, which the same drafter wrote.
 - [ ] Check `.claude/rules/r-code-conventions.md` for known pitfalls
 
 **Flag:** Implementation doesn't match theory, wrong cluster level, naive cluster with few groups, no multiple-testing adjustment for a family, naive TWFE under staggered adoption, wrong estimand.

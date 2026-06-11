@@ -54,7 +54,7 @@ Claude Code runs on your computer with full access to your file system, terminal
 | Access git history | Commits, PRs, branches --- all from the conversation |
 | Persistent memory | CLAUDE.md + MEMORY.md survive across sessions |
 | Orchestrator runtime | Specific skills (`/qa-quarto`, `/review-paper --adversarial`, `/create-lecture`, …) run a real fan-out → reduce → judge → loop-until-dry runtime internally |
-| Multi-agent workflows | 20 specialized agents for proofreading, layout, pedagogy, code review (R/Python/Stata), fact-checking, AI-voice auditing, simulation + R-package review |
+| Multi-agent workflows | 21 specialized agents for proofreading, layout, pedagogy, code review (R/Python/Stata), fact-checking, AI-voice auditing, simulation + R-package review |
 | Quality review | Advisory scoring inside `/commit` (halt + ask to override); targets: 80 commit, 90 PR, 95 excellence |
 | CLI/headless mode | Run from scripts: `claude -p "compile all lectures"` |
 | Browser bridge | Continue sessions on your phone via `/remote-control` |
@@ -155,13 +155,13 @@ Most of the time, you just describe what you want and Claude handles the rest. E
 ::: {.callout-important}
 ## The Bottom Line
 
-**You talk, Claude orchestrates.** The 20 agents, 55 skills, and 33 rules exist so you don't have to think about them. Describe your goal, approve the plan, and let the system work.
+**You talk, Claude orchestrates.** The 21 agents, 56 skills, and 33 rules exist so you don't have to think about them. Describe your goal, approve the plan, and let the system work.
 :::
 
 ::: {.callout-note}
 ## You Don't Need All of This on Day One
 
-This guide describes the full system --- 20 agents, 55 skills, 33 rules. That is the ceiling, not the floor. **Start with just CLAUDE.md and 2--3 skills** (`/compile-latex`, `/proofread`, `/commit`). Add rules and agents as you discover what you need. The template is designed for progressive adoption: fork it, fill in the placeholders, and start working. Everything else is there when you're ready.
+This guide describes the full system --- 21 agents, 56 skills, 33 rules. That is the ceiling, not the floor. **Start with just CLAUDE.md and 2--3 skills** (`/compile-latex`, `/proofread`, `/commit`). Add rules and agents as you discover what you need. The template is designed for progressive adoption: fork it, fill in the placeholders, and start working. Everything else is there when you're ready.
 :::
 
 ---
@@ -696,7 +696,7 @@ argument-hint: "[filename without .tex extension]"
 ::: {.callout-note}
 ## Built-In Skills
 
-Claude Code ships with built-in skills beyond this template's 55: `/batch` orchestrates parallel refactoring across your codebase (using git worktrees for isolation), `/simplify` runs 3-agent code review and applies fixes, and `/debug` helps troubleshoot sessions. These complement the academic skills above.
+Claude Code ships with built-in skills beyond this template's 56: `/batch` orchestrates parallel refactoring across your codebase (using git worktrees for isolation), `/simplify` runs 3-agent code review and applies fixes, and `/debug` helps troubleshoot sessions. These complement the academic skills above.
 :::
 
 ## Agents --- Specialized Reviewers {#agents---specialized-reviewers}
@@ -765,7 +765,7 @@ Claude Code also offers experimental **Agent Teams** --- multiple independent se
 **Retirement notice:** Sonnet 4 and the original Opus 4 retire on **2026-06-15**. If your environment pins one of these (`ANTHROPIC_MODEL` env, hard-coded model IDs in CI, etc.), migrate before then. See [TROUBLESHOOTING.md](../TROUBLESHOOTING.md) for the migration checklist.
 :::
 
-Not all agents need the same model. Each agent file has a `model:` field in its YAML frontmatter. All 20 agents are **pinned** to an explicit model + effort tier (no longer `inherit`, since v2.0), following the 70/20/10 routing pattern below. You can re-tune any agent to optimize cost:
+Not all agents need the same model. Each agent file has a `model:` field in its YAML frontmatter. All 21 agents are **pinned** to an explicit model + effort tier (no longer `inherit`, since v2.0), following the 70/20/10 routing pattern below. You can re-tune any agent to optimize cost:
 
 | Task Type | Recommended Model | Why | Examples |
 |-----------|-------------------|-----|----------|
@@ -2388,7 +2388,7 @@ The template includes matching LaTeX and Quarto palettes. To customize:
 
 ## Step 4: Creating Custom Skills {#sec-create-skills}
 
-The guide includes 55 [skills](#skills---reusable-slash-commands) for common academic tasks. But if you have repetitive workflows specific to your domain, you can create your own.
+The guide includes 56 [skills](#skills---reusable-slash-commands) for common academic tasks. But if you have repetitive workflows specific to your domain, you can create your own.
 
 ### When to Create a Skill
 
@@ -2653,6 +2653,7 @@ Claude Code supports **plugins** --- bundled collections of skills, agents, hook
 | Promote-Memory Council | `.claude/agents/promote-memory-council.md` | Five-critic council (generality / staleness / redundancy / evidence / format) for `[LEARN]` promotion from personal-memory.md to MEMORY.md; invoked by `/promote-memory` (v1.9.0) |
 | Sim Reviewer | `.claude/agents/sim-reviewer.md` | Monte Carlo reviewer — DGP/estimand match, Monte Carlo SE, coverage-vs-truth, claims↔tables parity (v1.10.0) |
 | R Package Reviewer | `.claude/agents/r-package-reviewer.md` | R package-source reviewer — DESCRIPTION/NAMESPACE hygiene, roxygen, testthat, CRAN-policy red flags (v1.10.0) |
+| Plan Auditor | `.claude/agents/plan-auditor.md` | Fresh-context fidelity audit of analysis plans against the user's verbatim interview log (v2.1) |
 
 ## All Skills
 
@@ -2698,6 +2699,7 @@ Claude Code supports **plugins** --- bundled collections of skills, agents, hook
 | `/promote-memory` | `.claude/skills/promote-memory/` | Five-critic council that votes on whether candidate `[LEARN]` entries should be promoted from personal-memory.md to MEMORY.md (v1.9.0) |
 | `/data-analysis-stata` | `.claude/skills/data-analysis-stata/` | End-to-end Stata pipeline scaffold + execution via the `stata-mcp` MCP server (the Stata member of the R/Python/Stata pipeline triad; v1.9.0) |
 | `/cross-check` | `.claude/skills/cross-check/` | Independent re-implementation of a result in a second language (any Python ↔ Stata ↔ R pair) against `replication-protocol.md` tolerances; `--data` mode for cleaned datasets; auto-invoked after estimation (v2.0) |
+| `/analysis-plan` | `.claude/skills/analysis-plan/` | Living analysis plan — spec table the pipelines execute by ID; `plan-auditor` fidelity gate (v2.1) |
 | `/simulation-study` | `.claude/skills/simulation-study/` | Reproducible Monte Carlo study — DGP, estimator grid, seeded reps, bias/RMSE/coverage/size/power with Monte Carlo SEs (v1.10.0) |
 | `/r-package-check` | `.claude/skills/r-package-check/` | R package release gate — `devtools::document()` + tests + `R CMD check --as-cran` + CRAN-policy triage (v1.10.0) |
 | `/replication-package` | `.claude/skills/replication-package/` | Assemble a submission-ready DCAS / openICPSR replication package; calls `/audit-reproducibility` and blocks on FAIL (v2.0) |

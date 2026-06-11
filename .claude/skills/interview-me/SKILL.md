@@ -136,3 +136,7 @@ Skip the ADR if the interview produced a single uncontested direction — ADRs a
 - **Probe weak spots gently.** If the identification strategy sounds fragile, ask "What would a skeptic say about...?" rather than "This won't work because..."
 - **Build on answers.** Each question should follow from the previous response.
 - **Know when to stop.** If the researcher has a clear vision after 4-5 exchanges, move to the specification. Don't over-interview.
+
+## Next step
+
+When real data is in hand, hand this spec to [`/analysis-plan`](../analysis-plan/SKILL.md) — it turns the strategy into the executable specification table (cleaning filters, regressions R1…, exhibit registry) that the pipeline skills run by ID.

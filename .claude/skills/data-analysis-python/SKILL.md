@@ -47,6 +47,8 @@ Before writing any code, produce a Pre-Flight Report proving you read the inputs
 
 If an input can't be read, stop and ask before proceeding.
 
+**Analysis plan integration:** if `scripts/analysis_plans/<slug>.md` exists for this project, load it — it is **authoritative** (`single-source-of-truth.md`). Execute specifications **by ID** (the Pre-Flight reports "executing R3–R7" instead of re-interpreting prose). A requested regression not in the plan → log it first via `/analysis-plan --log-adhoc` (never silently bypass). After runs, update the plan (spec Status → RUN; output paths into the registry). Mid-analysis spec changes go through `/analysis-plan --amend` — document first, code second.
+
 ### Phase 1: Setup & Loading
 Header (per conventions), imports at top, `SEED` + `rng = np.random.default_rng(SEED)`, build `OUT = Path("scripts/python/_outputs"); OUT.mkdir(parents=True, exist_ok=True)`. Load and inspect (`df.info()`, `df.describe()`, dtypes).
 
@@ -78,7 +80,7 @@ Skip when:
 
 ### Phase 6: Review
 1. Confirm every expected output exists in `_outputs/`.
-2. Launch the `python-reviewer` agent: *"Review scripts/python/[name].py against python-code-conventions.md."*
+2. Launch the `python-reviewer` agent: *"Review scripts/python/[name].py against python-code-conventions.md."* If an analysis plan exists, include its path and the spec IDs the script implements in the dispatch — the reviewer checks the code against the **plan rows**, not the script's self-written header.
 3. Address Critical/High findings before presenting.
 
 ---

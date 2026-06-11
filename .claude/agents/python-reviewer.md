@@ -64,6 +64,7 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 - [ ] DiD uses the right modern estimator where staggered timing matters (Sun–Abraham via `pyfixest`, or defer to `/did-event-study`) — not naive TWFE.
 - [ ] Correct estimand (ATT vs ATE); weights handled correctly.
 - [ ] Package choice sound (`pyfixest`/`linearmodels`/`statsmodels`) for the design.
+- [ ] **Plan fidelity:** if the dispatch names an analysis plan (`scripts/analysis_plans/`) and spec IDs, check the code against the **plan rows** (outcome, regressors, FE, cluster, sample, weights, estimator) — not merely against the script's own header, which the same drafter wrote.
 
 **Flag:** Wrong SE/cluster level, naive cluster with few groups, no multiple-testing adjustment for a family, naive TWFE under staggered adoption, wrong estimand, spec ≠ stated model.
 

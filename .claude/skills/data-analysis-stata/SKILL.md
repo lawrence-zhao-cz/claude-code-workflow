@@ -59,6 +59,8 @@ If `stata-mcp` is not installed, the skill halts at Phase 0 with installation in
 
 If an input can't be read, stop and ask before proceeding.
 
+**Analysis plan integration:** if `scripts/analysis_plans/<slug>.md` exists for this project, load it — it is **authoritative** (`single-source-of-truth.md`). Execute specifications **by ID** (the Pre-Flight reports "executing R3–R7" instead of re-interpreting prose). A requested regression not in the plan → log it first via `/analysis-plan --log-adhoc` (never silently bypass). After runs, update the plan (spec Status → RUN; output paths into the registry). Mid-analysis spec changes go through `/analysis-plan --amend` — document first, code second.
+
 ### Phase 1: Scaffold the pipeline
 
 Emit (or update) these files in `scripts/stata/`, each conforming to the header convention from `stata-code-conventions.md`:
@@ -118,7 +120,7 @@ If `--from-r` was set, the existing R pipeline at `scripts/R/` *is* the cross-ch
 
 ### Phase 5: Review
 
-1. Launch the `stata-reviewer` agent on every `.do` file emitted or modified by this run (same contract as `/review-stata`): *"Review scripts/stata/[name].do against stata-code-conventions.md."*
+1. Launch the `stata-reviewer` agent on every `.do` file emitted or modified by this run (same contract as `/review-stata`): *"Review scripts/stata/[name].do against stata-code-conventions.md."* If an analysis plan exists, include its path and the spec IDs the script implements in the dispatch — the reviewer checks the code against the **plan rows**, not the script's self-written header.
 2. Address Critical and High findings before presenting results — same gate as the R and Python siblings' review phases.
 
 ## Companion skills
