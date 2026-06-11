@@ -1,13 +1,13 @@
 ---
 name: data-analysis-r
-description: End-to-end R data analysis pipeline — exploration → cleaning → regression → publication-ready tables and figures. Use when user says "analyze this dataset", "run a regression on X", "explore this CSV", "full analysis workflow", "get me summary stats and a regression", or points at a `.csv`/`.rds`/`.dta` and asks for empirical results. Produces numbered R scripts in `scripts/R/` and outputs to `scripts/R/_outputs/`.
+description: End-to-end R data analysis pipeline — exploration → cleaning (with validation assertions) → estimation → publication-ready tables and figures. The R member of the analysis triad (/data-analysis-python, /data-analysis-stata); R is this project's default cross-check language. Use when user says "analyze this in R", "run a regression on X", "explore this CSV", "full analysis workflow", "fixest/modelsummary analysis", or points at a `.csv`/`.rds`/`.dta` and asks for R results. Produces numbered R scripts in `scripts/R/` and outputs to `scripts/R/_outputs/`.
 argument-hint: "[dataset path or description of analysis goal] [--prep-only] [--no-crosscheck]"
 allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task", "Monitor"]
 ---
 
-# Data Analysis Workflow
+# R Data Analysis Workflow
 
-Run an end-to-end data analysis in R: load, explore, analyze, and produce publication-ready output.
+Run an end-to-end analysis in R: load, explore, clean (with validation), estimate, and produce publication-ready output.
 
 **Input:** `$ARGUMENTS` — a dataset path (e.g., `data/county_panel.csv`) or a description of the analysis goal (e.g., "regress wages on education with state fixed effects using CPS data").
 
@@ -73,26 +73,41 @@ Generate diagnostic outputs:
 
 Save all diagnostic figures to `scripts/R/_outputs/diagnostics/`.
 
-### Phase 3: Main Analysis
+### Phase 3: Cleaning + Validation
+
+Produce the cleaned frame in `02_clean.R`, then **end the script with explicit validation assertions** (the R twin of `python-code-conventions.md` §7 — fail loud at clean time, never silently downstream):
+
+```r
+stopifnot(!anyDuplicated(df$id))                       # key uniqueness
+stopifnot(nrow(df) == EXPECTED_N)                      # row count
+stopifnot(all(dplyr::between(df$share, 0, 1)))         # value ranges
+stopifnot(nrow(dplyr::anti_join(a, b, by = "id")) == 0)  # merge match rate
+print(sort(colMeans(is.na(df)), decreasing = TRUE))    # missingness snapshot
+```
+
+Persist the cleaned data (`saveRDS()`; also `.parquet` via `arrow` or `.dta` via `haven` if it hands off to another language per the handoff convention in `replication-protocol.md`).
+
+**If `--prep-only` was passed (or the language roles assign estimation elsewhere), stop here and report** — the handoff file is the deliverable.
+
+### Phase 4: Main Analysis (Estimation)
 
 Based on the research question:
 - **Regression analysis:** Use `fixest` for panel data, `lm`/`glm` for cross-section
 - **Standard errors:** Cluster at the appropriate level (document why)
 - **Multiple specifications:** Start simple, progressively add controls
 - **Effect sizes:** Report standardized effects alongside raw coefficients
+- **Diagnostics before trusting a spec:** multicollinearity, influential outliers, perfect prediction/separation
 
-If `--prep-only` was passed (or the language roles assign estimation elsewhere), stop before this phase: end the cleaning script with explicit validation assertions (key uniqueness, row counts, value ranges — mirror `python-code-conventions.md` §7), export the handoff file, and report.
+### Phase 4b: Auto cross-check (mandatory unless opted out)
 
-### Phase 3b: Auto cross-check (mandatory unless opted out)
-
-After the **final specifications** are estimated, invoke [`/cross-check`](../cross-check/SKILL.md) on each headline result, targeting the project's **cross-check language role** (CLAUDE.md "Project Language Roles"). A DIVERGENT verdict (out of tolerance, no named culprit) blocks Phase 5 — do not present the result as verified.
+After the **final specifications** are estimated, invoke [`/cross-check`](../cross-check/SKILL.md) on each headline result, targeting the project's **cross-check language role** (CLAUDE.md "Project Language Roles"). A DIVERGENT verdict (out of tolerance, no named culprit) blocks Phase 6 — do not present the result as verified.
 
 Skip when:
 - `--no-crosscheck` was passed (quick exploratory runs);
 - the work lives under `explorations/` (fast-track threshold applies by default);
 - the result is an intermediate spec, not a headline estimate (cross-check final specs only).
 
-### Phase 4: Publication-Ready Output
+### Phase 5: Publication-Ready Output
 
 **Tables:**
 - Use `modelsummary` for regression tables (preferred) or `stargazer`
@@ -106,7 +121,7 @@ Skip when:
 - Export with explicit dimensions: `ggsave(width = X, height = Y)`
 - Save as both `.pdf` and `.png`
 
-### Phase 5: Save and Review
+### Phase 6: Save and Review
 
 1. `saveRDS()` for all key objects (regression results, summary tables, processed data)
 2. Create `scripts/R/_outputs/` subdirectories as needed with `dir.create(..., recursive = TRUE)`
@@ -121,9 +136,22 @@ Delegate to the r-reviewer agent:
 
 ---
 
-## Script Structure
+## Pipeline Structure
 
-Follow this template:
+**Default: the numbered pipeline** — the shape the rest of the repo already assumes for R (`replication-protocol.md` and `/audit-reproducibility` both invoke `Rscript scripts/R/00_run_all.R`), mirroring the Python and Stata siblings:
+
+```
+scripts/R/
+├── 00_run_all.R         # source()s 01..05 in order; the one-command entry point
+├── 01_load.R            # raw → in-memory / interim
+├── 02_clean.R           # cleaning + the validation assertions (Phase 3)
+├── 03_analyze.R         # estimation (fixest / lm / glm); saveRDS every fit
+├── 04_tables.R          # modelsummary → .tex (+ .html quick view); loads .rds, never re-fits
+├── 05_figures.R         # ggplot2 → .pdf + .png; loads .rds
+└── _outputs/            # all generated artifacts
+```
+
+**Small/exploratory jobs** may instead use a single script with numbered section comments — the template below. Graduate it to the numbered pipeline once results feed a paper or deck.
 
 ```r
 # ============================================================
@@ -164,7 +192,7 @@ dir.create("scripts/R/_outputs/analysis", recursive = TRUE, showWarnings = FALSE
 ## Companion skills
 
 - [`/data-analysis-python`](../data-analysis-python/SKILL.md) (Python) · [`/data-analysis-stata`](../data-analysis-stata/SKILL.md) (Stata) — same pipeline shape, different language; pick per project via the language-roles table in `CLAUDE.md`.
-- [`/cross-check`](../cross-check/SKILL.md) — the Phase 3b independent re-implementation (also has a `--data` mode for high-stakes prep).
+- [`/cross-check`](../cross-check/SKILL.md) — the Phase 4b independent re-implementation (also has a `--data` mode for high-stakes prep).
 - [`/review-r`](../review-r/SKILL.md) — code review · [`/audit-reproducibility`](../audit-reproducibility/SKILL.md) — numeric verification.
 
 ---
@@ -176,6 +204,13 @@ dir.create("scripts/R/_outputs/analysis", recursive = TRUE, showWarnings = FALSE
 - **Check for issues.** Look for multicollinearity, outliers, perfect prediction.
 - **Use relative paths.** All paths relative to repository root.
 - **No hardcoded values.** Use variables for sample restrictions, date ranges, etc.
+
+## Anti-patterns
+
+- **Re-fitting models in the table/figure scripts.** `saveRDS()` once in `03_analyze.R`; load downstream.
+- **Hand-formatting tables in LaTeX.** Emit `.tex` from `modelsummary`/`stargazer`.
+- **Skipping the validation assertions.** `02_clean.R` must end with the Phase 3 battery.
+- **`require()` instead of `library()`.** `require()` fails silently; `library()` fails loud (conventions rule).
 
 ## Long-running fits: use the Monitor tool (Apr 2026)
 

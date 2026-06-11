@@ -56,6 +56,8 @@ Produce the cleaned frame, then **end `02_clean.py` with the validation battery*
 ### Phase 4: Estimation
 - Panel/FE/IV → `pyfixest` (`feols`) or `linearmodels`; general → `statsmodels`; ML-causal → `econml`/`doubleml`.
 - **Clustered SEs at the assignment level, documented.** Start simple, add controls progressively across specs.
+- **Effect sizes:** report standardized effects alongside raw coefficients where meaningful.
+- **Diagnostics before trusting a spec:** multicollinearity, influential outliers, perfect prediction/separation.
 - Pickle fitted results to `_outputs/`.
 
 ### Phase 4b: Auto cross-check (mandatory unless opted out)

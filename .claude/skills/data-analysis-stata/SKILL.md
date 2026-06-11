@@ -2,7 +2,7 @@
 name: data-analysis-stata
 description: End-to-end Stata data analysis pipeline — scaffolds numbered `.do` files in `scripts/stata/`, executes them via the `stata-mcp` MCP server, captures logs and outputs to `scripts/stata/_outputs/`, and produces publication-ready tables (esttab) and figures (graph export). The Stata member of the analysis triad (/data-analysis-r, /data-analysis-python); the default for estimation in this project's language roles. Use when user says "run this in Stata", "set up Stata pipeline", "scaffold the .do files", "run Stata analysis", "reghdfe/csdid/ivreghdfe regression", "AEA replication package in Stata", or when the project's estimation language is Stata.
 argument-hint: "[paper-or-data-pointer] [--from-r] [--no-execute] [--no-crosscheck] [--prep-only]"
-allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "Task"]
+allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "Task", "Monitor"]
 ---
 
 # `/data-analysis-stata` — Stata pipeline scaffold + execution
@@ -66,11 +66,19 @@ Emit (or update) these files in `scripts/stata/`, each conforming to the header 
 ```
 scripts/stata/
 ├── 00_install.do        # ssc install, set globals, paths, sessionInfo capture
-├── 01_clean.do          # raw → cleaned panel
-├── 02_descriptive.do    # summary tables, balance (iebaltab), attrition
-├── 03_analyze.do        # main regression specs (reghdfe / ivreg2 as needed)
+├── 01_clean.do          # raw → cleaned panel; ends with assert-based validation:
+│                        #   merge ..., assert(3) · isid key check · assert _N == ...
+│                        #   misstable summarize snapshot (the Stata twin of the §7 battery)
+├── 02_descriptive.do    # summary stats + distributions (summarize, detail / histogram),
+│                        #   missingness, time patterns for panels; balance (iebaltab) +
+│                        #   attrition as the RCT-specific extras
+├── 03_analyze.do        # main specs (reghdfe / ivreg2): documented cluster level,
+│                        #   progressive specifications across columns, standardized
+│                        #   effects where meaningful; ends with estimates save
+│                        #   scripts/stata/_outputs/est_<spec>.ster per spec
 ├── 04_robustness.do     # alt specs, sensitivity
-├── 05_tables_figures.do # esttab .tex outputs + graph export PDFs
+├── 05_tables_figures.do # estimates use + esttab .tex (never re-runs models);
+│                        #   graph export PDF + PNG per stata-code-conventions.md §8
 └── 99_run_all.do        # do "01_clean.do" / do "02_..." / ...
 ```
 
@@ -105,6 +113,11 @@ Skip when:
 
 If `--from-r` was set, the existing R pipeline at `scripts/R/` *is* the cross-check counterpart — `/cross-check` compares against it directly instead of writing a fresh `90_crosscheck` script.
 
+### Phase 5: Review
+
+1. Launch the `stata-reviewer` agent on every `.do` file emitted or modified by this run (same contract as `/review-stata`): *"Review scripts/stata/[name].do against stata-code-conventions.md."*
+2. Address Critical and High findings before presenting results — same gate as the R and Python siblings' review phases.
+
 ## Companion skills
 
 - [`/data-analysis-r`](../data-analysis-r/SKILL.md) — R analogue. Same pipeline shape, different language.
@@ -119,6 +132,7 @@ If `--from-r` was set, the existing R pipeline at `scripts/R/` *is* the cross-ch
 - **Skipping the `99_run_all.do`.** This is the AEA-mandated one-command entry point. Build it even for small projects.
 - **Using `, robust` by default.** Use `, cluster(id)` at the appropriate level — see `stata-code-conventions.md` §6.
 - **Hand-formatting tables in LaTeX.** Use `esttab` and `\input{}` — see `stata-code-conventions.md` §4.
+- **Re-running estimation inside the tables script.** `03_analyze.do` ends with `estimates save`; `05_tables_figures.do` starts with `estimates use` — the Stata twin of saveRDS/pickle persistence.
 - **Pinning Stata version in only one .do file.** Every `.do` file starts with `version 18` per the convention.
 
 ## Cross-references
