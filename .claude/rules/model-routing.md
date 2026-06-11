@@ -13,8 +13,8 @@ paths:
 | Share | Tier | Use for |
 |---:|---|---|
 | ~70% | **Haiku 4.5** | Mechanical work — file renames, citation-format conversion, TikZ extraction, bib validation, proofread-fix application, simple grep / file lookups |
-| ~20% | **Sonnet 4.6** | Review and critique — `r-reviewer`, `python-reviewer`, `stata-reviewer`, `slide-auditor`, `proofreader`, `quarto-fixer`, `humanize-auditor` |
-| ~10% | **Opus 4.8** | High-judgment work — `editor`, `methods-referee`, `domain-referee`, `claim-verifier`, `quarto-critic`, `tikz-reviewer`, `domain-reviewer`, `verifier` for non-trivial gates |
+| ~20% | **Sonnet 4.6** | Review and critique — `r-reviewer`, `python-reviewer`, `slide-auditor`, `proofreader`, `quarto-fixer`, `humanize-auditor` |
+| ~10% | **Opus 4.8** | High-judgment work — `editor`, `methods-referee`, `domain-referee`, `claim-verifier`, `quarto-critic`, `tikz-reviewer`, `domain-reviewer`, `stata-reviewer`, `verifier` for non-trivial gates |
 
 Set per-agent via `model:` in the agent's YAML frontmatter:
 
@@ -57,12 +57,11 @@ Cost reduction on routed skills is typically **50–80%** with no quality loss o
 
 - **R code review** (`r-reviewer`).
 - **Python code review** (`python-reviewer`).
-- **Stata code review** (`stata-reviewer`).
 - **Slide layout audit** (`slide-auditor`).
 - **Proofread inspection** (`proofreader`).
 - **Quarto fix application** when the fix is a `quarto-critic`-driven edit.
 - **AI-voice audit** (`humanize-auditor`).
-- **Beamer ↔ Quarto translation** (`beamer-translator`) — translation is bounded enough to live here unless the source TeX has unusual TikZ.
+- **Beamer ↔ Quarto translation** (`beamer-translator`, `effort: high` since 2026-06-11) — translation is bounded enough for Sonnet; high effort buys fewer critic-fixer rounds downstream.
 
 ### High-judgment (Opus 4.8)
 
@@ -72,6 +71,7 @@ Cost reduction on routed skills is typically **50–80%** with no quality loss o
 - **Quarto critic** (`quarto-critic`) — adversarial parity QA needs the high-judgment lens to catch subtle visual drift.
 - **TikZ reviewer** (`tikz-reviewer`) — measurement-rule enforcement requires precise spatial reasoning.
 - **Domain reviewer** (`domain-reviewer`).
+- **Stata code review** (`stata-reviewer`) — promoted from Sonnet 2026-06-11: LLMs are weakest on Stata of the three analysis languages, its failure modes are the quietest (missing-as-+∞, bare `capture`, df adjustments), and it reviews the project's default *estimation* language.
 - **Verifier** (`verifier`) when gating non-trivial commits.
 
 ## When inheritance still makes sense

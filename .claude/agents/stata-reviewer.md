@@ -2,7 +2,7 @@
 name: stata-reviewer
 description: Stata do-file reviewer for academic analysis scripts. Checks reproducibility scaffolding, clustering/inference discipline, Stata data-handling traps, esttab table emission, and AEA replication-package compliance. Use after writing or modifying Stata `.do` scripts.
 tools: Read, Grep, Glob
-model: sonnet
+model: opus
 effort: high
 ---
 

@@ -19,6 +19,7 @@ A wrong "looks fine" from one of these is expensive (a desk-reject, a hallucinat
 | `tikz-reviewer` | Measurement-based TikZ collision/aesthetic audit | read-only | no | `/slide-excellence` (if TikZ), `/extract-tikz`, `/new-diagram` |
 | `sim-reviewer` | Monte Carlo review (DGP/estimand, MCSE, coverage-vs-truth) | read-only | no | `/simulation-study` |
 | `verifier` | End-to-end compile/render/deploy verification gate | read-only | no | `/commit` |
+| `stata-reviewer` | Stata reproducibility, clustering/inference, data-handling traps, esttab, AEA compliance (promoted from Sonnet 2026-06-11 — LLMs weakest on Stata; default estimation language) | read-only | no | `/review-stata`, `/data-analysis-stata` |
 
 ## Review / critique tier — Sonnet 4.6, effort: high
 
@@ -26,25 +27,23 @@ A wrong "looks fine" from one of these is expensive (a desk-reject, a hallucinat
 |---|---|---|---|
 | `r-reviewer` | R code quality, reproducibility, idioms | read-only | `/review-r`, `/slide-excellence` (if R), `/data-analysis-r` |
 | `python-reviewer` | Python code quality, reproducibility, pandas/estimation idioms, numerical discipline | read-only | `/review-python`, `/data-analysis-python` |
-| `stata-reviewer` | Stata reproducibility, clustering/inference, data-handling traps, esttab, AEA compliance | read-only | `/review-stata`, `/data-analysis-stata` |
 | `r-package-reviewer` | R package CRAN-readiness (DESCRIPTION/NAMESPACE/roxygen/testthat/policy) | read-only | `/r-package-check` |
 | `slide-auditor` | Visual layout audit (overflow, font, spacing) | read-only | `/visual-audit`, `/slide-excellence` |
 | `proofreader` | Grammar, typos, overflow, terminology | read-only | `/proofread`, `/slide-excellence`, `/seven-pass-review` (prose lens) |
 | `pedagogy-reviewer` | Narrative arc, prerequisites, worked examples, notation, pacing | read-only | `/pedagogy-review`, `/slide-excellence` |
 | `humanize-auditor` | AI-voice tell detection (10 categories) | read-only | `/humanize` |
 
-## Apply / translate tier — Sonnet 4.6, effort: medium
+## Apply / translate / vote tier — Sonnet 4.6 (effort: medium; `beamer-translator` runs at high since 2026-06-11)
 
 | Agent | Role | Read/Write | Dispatched by |
 |---|---|---|---|
 | `quarto-fixer` | Applies `quarto-critic`'s diffs, re-renders, verifies | **writes** | `/qa-quarto` |
 | `beamer-translator` | Beamer→Quarto slide-by-slide translation | **writes** | `/translate-to-quarto` |
+| `promote-memory-council` | Five-critic vote on `[LEARN]` promotion (generality/staleness/redundancy/evidence/format) — promoted from Haiku 2026-06-11 (gates persistent memory) | read-only | `/promote-memory` |
 
-## Mechanical / voting tier — Haiku 4.5
+## Mechanical tier — Haiku 4.5
 
-| Agent | Role | Read/Write | Dispatched by |
-|---|---|---|---|
-| `promote-memory-council` | Five-critic vote on `[LEARN]` promotion (generality/staleness/redundancy/evidence/format) | read-only | `/promote-memory` |
+Currently no standing agent is pinned to Haiku (the `promote-memory-council` was promoted to Sonnet on 2026-06-11). Haiku remains the target tier for mechanical fix-application subtasks that skills dispatch inline (TikZ extraction, bib-format rewrites, search-and-replace) per `model-routing.md`.
 
 ## The referee disposition taxonomy
 
