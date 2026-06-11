@@ -34,7 +34,7 @@ Model tier is the second cost lever; **effort is the first.** Every model runs a
 - **Opus 4.8 defaults to `high`**, and its `high` does roughly what Opus 4.7's `xhigh` did, for fewer tokens. Do **not** reflexively set `xhigh`.
 - **Mechanical work** (Haiku tier) → `low` / `medium`.
 - **Review and judgment** (Sonnet / Opus) → `high` (the default).
-- **The hardest runs** (deep refactors, the toughest `/review-paper --peer`) → `xhigh`; `ultracode` (xhigh + dynamic workflows) for repo-scale autonomous tasks.
+- **The hardest runs** (deep refactors, the toughest `/review-paper --peer`) → `xhigh`. Pinned there since 2026-06-11: the `--peer` referee trio (`editor`, `methods-referee`, `domain-referee` — once-per-submission stakes) and `sim-reviewer` (infrequent, correctness-critical Monte Carlo verdicts). `ultracode` (xhigh + dynamic workflows) for repo-scale autonomous tasks.
 - Reserve `max` for the rare case where you've verified `xhigh` was insufficient.
 
 Set per skill/agent with the `effort:` frontmatter field. Several skills ship at `effort: high` for genuinely hard gates (e.g. `/seven-pass-review`, `/simulation-study`, `/r-package-check`). Match effort to the cognitive demand the same way you match model tier — and tune effort before you swap models.

@@ -3,7 +3,7 @@ name: methods-referee
 description: Methodology referee for a manuscript. Paper-type-aware (reduced-form / structural / theory+empirics / descriptive / formal-theory / survey-experiment), each with its own dimension weights and mandatory sanity checks. Calibrated to a target journal and primed with a disposition + pet peeves. Used by `/review-paper --peer`.
 tools: Read, Grep, Glob
 model: opus
-effort: high
+effort: xhigh
 ---
 
 <!-- Adapted from Hugo Sant'Anna's clo-author (github.com/hugosantanna/clo-author),

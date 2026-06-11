@@ -3,7 +3,7 @@ name: domain-referee
 description: Substantive referee for a manuscript. Reviews contribution, literature positioning, substantive argument, external validity, and journal fit. Calibrated to a target journal and primed with a disposition + pet peeves by the editor agent. Used by `/review-paper --peer`.
 tools: Read, Grep, Glob
 model: opus
-effort: high
+effort: xhigh
 ---
 
 <!-- Adapted from Hugo Sant'Anna's clo-author (github.com/hugosantanna/clo-author),
