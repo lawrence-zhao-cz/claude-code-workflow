@@ -140,3 +140,7 @@ Skip the ADR if the interview produced a single uncontested direction — ADRs a
 ## Next step
 
 When real data is in hand, hand this spec to [`/analysis-plan`](../analysis-plan/SKILL.md) — it turns the strategy into the executable specification table (cleaning filters, regressions R1…, exhibit registry) that the pipeline skills run by ID.
+
+## Onboarded projects (dossier-aware)
+
+If `scripts/analysis_plans/<slug>_dossier.md` exists ([`/onboard-project`](../onboard-project/SKILL.md)), do not start from zero: present each extracted answer for confirmation ("I found X at `file:line` — correct?") and interview only the dossier's **Gaps & unknowns** list. Confirmed answers count as verbatim-equivalent, recorded as `[from dossier: file:line]`.

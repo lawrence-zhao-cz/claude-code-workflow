@@ -188,7 +188,7 @@ This workflow is designed as a **single hub for an entire research program** —
 ## What's Included
 
 <details>
-<summary><strong>21 agents, 56 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
+<summary><strong>21 agents, 57 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
 
 ### Agents (`.claude/agents/`)
 
@@ -278,6 +278,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/new-skill` (v2.0) | Scaffold a new skill that follows this repo's conventions — interviews for purpose, triggers, and tools, writes `.claude/skills/<name>/SKILL.md` from the template with frontmatter/body that pass `check-skill-integrity.py` first try, then reminds to add the surface-table rows |
 | `/cross-check` (v2.0) | Independent re-implementation of a result in a second language (any Python ↔ Stata ↔ R pair) compared against `replication-protocol.md` tolerances, with culprit diagnosis on divergence (clustering df, FE/singleton handling, SE type, seed/sort, missing-value filters); `--data` mode compares independently produced cleaned datasets; auto-invoked after estimation by `/data-analysis-python` and `/data-analysis-stata` |
 | `/analysis-plan` (v2.1) | Living analysis plan — cleaning filters, specification table (R1…/A1…), output registry; pipelines execute by ID, `plan-auditor` verifies fidelity to your verbatim words; `--amend` / `--log-adhoc` / `--no-verify` |
+| `/onboard-project` (v2.1) | Intake an existing project folder — deep-scan, provenance-cited Project Dossier (what's known + what was attempted), non-destructive migration into a standalone template repo; pre-seeds `/interview-me` + `/analysis-plan`; `--dry-run` stops at the proposal |
 
 ### Research Workflow
 

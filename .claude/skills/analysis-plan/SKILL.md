@@ -100,3 +100,7 @@ Skips the `plan-auditor` pass (per the `post-flight-verification.md` opt-out con
 - [`.claude/skills/data-analysis-r/SKILL.md`](../data-analysis-r/SKILL.md) · [`.claude/skills/data-analysis-python/SKILL.md`](../data-analysis-python/SKILL.md) · [`.claude/skills/data-analysis-stata/SKILL.md`](../data-analysis-stata/SKILL.md) — the executors.
 - [`.claude/skills/cross-check/SKILL.md`](../cross-check/SKILL.md) — re-implements from plan rows when a plan exists.
 - [`.claude/rules/replication-protocol.md`](../../rules/replication-protocol.md) — the plan is the spec layer above the tolerance contract.
+
+## Onboarded projects (dossier-aware)
+
+If `scripts/analysis_plans/<slug>_dossier.md` exists ([`/onboard-project`](../onboard-project/SKILL.md)): import its already-run specifications as plan rows — Status `RUN` with output paths where outputs exist, else `A#` rows marked *attempted pre-onboarding* (the §4 memory extends backward in time). Interview only the dossier's gaps; confirmed dossier answers enter the interview log as `[from dossier: file:line]`.
