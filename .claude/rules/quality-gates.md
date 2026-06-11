@@ -3,6 +3,8 @@ paths:
   - "Slides/**/*.tex"
   - "Quarto/**/*.qmd"
   - "scripts/**/*.R"
+  - "scripts/**/*.py"
+  - "scripts/**/*.do"
 ---
 
 # Quality Review & Scoring Rubrics
@@ -38,6 +40,30 @@ paths:
 | Critical | Hardcoded absolute paths | -20 |
 | Major | Missing set.seed() | -10 |
 | Major | Missing figure generation | -5 |
+
+## Python Scripts (.py)
+
+| Severity | Issue | Deduction |
+|----------|-------|-----------|
+| Critical | Syntax errors (`compile()` parse) | -100 |
+| Critical | Hardcoded absolute paths | -20 |
+| Major | Randomness without a seed | -10 |
+| Major | Legacy global seeding (`np.random.seed`) | -5 |
+| Major | Chained assignment (`df[...]["col"] = ...`) | -5 |
+
+## Stata Do-Files (.do)
+
+Heuristic-only (no offline Stata parser exists, so no syntax auto-fail — `/data-analysis-stata` Phase 2 execution is the real syntax check):
+
+| Severity | Issue | Deduction |
+|----------|-------|-----------|
+| Critical | Hardcoded absolute paths | -20 |
+| Major | Missing `version NN` pin | -15 |
+| Major | Randomness without `set seed` | -10 |
+| Major | Bare `, robust` with no `cluster()` anywhere | -10 |
+| Major | `merge` without `assert()`/`keep()` | -10 per line |
+| Major | Randomness without `set sortseed` | -5 |
+| Minor | Missing header block | -5 |
 
 ## Beamer Slides (.tex)
 

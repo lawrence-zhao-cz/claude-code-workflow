@@ -68,7 +68,7 @@ A forked subagent cannot stop to ask the user a question. So every interactive c
 | `/review-paper --adversarial` | critic → fix → re-audit, **loop-until-dry** | Manuscript review (same primitive as qa-quarto) |
 | `/review-paper --peer` / `--variance` | RUN_CONFIG → editor → fan-out referees → editor synthesis **+ hallucination gate** | Cross-artifact pre-flight as Phase 0 |
 | `/deep-audit` | mechanical checks → fan-out (4) → fix, **loop-until-dry** | Repo-wide consistency |
-| `/create-lecture`, `/data-analysis` | Pre-Flight → draft → verify | Pre-Flight required |
+| `/create-lecture`, `/data-analysis-r` | Pre-Flight → draft → verify | Pre-Flight required |
 
 ## What is NOT automatic
 

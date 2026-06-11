@@ -54,7 +54,7 @@ Claude Code runs on your computer with full access to your file system, terminal
 | Access git history | Commits, PRs, branches --- all from the conversation |
 | Persistent memory | CLAUDE.md + MEMORY.md survive across sessions |
 | Orchestrator runtime | Specific skills (`/qa-quarto`, `/review-paper --adversarial`, `/create-lecture`, …) run a real fan-out → reduce → judge → loop-until-dry runtime internally |
-| Multi-agent workflows | 18 specialized agents for proofreading, layout, pedagogy, code review, fact-checking, AI-voice auditing, simulation + R-package review |
+| Multi-agent workflows | 20 specialized agents for proofreading, layout, pedagogy, code review (R/Python/Stata), fact-checking, AI-voice auditing, simulation + R-package review |
 | Quality review | Advisory scoring inside `/commit` (halt + ask to override); targets: 80 commit, 90 PR, 95 excellence |
 | CLI/headless mode | Run from scripts: `claude -p "compile all lectures"` |
 | Browser bridge | Continue sessions on your phone via `/remote-control` |
@@ -126,7 +126,7 @@ You see: "Done. Fixed 18 issues. Score: 91/100. Ready to commit?"
 ```
 You: "Analyze this dataset and produce publication-ready output"
      ↓
-Claude invokes /data-analysis, which internally:
+Claude invokes /data-analysis-r, which internally:
   → Explores, models, builds tables and figures
   → Spawns /review-r (code quality, reproducibility)
   → Produces R script, tables, and figures
@@ -765,7 +765,7 @@ Claude Code also offers experimental **Agent Teams** --- multiple independent se
 **Retirement notice:** Sonnet 4 and the original Opus 4 retire on **2026-06-15**. If your environment pins one of these (`ANTHROPIC_MODEL` env, hard-coded model IDs in CI, etc.), migrate before then. See [TROUBLESHOOTING.md](../TROUBLESHOOTING.md) for the migration checklist.
 :::
 
-Not all agents need the same model. Each agent file has a `model:` field in its YAML frontmatter. In v2.0 all 18 agents are **pinned** to an explicit model + effort tier (no longer `inherit`), following the 70/20/10 routing pattern below. You can re-tune any agent to optimize cost:
+Not all agents need the same model. Each agent file has a `model:` field in its YAML frontmatter. All 20 agents are **pinned** to an explicit model + effort tier (no longer `inherit`, since v2.0), following the 70/20/10 routing pattern below. You can re-tune any agent to optimize cost:
 
 | Task Type | Recommended Model | Why | Examples |
 |-----------|-------------------|-----|----------|
@@ -1464,7 +1464,7 @@ Phase 4: Only then extend
 In one course, we discovered that a widely-used R package silently produced **incorrect estimates** due to a subtle specification issue. This bug was caught 3 times in different scripts. Without the replication-first protocol, these wrong numbers would have been taught to PhD students.
 :::
 
-**Source-language coverage:** The pattern is language-agnostic. The template ships [`/data-analysis`](#all-skills) for R-first projects and [`/stata-replication`](#all-skills) (v1.9.0) for Stata-first projects (mirrors `/data-analysis` exactly; same numbered-pipeline shape, different language; executes via the `stata-mcp` MCP server). Python-first projects follow the same convention with the path `scripts/python/_outputs/`. For Stata users, [`stata-code-conventions.md`](.claude/rules/stata-code-conventions.md) (v1.9.0) codifies the header (`version 18`, `clear all`, `set seed`/`set sortseed`), numbered pipeline (00–99), `esttab` for `\input{}` tables, clustering discipline (`reghdfe`), balance via `iebaltab`, and AEA Data Editor compliance.
+**Source-language coverage:** The pattern is language-agnostic. The template ships [`/data-analysis-r`](#all-skills) for R-first projects and [`/data-analysis-stata`](#all-skills) (v1.9.0) for Stata-first projects (mirrors `/data-analysis-r` exactly; same numbered-pipeline shape, different language; executes via the `stata-mcp` MCP server). Python-first projects follow the same convention with the path `scripts/python/_outputs/`. For Stata users, [`stata-code-conventions.md`](.claude/rules/stata-code-conventions.md) (v1.9.0) codifies the header (`version 18`, `clear all`, `set seed`/`set sortseed`), numbered pipeline (00–99), `esttab` for `\input{}` tables, clustering discipline (`reghdfe`), balance via `iebaltab`, and AEA Data Editor compliance.
 
 ::: {.callout-note}
 ## Claims provenance via `passport.yaml` (v1.9.0)
@@ -1622,7 +1622,7 @@ Either way, Claude spawns up to 3 Task agents, each processing one paper simulta
 
 #### Long-running tasks: the Monitor tool (Apr 2026)
 
-For genuinely long jobs --- a 30-minute R fit, a `/audit-reproducibility` batch over many tables, a Quarto render of a 200-slide deck --- the **Monitor tool** (Apr 2026 Week 15) lets Claude tail a background process's stdout in real time and react when something interesting happens. The pattern: launch the long job in the background (Bash with `run_in_background: true`), then ask Claude to monitor until a condition fires (error, milestone, finish). No polling loop, no sleep cycles. Useful inside `/data-analysis` for the regression step and inside `/audit-reproducibility` when re-running the whole script suite.
+For genuinely long jobs --- a 30-minute R fit, a `/audit-reproducibility` batch over many tables, a Quarto render of a 200-slide deck --- the **Monitor tool** (Apr 2026 Week 15) lets Claude tail a background process's stdout in real time and react when something interesting happens. The pattern: launch the long job in the background (Bash with `run_in_background: true`), then ask Claude to monitor until a condition fires (error, milestone, finish). No polling loop, no sleep cycles. Useful inside `/data-analysis-r` for the regression step and inside `/audit-reproducibility` when re-running the whole script suite.
 
 #### Watching parallel agents: `claude agents` (May 2026)
 
@@ -1715,7 +1715,7 @@ These skills support the research workflow beyond slide development:
 | `/research-ideation [topic]` | Generate research questions, hypotheses, and empirical strategies | Brainstorming phase |
 | `/interview-me [topic]` | Interactive interview to formalize a vague idea into a concrete specification | When you have an intuition but not a plan |
 | `/review-paper [file]` | Full manuscript review with referee objections | Before submission or after a draft |
-| `/python-analysis [data]` · `/stata-replication` · `/data-analysis [data]` (R) | End-to-end analysis pipeline in your project's language(s): explore, clean (with validation), estimate, produce publication-ready output | Empirical analysis phase |
+| `/data-analysis-python [data]` · `/data-analysis-stata` · `/data-analysis-r [data]` (R) | End-to-end analysis pipeline in your project's language(s): explore, clean (with validation), estimate, produce publication-ready output | Empirical analysis phase |
 
 These skills produce structured reports saved to `quality_reports/`. The three analysis skills share one pipeline shape in three languages — pick per project via the language-roles table in `CLAUDE.md` (e.g. prep = Python, estimation = Stata, cross-check = R). Each generates numbered scripts (`scripts/python/`, `scripts/stata/`, `scripts/R/`), runs its language's reviewer agent automatically, and invokes `/cross-check` after estimation to re-verify headline results in a second language.
 
@@ -1744,7 +1744,7 @@ A research project is not a waterfall --- it is a **dependency graph**. Some pha
 
 ```
 /research-ideation ─────┐
-                        ├──→ /lit-review ──→ /data-analysis ──→ /review-paper
+                        ├──→ /lit-review ──→ /data-analysis-r ──→ /review-paper
 /interview-me ──────────┘         ↑               ↑
                                   │               │
                           (can run in parallel)   │
@@ -1754,7 +1754,7 @@ A research project is not a waterfall --- it is a **dependency graph**. Some pha
                            work backwards)
 ```
 
-**Enter mid-pipeline.** You do not have to start from ideation. If you already have data, start with `/data-analysis` and work backwards to the research question. If you already have a draft, start with `/review-paper`. The skills are modular --- use what you need, skip what you don't.
+**Enter mid-pipeline.** You do not have to start from ideation. If you already have data, start with `/data-analysis-r` and work backwards to the research question. If you already have a draft, start with `/review-paper`. The skills are modular --- use what you need, skip what you don't.
 
 ::: {.callout-note collapse="true"}
 ## For a Production-Grade Paper Pipeline
@@ -2283,7 +2283,7 @@ RMSE of ATT estimate. Lower is better. Report coverage rate alongside.
 
 A mature MCP server that lets Claude Code execute Stata `.do` files via a command-guarded interface — refuses destructive shell ops (`!/shell/erase` etc.), monitors RAM, and pairs with the Stata Language Server. **Install once per user:** `claude mcp add stata-mcp --scope user -- uvx stata-mcp` (requires `uv` and a local Stata install).
 
-**Why it matters for this template:** [`/stata-replication`](#sec-appendix) (v1.9.0) depends on this MCP server, and so does the Stata leg of [`/cross-check`](#sec-appendix). The analysis pipeline comes in three parallel languages — [`/python-analysis`](#sec-appendix), `/stata-replication`, and [`/data-analysis`](#sec-appendix) (R) — same pipeline shape, picked per project via the language-roles table in `CLAUDE.md`. AEA submissions where the replication package is in Stata are the canonical use case for this server.
+**Why it matters for this template:** [`/data-analysis-stata`](#sec-appendix) (v1.9.0) depends on this MCP server, and so does the Stata leg of [`/cross-check`](#sec-appendix). The analysis pipeline comes in three parallel languages — [`/data-analysis-python`](#sec-appendix), `/data-analysis-stata`, and [`/data-analysis-r`](#sec-appendix) (R) — same pipeline shape, picked per project via the language-roles table in `CLAUDE.md`. AEA submissions where the replication package is in Stata are the canonical use case for this server.
 
 For end-to-end Stata workflows, see [`.claude/rules/stata-code-conventions.md`](.claude/rules/stata-code-conventions.md) (header scaffold, numbered pipeline, esttab tables, clustering discipline, AEA Data Editor compliance).
 
@@ -2611,7 +2611,7 @@ This is the `/learn` lifecycle in action: discover a repeating workflow → extr
 5. **Verify everything.** The verification rule exists for a reason. Never skip compilation or rendering checks.
 6. **Session logs matter.** Document design decisions, not just what changed. Future-you will thank present-you.
 7. **Devil's Advocate early.** Challenge slide structure before you've built 50 slides on a shaky foundation.
-8. **Progressive disclosure.** Start with CLAUDE.md + 2--3 rules. Add more as your workflow matures. Newcomers should not face all 32 rules on day one.
+8. **Progressive disclosure.** Start with CLAUDE.md + 2--3 rules. Add more as your workflow matures. Newcomers should not face all 33 rules on day one.
 9. **Use `CLAUDE.local.md` for personal overrides.** This file is automatically gitignored and loaded alongside `CLAUDE.md`. Put machine-specific paths, personal preferences, and local tool versions here --- they won't pollute the shared repo.
 
 ::: {.callout-note collapse="true"}
@@ -2681,8 +2681,8 @@ Claude Code supports **plugins** --- bundled collections of skills, agents, hook
 | `/interview-me` | `.claude/skills/interview-me/` | Interactive research interview |
 | `/review-paper` | `.claude/skills/review-paper/` | Manuscript review |
 | `/respond-to-referees` | `.claude/skills/respond-to-referees/` | R&R cross-reference and response draft |
-| `/data-analysis` | `.claude/skills/data-analysis/` | End-to-end R analysis |
-| `/python-analysis` | `.claude/skills/python-analysis/` | End-to-end Python analysis (pandas/statsmodels/linearmodels/pyfixest) with a mandatory data-prep validation battery (v2.0) |
+| `/data-analysis-r` | `.claude/skills/data-analysis-r/` | End-to-end R analysis |
+| `/data-analysis-python` | `.claude/skills/data-analysis-python/` | End-to-end Python analysis (pandas/statsmodels/linearmodels/pyfixest) with a mandatory data-prep validation battery (v2.0) |
 | `/audit-reproducibility` | `.claude/skills/audit-reproducibility/` | Enforce replication tolerance thresholds on paper ↔ code |
 | `/diagnose` | `.claude/skills/diagnose/` | Root-cause a wrong or failing empirical result: reproduce → minimise → hypothesise → instrument → fix (v2.0) |
 | `/learn` | `.claude/skills/learn/` | Extract discoveries into persistent skills |
@@ -2696,7 +2696,7 @@ Claude Code supports **plugins** --- bundled collections of skills, agents, hook
 | `/humanize` | `.claude/skills/humanize/` | Detect AI-voice tells in academic prose (read-only audit; no rewrite) (v1.9.0) |
 | `/compress-session` | `.claude/skills/compress-session/` | Distil the current session into a structured note (decisions, files, open questions, next actions, discarded-as-noise) before auto-compaction (v1.9.0) |
 | `/promote-memory` | `.claude/skills/promote-memory/` | Five-critic council that votes on whether candidate `[LEARN]` entries should be promoted from personal-memory.md to MEMORY.md (v1.9.0) |
-| `/stata-replication` | `.claude/skills/stata-replication/` | End-to-end Stata pipeline scaffold + execution via the `stata-mcp` MCP server (the Stata member of the R/Python/Stata pipeline triad; v1.9.0) |
+| `/data-analysis-stata` | `.claude/skills/data-analysis-stata/` | End-to-end Stata pipeline scaffold + execution via the `stata-mcp` MCP server (the Stata member of the R/Python/Stata pipeline triad; v1.9.0) |
 | `/cross-check` | `.claude/skills/cross-check/` | Independent re-implementation of a result in a second language (any Python ↔ Stata ↔ R pair) against `replication-protocol.md` tolerances; `--data` mode for cleaned datasets; auto-invoked after estimation (v2.0) |
 | `/simulation-study` | `.claude/skills/simulation-study/` | Reproducible Monte Carlo study — DGP, estimator grid, seeded reps, bias/RMSE/coverage/size/power with Monte Carlo SEs (v1.10.0) |
 | `/r-package-check` | `.claude/skills/r-package-check/` | R package release gate — `devtools::document()` + tests + `R CMD check --as-cran` + CRAN-policy triage (v1.10.0) |

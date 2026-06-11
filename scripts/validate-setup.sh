@@ -59,6 +59,7 @@ echo ""
 
 echo -e "${BOLD}Recommended tools:${RESET}"
 check_optional "R"            "R"        "https://www.r-project.org/"
+check_optional "uv (Python)"  "uv"       "https://docs.astral.sh/uv/ (for /data-analysis-python + stata-mcp)"
 check_optional "GitHub CLI"   "gh"       "https://cli.github.com/"
 echo ""
 
@@ -168,7 +169,11 @@ if [ "$fail" -gt 0 ]; then
             echo "    /compile-latex HelloWorld  # compile Beamer sample"
         fi
         if [ "$has_r" = "true" ]; then
-            echo "    /data-analysis             # orchestrate R analysis"
+            echo "    /data-analysis-r           # orchestrate R analysis"
+        fi
+        if command -v uv >/dev/null 2>&1; then
+            echo "    /data-analysis-python      # orchestrate Python analysis (uv)"
+            echo "    /data-analysis-stata       # Stata pipeline (needs Stata + 'claude mcp add stata-mcp --scope user -- uvx stata-mcp')"
         fi
         if [ "$has_xelatex" != "true" ]; then
             echo ""

@@ -14,7 +14,7 @@ paths:
 
 ## Phase 1: Inventory & Baseline
 
-Before writing any R code:
+Before writing any analysis code (in whichever language the project's roles assign):
 
 - [ ] Read the paper's replication README
 - [ ] Inventory replication package: language, data files, scripts, outputs
@@ -34,10 +34,10 @@ Before writing any R code:
 
 ## Phase 2: Translate & Execute
 
-- [ ] Follow `r-code-conventions.md` for all R coding standards
+- [ ] Follow the language's conventions rule — `r-code-conventions.md` (R), `python-code-conventions.md` (Python), `stata-code-conventions.md` (Stata)
 - [ ] Translate line-by-line initially -- don't "improve" during replication
 - [ ] Match original specification exactly (covariates, sample, clustering, SE computation)
-- [ ] Save all intermediate results as RDS
+- [ ] Save all intermediate results in the producing language's format — `.rds` (R), `.parquet`/pickle (Python), `.dta` (Stata) — per the Cross-Language Handoff Convention below
 
 ### Stata to R Translation Pitfalls
 
@@ -123,8 +123,8 @@ Save to `quality_reports/LectureNN_replication_report.md`:
 ```markdown
 # Replication Report: [Paper Author (Year)]
 **Date:** [YYYY-MM-DD]
-**Original language:** [Stata/R/etc.]
-**R translation:** [script path]
+**Original language:** [Stata/R/Python/etc.]
+**Translation:** [script path] (language: [R/Python/Stata])
 
 ## Summary
 - **Targets checked / Passed / Failed:** N / M / K
@@ -158,7 +158,7 @@ After replication is verified (all targets PASS):
 
 This rule is enforced at two layers:
 
-**Per result, continuously** — the [`/cross-check`](../skills/cross-check/SKILL.md) skill re-implements a result (or, with its `--data` mode, a cleaned dataset) independently in a second language (any Python ↔ Stata ↔ R pair) and compares against the tolerance thresholds above. `/python-analysis` and `/stata-replication` invoke it automatically after estimation, targeting the project's cross-check language role; opt out per run with their `--no-crosscheck` flag (exploratory work in `explorations/` is exempt by default).
+**Per result, continuously** — the [`/cross-check`](../skills/cross-check/SKILL.md) skill re-implements a result (or, with its `--data` mode, a cleaned dataset) independently in a second language (any Python ↔ Stata ↔ R pair) and compares against the tolerance thresholds above. `/data-analysis-python` and `/data-analysis-stata` invoke it automatically after estimation, targeting the project's cross-check language role; opt out per run with their `--no-crosscheck` flag (exploratory work in `explorations/` is exempt by default).
 
 **Per manuscript, before submission** — the [`/audit-reproducibility`](../skills/audit-reproducibility/SKILL.md) skill parses numeric claims from a manuscript, locates matching values in `scripts/R/_outputs/` (or the user-specified outputs directory), and compares against the tolerance thresholds above. Run it:
 

@@ -1,6 +1,6 @@
 ---
 name: cross-check
-description: Independently re-run a result in a second language — any Python ↔ Stata ↔ R pair — and compare coefficients/SEs/N (or, with --data, two independently produced cleaned datasets cell-by-cell) against the replication-protocol.md tolerances; on divergence, name the usual culprits (clustering df, FE/singleton handling, default SE type, seed/sort order, missing-value filters). Use when user says "cross-check this regression", "re-run this in Stata/R/Python", "independent re-implementation", "verify the prep in a second language", "do the numbers match across languages", or as the automatic post-estimation step of /python-analysis and /stata-replication. Runs Python via uv, Stata via the stata-mcp MCP server, R via Rscript.
+description: Independently re-run a result in a second language — any Python ↔ Stata ↔ R pair — and compare coefficients/SEs/N (or, with --data, two independently produced cleaned datasets cell-by-cell) against the replication-protocol.md tolerances; on divergence, name the usual culprits (clustering df, FE/singleton handling, default SE type, seed/sort order, missing-value filters). Use when user says "cross-check this regression", "re-run this in Stata/R/Python", "independent re-implementation", "verify the prep in a second language", "do the numbers match across languages", or as the automatic post-estimation step of /data-analysis-python and /data-analysis-stata. Runs Python via uv, Stata via the stata-mcp MCP server, R via Rscript.
 argument-hint: "[result-or-dataset pointer] [target-language] [--data]"
 allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task", "Monitor"]
 effort: high
@@ -10,13 +10,13 @@ effort: high
 
 Take a result produced in one language and reproduce it **independently** in another, then compare numerically against the tolerance contract in [`.claude/rules/replication-protocol.md`](../../rules/replication-protocol.md). This is the per-result half of continuous replication: [`/audit-reproducibility`](../audit-reproducibility/SKILL.md) checks that the *manuscript* matches the *outputs*; this skill checks that the *outputs* survive an independent re-implementation.
 
-Generalizes `/stata-replication --from-r` (which compared one fixed pair) to **any Python ↔ Stata ↔ R pair**, in either direction.
+Generalizes `/data-analysis-stata --from-r` (which compared one fixed pair) to **any Python ↔ Stata ↔ R pair**, in either direction.
 
 ## Two modes
 
 | Mode | Compares | Typical trigger |
 |---|---|---|
-| **Result mode** (default) | A fitted result (coefficients, SEs, N) vs. its re-estimation in the target language | After estimation — automatically from `/python-analysis` / `/stata-replication`, or on request |
+| **Result mode** (default) | A fitted result (coefficients, SEs, N) vs. its re-estimation in the target language | After estimation — automatically from `/data-analysis-python` / `/data-analysis-stata`, or on request |
 | **`--data` mode** | Two independently produced cleaned datasets, cell-by-cell | High-stakes data prep — the second half of "verify the prep is accurate" (the first half is the validation battery in `python-code-conventions.md` §7) |
 
 ## Inputs
@@ -62,7 +62,7 @@ Re-implement from the **specification**, not by transliterating the source scrip
 - **Stata:** dispatch the `.do` file to `stata-mcp`; capture the log.
 - **R:** `Rscript scripts/R/90_crosscheck_<name>.R`
 
-For runs over a couple of minutes, background-launch and stream with the **Monitor tool** (same pattern as `/python-analysis` and `/stata-replication`). If the script errors, fix trivial issues (typos, paths) and re-run; surface substantive failures (convergence, singularities) to the user — they are themselves evidence of fragility.
+For runs over a couple of minutes, background-launch and stream with the **Monitor tool** (same pattern as `/data-analysis-python` and `/data-analysis-stata`). If the script errors, fix trivial issues (typos, paths) and re-run; surface substantive failures (convergence, singularities) to the user — they are themselves evidence of fragility.
 
 ### Phase 3: Compare
 
@@ -125,13 +125,13 @@ Write `quality_reports/cross_checks/YYYY-MM-DD_<name>.md`:
 
 - **MATCH** (all within tolerance) → exit 0.
 - **EXPLAINED** (out of tolerance, concrete named culprit recorded) → exit 0 with the culprit surfaced — carry it into the paper's response-to-referees the same way `/audit-reproducibility` carries EXPLAINED claims.
-- **DIVERGENT** (out of tolerance, no named culprit) → exit 1. Callers (`/python-analysis`, `/stata-replication`) treat this as a blocker: do not present the source result as verified.
+- **DIVERGENT** (out of tolerance, no named culprit) → exit 1. Callers (`/data-analysis-python`, `/data-analysis-stata`) treat this as a blocker: do not present the source result as verified.
 
 ## Auto-invocation contract (how the estimation skills call this)
 
-- `/python-analysis` and `/stata-replication` invoke this skill **automatically after estimation**, targeting the project's **cross-check language role** from `CLAUDE.md`.
+- `/data-analysis-python` and `/data-analysis-stata` invoke this skill **automatically after estimation**, targeting the project's **cross-check language role** from `CLAUDE.md`.
 - **Final specifications only** — not every exploratory run (each cross-check doubles the estimation cost).
-- Escape hatches: the caller's `--no-crosscheck` flag (e.g. `/python-analysis data.parquet --no-crosscheck`), and work under `explorations/` is exempt by default per its fast-track threshold.
+- Escape hatches: the caller's `--no-crosscheck` flag (e.g. `/data-analysis-python data.parquet --no-crosscheck`), and work under `explorations/` is exempt by default per its fast-track threshold.
 - The caller passes the pickled/stored result as `$0`; this skill resolves the target language itself.
 
 ## Anti-patterns
@@ -146,13 +146,13 @@ Write `quality_reports/cross_checks/YYYY-MM-DD_<name>.md`:
 
 - **Audit the manuscript.** Paper-vs-outputs is [`/audit-reproducibility`](../audit-reproducibility/SKILL.md); this skill is outputs-vs-independent-re-run. Both run before submission.
 - **Root-cause a divergence beyond the checklist.** That is [`/diagnose`](../diagnose/SKILL.md) (reproduce → minimise → bisect).
-- **Replicate a published paper end-to-end.** That is `/stata-replication` / `/data-analysis` plus `replication-protocol.md` Phase 1–4.
+- **Replicate a published paper end-to-end.** That is `/data-analysis-stata` / `/data-analysis-r` plus `replication-protocol.md` Phase 1–4.
 - **Decide which side is right.** Like the protocol says: the source result is a *challenger*, not an oracle — a divergence means "one of the two implementations must change; isolate which."
 
 ## Cross-references
 
 - [`.claude/rules/replication-protocol.md`](../../rules/replication-protocol.md) — tolerance contract, handoff convention, language-pair pitfalls tables.
-- [`.claude/skills/python-analysis/SKILL.md`](../python-analysis/SKILL.md) · [`.claude/skills/stata-replication/SKILL.md`](../stata-replication/SKILL.md) — the calling estimation pipelines.
+- [`.claude/skills/data-analysis-python/SKILL.md`](../data-analysis-python/SKILL.md) · [`.claude/skills/data-analysis-stata/SKILL.md`](../data-analysis-stata/SKILL.md) — the calling estimation pipelines.
 - [`.claude/skills/audit-reproducibility/SKILL.md`](../audit-reproducibility/SKILL.md) — the manuscript-side verifier.
 - [`.claude/skills/diagnose/SKILL.md`](../diagnose/SKILL.md) — divergence root-causing.
 - [`.claude/skills/did-event-study/SKILL.md`](../did-event-study/SKILL.md) — owns the DiD dual-software cross-check; defer staggered-DiD estimands to it.

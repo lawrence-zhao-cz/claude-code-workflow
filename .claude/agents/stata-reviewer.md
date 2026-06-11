@@ -98,6 +98,16 @@ Produce a thorough, actionable code review report. You do NOT edit files — you
 
 **Flag:** WHAT-comments, dead code, suppressed-but-failing estimation.
 
+### 11. NUMERICAL DISCIPLINE
+*(Mirrors r-reviewer Category 11 / python-reviewer's numerical category — same pitfalls, Stata syntax.)*
+- [ ] No float equality: never `if x == 0.1` on computed floats — use `if abs(x - 0.1) < 1e-8` or `float()` comparisons.
+- [ ] `set type double` (or explicit `double` gen) for generated continuous variables in precision-sensitive work — Stata's default `float` storage silently loses digits.
+- [ ] CDF/quantile bounds: probabilities fed to `invnormal()` / `invlogit` inverses clamped away from exact 0/1.
+- [ ] Deterministic resampling: `set seed` + `set sortseed` before any `bootstrap`/`bsample`/`simulate`; sort order made unique (`sort id, stable` or full sort key) before random draws.
+- [ ] Integer counts stay integers: `egen ... = total()` / `count` results not run through float arithmetic that can drift.
+
+**Flag:** float `==` on computed values, default-float precision in generated regressors, unclamped inverse-CDF inputs, bootstrap without seed+sortseed, non-unique sort before draws.
+
 ---
 
 ## Report Format

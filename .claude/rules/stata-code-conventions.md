@@ -156,6 +156,10 @@ Both vector (PDF for the paper) and raster (PNG for slides). Don't rely on the a
 | `merge 1:1` without `assert` | `merge 1:1 id using foo, assert(3)` — fail loud on mismatched keys |
 | `if` on missing values | Stata treats `.` as `+∞` in inequality comparisons. `if x > 5 & x != .` for non-missing-and-greater-than-5 |
 | `egen sum(x)` deprecated | `egen total(x)` is the modern form; `egen sum()` still works but `bysort id: egen y = total(x)` is the safer pattern |
+| Float equality on computed values | Never `if x == 0.1` — use `if abs(x - 0.1) < 1e-8`; Stata stores `gen` results as `float` by default (numerical discipline, mirrors R §8 / Python §8) |
+| Default `float` storage losing precision | `set type double` (or `gen double ...`) for generated continuous variables in precision-sensitive work |
+| Exact 0/1 into inverse CDFs | Clamp probabilities away from 0/1 before `invnormal()` / `invlogit()` — exact bounds give missing/±∞ |
+| Non-unique sort before random draws | `sort id, stable` (or a full sort key) + `set sortseed` before `bsample`/`bootstrap`/`simulate` — ties make draws irreproducible |
 
 ## 10. AEA Data Editor compliance
 
@@ -170,7 +174,7 @@ The [AEA Data Editor checklist](https://aeadataeditor.github.io/) requires:
 
 ## Enforcement
 
-- [`/stata-replication`](../skills/stata-replication/SKILL.md) is the analogue of `/data-analysis` for Stata. It emits .do files conforming to this convention.
+- [`/data-analysis-stata`](../skills/data-analysis-stata/SKILL.md) is the analogue of `/data-analysis-r` for Stata. It emits .do files conforming to this convention.
 - [`/audit-reproducibility`](../skills/audit-reproducibility/SKILL.md) handles Stata `.dta` outputs alongside R `.rds` (via `haven` or `pyreadstat`).
 - [`/review-stata`](../skills/review-stata/SKILL.md) + the `stata-reviewer` agent run a read-only review against this convention (the Stata analogue of `/review-r` and `/review-python`).
 

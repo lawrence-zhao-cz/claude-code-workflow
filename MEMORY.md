@@ -93,7 +93,7 @@ When a mistake is corrected, append a `[LEARN:category]` entry below.
 
 ## Claim-vs-Reality Framing
 
-[LEARN:framing] The "orchestrator" is a **pattern** implemented by specific skills (`/commit`, `/qa-quarto`, `/review-paper --adversarial`, `/slide-excellence`, `/create-lecture`, `/data-analysis`, `/review-paper --peer`), not a runtime daemon. Plan approval does NOT auto-trigger the 6-step loop. User invokes a skill; skill runs the loop internally. Docs that say "orchestrator activates automatically after plan approval" are misleading — catch them in review.
+[LEARN:framing] The "orchestrator" is a **pattern** implemented by specific skills (`/commit`, `/qa-quarto`, `/review-paper --adversarial`, `/slide-excellence`, `/create-lecture`, `/data-analysis-r`, `/review-paper --peer`), not a runtime daemon. Plan approval does NOT auto-trigger the 6-step loop. User invokes a skill; skill runs the loop internally. Docs that say "orchestrator activates automatically after plan approval" are misleading — catch them in review.
 
 [LEARN:framing] "Quality gates" is overselling when the only enforcement is inside `/commit` skill (halt-and-ask, not block). A direct `git commit` bypasses the review. Use "quality review" in docs or add an "(advisory)" qualifier. Hard enforcement requires an actual git pre-commit hook — document the gap honestly.
 

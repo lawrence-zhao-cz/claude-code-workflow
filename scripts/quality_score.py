@@ -74,6 +74,39 @@ R_SCRIPT_RUBRIC = {
     }
 }
 
+PYTHON_SCRIPT_RUBRIC = {
+    'critical': {
+        'syntax_error': {'points': 100, 'auto_fail': True},
+        'hardcoded_path': {'points': 20},
+    },
+    'major': {
+        'missing_seed': {'points': 10},
+        'legacy_global_seed': {'points': 5},
+        'chained_assignment': {'points': 5},
+    },
+    'minor': {
+        'style_violation': {'points': 1},
+    }
+}
+
+# No offline Stata parser exists, so the .do rubric is heuristic-only
+# (no syntax auto-fail). Checks mirror stata-code-conventions.md.
+STATA_SCRIPT_RUBRIC = {
+    'critical': {
+        'hardcoded_path': {'points': 20},
+    },
+    'major': {
+        'missing_version_pin': {'points': 15},
+        'missing_seed': {'points': 10},
+        'bare_robust': {'points': 10},
+        'merge_without_assert': {'points': 10},
+        'missing_sortseed': {'points': 5},
+    },
+    'minor': {
+        'missing_header': {'points': 5},
+    }
+}
+
 BEAMER_RUBRIC = {
     'critical': {
         'compilation_failure': {'points': 100, 'auto_fail': True},
@@ -248,8 +281,21 @@ class IssueDetector:
             return None, "syntax not verified — Rscript not installed"
 
     @staticmethod
+    def check_python_syntax(filepath: Path) -> Tuple[Optional[bool], str]:
+        """Compile the Python source in-process. True (ok) / False (syntax
+        error). No subprocess, no imports executed — compile() only parses."""
+        try:
+            source = filepath.read_text(encoding='utf-8')
+            compile(source, str(filepath), 'exec')
+            return True, ""
+        except SyntaxError as e:
+            return False, f"line {e.lineno}: {e.msg}"
+        except (OSError, UnicodeError, ValueError) as e:
+            return None, f"syntax not verified — {e}"
+
+    @staticmethod
     def check_hardcoded_paths(content: str) -> List[int]:
-        """Detect absolute paths in R scripts."""
+        """Detect absolute paths in analysis scripts (R / Python / Stata)."""
         issues = []
         lines = content.split('\n')
 
@@ -512,6 +558,146 @@ class QualityScorer:
         self.score = max(0, self.score)
         return self._generate_report()
 
+    def score_python_script(self) -> Dict:
+        """Score Python analysis script quality (python-code-conventions.md)."""
+        content = self.filepath.read_text(encoding='utf-8')
+
+        is_valid, error = IssueDetector.check_python_syntax(self.filepath)
+        if is_valid is False:
+            self.auto_fail = True
+            self.issues['critical'].append({
+                'type': 'syntax_error',
+                'description': 'Python syntax error',
+                'details': error[:200],
+                'points': 100
+            })
+            self.score = 0
+            return self._generate_report()
+        if is_valid is None:
+            self.unverified.append(error)
+
+        for line in IssueDetector.check_hardcoded_paths(content):
+            self.issues['critical'].append({
+                'type': 'hardcoded_path',
+                'description': f'Hardcoded absolute path at line {line}',
+                'details': 'Use pathlib.Path relative to repo root',
+                'points': 20
+            })
+            self.score -= 20
+
+        # Seed discipline: default_rng(SEED) when randomness is used
+        has_random = any(tok in content for tok in
+                         ['np.random', 'rng.', '.sample(', 'random.', 'bootstrap'])
+        has_seed = ('default_rng(' in content or 'np.random.seed' in content
+                    or 'random.seed' in content)
+        if has_random and not has_seed:
+            self.issues['major'].append({
+                'type': 'missing_seed',
+                'description': 'Randomness used without a seed',
+                'details': 'rng = np.random.default_rng(YYYYMMDD) once at top, pass rng explicitly',
+                'points': 10
+            })
+            self.score -= 10
+        if 'np.random.seed' in content or re.search(r'(?<!\.)random\.seed\(', content):
+            self.issues['major'].append({
+                'type': 'legacy_global_seed',
+                'description': 'Legacy global seeding (np.random.seed / random.seed)',
+                'details': 'Use np.random.default_rng(SEED) and pass the Generator (conventions §1)',
+                'points': 5
+            })
+            self.score -= 5
+
+        # Chained assignment: df[...]["col"] = ...
+        for i, line in enumerate(content.split('\n'), 1):
+            if re.search(r"\]\s*\[['\"]", line) and re.search(r"\]\s*=[^=]", line):
+                self.issues['major'].append({
+                    'type': 'chained_assignment',
+                    'description': f'Chained assignment at line {i}',
+                    'details': 'Use .loc[row_mask, "col"] = ... (copy-vs-view trap)',
+                    'points': 5
+                })
+                self.score -= 5
+
+        self.score = max(0, self.score)
+        return self._generate_report()
+
+    def score_stata_script(self) -> Dict:
+        """Score Stata do-file quality (stata-code-conventions.md). Heuristic
+        only — there is no offline Stata parser, so no syntax auto-fail."""
+        content = self.filepath.read_text(encoding='utf-8')
+        lines = content.split('\n')
+
+        for line in IssueDetector.check_hardcoded_paths(content):
+            self.issues['critical'].append({
+                'type': 'hardcoded_path',
+                'description': f'Hardcoded absolute path at line {line}',
+                'details': 'Use globals or paths relative to repo root',
+                'points': 20
+            })
+            self.score -= 20
+
+        if not re.search(r'^\s*version\s+\d+', content, re.MULTILINE):
+            self.issues['major'].append({
+                'type': 'missing_version_pin',
+                'description': 'No `version NN` pin',
+                'details': 'Every .do file starts with `version 18` (conventions §1)',
+                'points': 15
+            })
+            self.score -= 15
+
+        has_random = any(tok in content for tok in
+                         ['bootstrap', 'bsample', 'simulate', 'runiform', 'rnormal', 'sample '])
+        if has_random:
+            if 'set seed' not in content:
+                self.issues['major'].append({
+                    'type': 'missing_seed',
+                    'description': 'Randomness used without `set seed`',
+                    'details': 'set seed YYYYMMDD at top of file',
+                    'points': 10
+                })
+                self.score -= 10
+            if 'set sortseed' not in content:
+                self.issues['major'].append({
+                    'type': 'missing_sortseed',
+                    'description': 'Randomness used without `set sortseed`',
+                    'details': 'Tied sorts make draws irreproducible — set sortseed alongside set seed',
+                    'points': 5
+                })
+                self.score -= 5
+
+        if re.search(r',[^,\n]*\brobust\b', content) and 'cluster(' not in content:
+            self.issues['major'].append({
+                'type': 'bare_robust',
+                'description': '`, robust` with no clustering anywhere in the file',
+                'details': 'Cluster at the assignment level and document why (conventions §6)',
+                'points': 10
+            })
+            self.score -= 10
+
+        for i, line in enumerate(lines, 1):
+            code = line.split('//')[0]
+            if re.search(r'\bmerge\s+[m1]:[m1]\b', code) and 'assert(' not in code and 'keep(' not in code:
+                self.issues['major'].append({
+                    'type': 'merge_without_assert',
+                    'description': f'merge without assert()/keep() at line {i}',
+                    'details': 'merge 1:1 id using f, assert(3) — fail loud on mismatched keys',
+                    'points': 10
+                })
+                self.score -= 10
+
+        head = '\n'.join(lines[:12])
+        if '====' not in head and 'Purpose:' not in head:
+            self.issues['minor'].append({
+                'type': 'missing_header',
+                'description': 'No header block in first 12 lines',
+                'details': 'Use the stata-code-conventions.md header scaffold (Purpose/Inputs/Outputs/Sequence)',
+                'points': 5
+            })
+            self.score -= 5
+
+        self.score = max(0, self.score)
+        return self._generate_report()
+
     def score_beamer(self) -> Dict:
         """Score Beamer/LaTeX lecture slides."""
         content = self.filepath.read_text(encoding='utf-8')
@@ -717,6 +903,10 @@ Examples:
   # Score an R script
   python scripts/quality_score.py scripts/R/Lecture06_simulations.R
 
+  # Score a Python or Stata analysis script
+  python scripts/quality_score.py scripts/python/03_analyze.py
+  python scripts/quality_score.py scripts/stata/03_analyze.do
+
   # Summary only (no detailed issues)
   python scripts/quality_score.py Quarto/Lecture6.qmd --summary
 
@@ -758,6 +948,10 @@ Exit Codes:
                 report = scorer.score_quarto()
             elif filepath.suffix == '.R':
                 report = scorer.score_r_script()
+            elif filepath.suffix == '.py':
+                report = scorer.score_python_script()
+            elif filepath.suffix == '.do':
+                report = scorer.score_stata_script()
             elif filepath.suffix == '.tex':
                 report = scorer.score_beamer()
             else:

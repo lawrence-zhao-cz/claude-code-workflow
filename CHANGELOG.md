@@ -6,6 +6,38 @@ If you have forked this template, see the **Upgrading** section at the bottom fo
 
 ---
 
+## v2.1.0 — 2026-06-10 (fork customization: Python/Stata first-class + continuous replication)
+
+This fork's rebalancing release: **Python and Stata are first-class analysis languages** (R kept, now one of three), with a **continuous cross-language replication layer**. Shipped across five phases (`quality_reports/plans/2026-06-09_python-stata-customization.md`) plus a consistency audit.
+
+### ⚠️ Renamed skills (the only migration item)
+
+The analysis-pipeline triad now follows the same naming pattern as the review triad (`/review-r|python|stata`):
+
+| Old | New |
+|---|---|
+| `/data-analysis` | `/data-analysis-r` |
+| `/python-analysis` | `/data-analysis-python` |
+| `/stata-replication` | `/data-analysis-stata` |
+
+`/data-analysis-stata` is reframed as the primary Stata analysis pipeline (its original replication/porting use, including `--from-r`, remains a documented secondary mode). Historical CHANGELOG entries below keep the old names.
+
+### Added
+- **`/cross-check`** — independent re-implementation of a result in a second language (any Python ↔ Stata ↔ R pair) against the `replication-protocol.md` tolerances, with culprit diagnosis on divergence; `--data` mode compares independently produced cleaned datasets. Auto-invoked after estimation by all three pipeline skills (`--no-crosscheck` to skip; `explorations/` exempt).
+- **`/data-analysis-python`**, **`/review-python`** + `python-reviewer` agent, **`python-code-conventions.md`** rule (uv, `default_rng` seeding, numbered pipeline, validation battery, numerical discipline).
+- **`/review-stata`** + `stata-reviewer` agent (now with a Numerical Discipline category, at parity with the R/Python reviewers).
+- **`--prep-only` flag** on all three pipeline skills — the explicit "data cleaning only" entry point (clean → validation battery → cross-language handoff export).
+- **Cross-Language Handoff Convention + Stata↔Python and Python↔R pitfalls tables** in `replication-protocol.md`; **Project Language Roles** table in CLAUDE.md (prep/estimation/cross-check per project).
+- **`quality_score.py` now scores `.py` and `.do`** (new rubrics in `quality-gates.md`) — the ≥80 commit gate covers all three analysis languages.
+- `.mcp.json` wiring for the `stata-mcp` MCP server; Windows environment bootstrap.
+
+### Changed / fixed
+- `check-surface-sync.py` hardened: 3 new count phrasings + the guide's All Skills / All Agents appendix tables opted into the row-count gate (4 gated tables; the appendix had drifted to 50/55 skills and 18/20 agents).
+- Stale counts corrected across guide + landing page; `replication-protocol.md` and `verification-protocol.md` de-R'd (language-neutral prose, Python/Stata verification sections); `r-code-conventions.md` gained its missing Enforcement section; `validate-setup.sh` checks uv and lists all three pipelines.
+- `guide/workflow-guide.html` untracked (CI render intermediate; `docs/workflow-guide.html` is the published copy).
+
+---
+
 ## v2.0.0 — 2026-06-09
 
 A **paradigm-shift major release.** The template moves from a *prompt-craft contractor* — craft a prompt, invoke a skill, read a report — to a **verification-gated research lab**: you state a goal, a fleet of specialist agents does the labor under **gates that enforce themselves**, and you act as the **auditor of the disagreements they surface**. Two ideas converge: *"loops, not prompts"* (Boris Cherny / the Claude Code team) and *"ground truth is a process, not a dataset"* (Amazon Science). The result modernizes the **orchestration**, not the substance — the passport, simulation contract, and journal-calibrated referees are untouched. Shipped against `quality_reports/plans/2026-06-09_v2.0-modernization-master-plan.md`.

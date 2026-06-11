@@ -1,28 +1,25 @@
 ---
-name: stata-replication
-description: End-to-end Stata replication pipeline — scaffolds numbered `.do` files in `scripts/stata/`, executes them via the `stata-mcp` MCP server, captures logs and outputs to `scripts/stata/_outputs/`, and produces publication-ready tables (esttab) and figures (graph export). Mirrors `/data-analysis` for R-first projects. Use when user says "stata replication", "set up Stata pipeline", "scaffold the .do files", "run Stata analysis", "AEA replication package in Stata", or when a project's analysis language is Stata not R.
-author: Claude Code Academic Workflow
-version: 1.0.0
-argument-hint: "[paper-or-data-pointer] [--from-r] [--no-execute] [--no-crosscheck]"
-disable-model-invocation: true
+name: data-analysis-stata
+description: End-to-end Stata data analysis pipeline — scaffolds numbered `.do` files in `scripts/stata/`, executes them via the `stata-mcp` MCP server, captures logs and outputs to `scripts/stata/_outputs/`, and produces publication-ready tables (esttab) and figures (graph export). The Stata member of the analysis triad (/data-analysis-r, /data-analysis-python); the default for estimation in this project's language roles. Use when user says "run this in Stata", "set up Stata pipeline", "scaffold the .do files", "run Stata analysis", "reghdfe/csdid/ivreghdfe regression", "AEA replication package in Stata", or when the project's estimation language is Stata.
+argument-hint: "[paper-or-data-pointer] [--from-r] [--no-execute] [--no-crosscheck] [--prep-only]"
 allowed-tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash", "Task"]
 ---
 
-# `/stata-replication` — Stata pipeline scaffold + execution
+# `/data-analysis-stata` — Stata pipeline scaffold + execution
 
-Build a complete Stata replication pipeline in `scripts/stata/`: numbered `.do` files following [`.claude/rules/stata-code-conventions.md`](../../rules/stata-code-conventions.md), executed via the [`stata-mcp`](https://github.com/SepineTam/stata-mcp) MCP server, with outputs landing in `scripts/stata/_outputs/`.
+Build a complete Stata analysis pipeline in `scripts/stata/`: numbered `.do` files following [`.claude/rules/stata-code-conventions.md`](../../rules/stata-code-conventions.md), executed via the [`stata-mcp`](https://github.com/SepineTam/stata-mcp) MCP server, with outputs landing in `scripts/stata/_outputs/`.
 
 ## When to use
 
-- Your project's analysis language is **Stata** (not R). Common in econ field experiments, RCT studies, and any AEA submission where the original replication package is Stata.
-- You're porting an R-first project to Stata for an AEA submission.
-- You're adding a Stata robustness check to an R-first paper.
+- Your project's **estimation language is Stata** (the default in this project's language-roles table — CLAUDE.md "Project Language Roles"). Canonical applied-micro estimators (`reghdfe`, `csdid`, `ivreghdfe`) + referee/AEA norms.
+- A mixed pipeline hands off to Stata: prep = Python produced a `.dta`, this skill estimates from it.
 - You want a one-command reproduction: `do scripts/stata/99_run_all.do`.
+- **Secondary (replication/porting) use:** you're porting an R-first project to Stata for an AEA submission (`--from-r`), or adding a Stata robustness check to an R-first paper. This was the skill's original purpose (v1.9.0, as `/stata-replication`); it remains fully supported.
 
 ## When NOT to use
 
-- Your project is R-first. Use [`/data-analysis`](../data-analysis/SKILL.md).
-- Your project is Python-first. Use [`/python-analysis`](../python-analysis/SKILL.md) — or, in a mixed pipeline (prep = Python, estimation = Stata per the CLAUDE.md language roles), let `/python-analysis` produce the `.dta` handoff and run this skill for the estimation phase.
+- Your project is R-first. Use [`/data-analysis-r`](../data-analysis-r/SKILL.md).
+- Your project is Python-first. Use [`/data-analysis-python`](../data-analysis-python/SKILL.md) — or, in a mixed pipeline (prep = Python, estimation = Stata per the CLAUDE.md language roles), let `/data-analysis-python` produce the `.dta` handoff and run this skill for the estimation phase.
 - You're doing quick exploratory work. The numbered-pipeline scaffold is for replication packages, not scratch notebooks.
 
 ## Prerequisite: `stata-mcp` installed
@@ -46,6 +43,21 @@ If `stata-mcp` is not installed, the skill halts at Phase 0 with installation in
 3. Confirm `scripts/stata/` directory exists or can be created.
 4. Read [`.claude/rules/stata-code-conventions.md`](../../rules/stata-code-conventions.md) — every emitted `.do` file follows this convention.
 5. If `--from-r` flag is set, locate the existing R pipeline at `scripts/R/` and use it as a translation source. Apply the Stata → R pitfalls table from `replication-protocol.md` in reverse.
+6. **Produce a Pre-Flight Report** (same contract as the R and Python siblings) before writing any `.do` file:
+
+```markdown
+## Pre-Flight Report
+**Dataset:** [path]
+- Variables: [from `describe`]   Rows: [from `count`]
+- Key types: [outcome=float, treat=byte, state=str/encoded]
+- Missingness: [% missing per key var — remember `.` sorts as +∞ in filters]
+**Language roles (from CLAUDE.md):** prep=[..] estimate=[..] cross-check=[..]
+**Conventions read:** stata-code-conventions.md — [most relevant rule]
+**Task interpretation:** [one sentence]
+**Plan:** [3–5 bullet outline of the .do pipeline]
+```
+
+If an input can't be read, stop and ask before proceeding.
 
 ### Phase 1: Scaffold the pipeline
 
@@ -64,6 +76,8 @@ scripts/stata/
 
 If the paper or data source suggests specific specs (e.g., DiD with `reghdfe`, IV with `ivreg2`, RD with `rdrobust`), tailor `03_analyze.do` accordingly.
 
+If `--prep-only` was passed (or the language roles assign estimation elsewhere — rare for Stata, which is this project's default estimator), scaffold and run only `00_install.do` + `01_clean.do`: end the cleaning with `merge ..., assert()` discipline and explicit assertions, `save` the cleaned `.dta` handoff, and stop.
+
 ### Phase 2: Execute (unless `--no-execute`)
 
 For each script in numbered order:
@@ -72,7 +86,7 @@ For each script in numbered order:
 2. Capture the log (Stata writes to `scripts/stata/_outputs/NN_log.smcl` per the header convention) and the resulting `.dta` / `.tex` / `.pdf` outputs.
 3. If a script fails, halt — do NOT auto-fix unless the failure is trivial (typo flagged by Stata at parse time). For substantive failures (insufficient observations, singular matrices, missing covariates), surface to the user.
 
-For long-running scripts (> 2 minutes), use the **Monitor tool** to stream stdout — same pattern documented in `/data-analysis` and `/audit-reproducibility`.
+For long-running scripts (> 2 minutes), use the **Monitor tool** to stream stdout — same pattern documented in `/data-analysis-r` and `/audit-reproducibility`.
 
 ### Phase 3: Verify
 
@@ -93,8 +107,8 @@ If `--from-r` was set, the existing R pipeline at `scripts/R/` *is* the cross-ch
 
 ## Companion skills
 
-- [`/data-analysis`](../data-analysis/SKILL.md) — R analogue. Same pipeline shape, different language.
-- [`/python-analysis`](../python-analysis/SKILL.md) — Python analogue; in mixed pipelines it produces the `.dta` handoff this skill estimates from.
+- [`/data-analysis-r`](../data-analysis-r/SKILL.md) — R analogue. Same pipeline shape, different language.
+- [`/data-analysis-python`](../data-analysis-python/SKILL.md) — Python analogue; in mixed pipelines it produces the `.dta` handoff this skill estimates from.
 - [`/cross-check`](../cross-check/SKILL.md) — the Phase 4 independent re-implementation (any Python ↔ Stata ↔ R pair; `--data` mode for prep verification).
 - [`/audit-reproducibility`](../audit-reproducibility/SKILL.md) — reads both `.rds` and `.dta` outputs. Cross-checks manuscript claims against the produced values. Updated in v1.9.0 to handle Stata outputs.
 - [`/review-paper`](../review-paper/SKILL.md) — if the paper exists and cites tables/figures produced by this pipeline, `/review-paper` auto-invokes `/audit-reproducibility` (per `cross-artifact-review.md`).
@@ -116,4 +130,4 @@ If `--from-r` was set, the existing R pipeline at `scripts/R/` *is* the cross-ch
 
 ## Long-running fits / batch reruns: use the Monitor tool (Apr 2026)
 
-Long Stata fits (multi-hour bootstrap with `cluster bootstrap`, large `reghdfe` with millions of observations, simulation studies) should be background-launched and tailed with the Monitor tool — same pattern as `/data-analysis` and `/audit-reproducibility` for R / Python. The .do file logs to SMCL; the Monitor tool follows stderr so Claude can react to errors mid-stream.
+Long Stata fits (multi-hour bootstrap with `cluster bootstrap`, large `reghdfe` with millions of observations, simulation studies) should be background-launched and tailed with the Monitor tool — same pattern as `/data-analysis-r` and `/audit-reproducibility` for R / Python. The .do file logs to SMCL; the Monitor tool follows stderr so Claude can react to errors mid-stream.

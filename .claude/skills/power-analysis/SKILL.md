@@ -118,7 +118,7 @@ If invoked by `/preregister`, return the methods paragraph + MDE row for the pre
 - [`.claude/skills/preregister/SKILL.md`](../preregister/SKILL.md) — invokes this skill to fill the power/MDE section of an `aea-rct` (and OSF) preregistration; this skill returns the methods paragraph.
 - [`.claude/skills/simulation-study/SKILL.md`](../simulation-study/SKILL.md) — the Monte Carlo harness Phase 2 reuses (seeded DGP, estimator grid, % rejecting H0).
 - [`.claude/rules/simulation-conventions.md`](../../rules/simulation-conventions.md) — the simulation contract (truth from DGP, MCSE, size-under-the-null) that Phase 2 must honor.
-- [`.claude/skills/data-analysis/SKILL.md`](../data-analysis/SKILL.md) · [`.claude/skills/stata-replication/SKILL.md`](../stata-replication/SKILL.md) — where the realised analysis (and its actual estimator/SE) lives; the power calc should use the same estimator.
+- [`.claude/skills/data-analysis-r/SKILL.md`](../data-analysis-r/SKILL.md) · [`.claude/skills/data-analysis-stata/SKILL.md`](../data-analysis-stata/SKILL.md) — where the realised analysis (and its actual estimator/SE) lives; the power calc should use the same estimator.
 - [`.claude/rules/confidential-data.md`](../../rules/confidential-data.md) — when baseline mean/SD/ICC are taken from restricted-access data, disclosure-avoidance limits apply; cite published or pilot moments rather than embedding raw confidential statistics in the (externally-uploaded) preregistration.
 
 ## What this skill does NOT do

@@ -22,7 +22,7 @@ Compare numeric claims in a manuscript (point estimates, standard errors, p-valu
 ## Inputs
 
 - `$0` — path to the manuscript (`.tex`, `.qmd`, `.md`, `.pdf`). Required.
-- `$1` — path to the outputs directory. Defaults to `scripts/R/_outputs/`. Recognised alternatives: `scripts/python/_outputs/` (Python pipelines built by [`/python-analysis`](../python-analysis/SKILL.md)), `scripts/stata/_outputs/` (Stata pipelines built by [`/stata-replication`](../stata-replication/SKILL.md)), `_targets/objects/` (R `targets` workflows), any directory the user-specified outputs live in. For a **mixed pipeline** (e.g. prep = Python, estimation = Stata), point `$1` at the directory holding the outputs the manuscript actually cites — usually the estimation language's `_outputs/`.
+- `$1` — path to the outputs directory. Defaults to `scripts/R/_outputs/`. Recognised alternatives: `scripts/python/_outputs/` (Python pipelines built by [`/data-analysis-python`](../data-analysis-python/SKILL.md)), `scripts/stata/_outputs/` (Stata pipelines built by [`/data-analysis-stata`](../data-analysis-stata/SKILL.md)), `_targets/objects/` (R `targets` workflows), any directory the user-specified outputs live in. For a **mixed pipeline** (e.g. prep = Python, estimation = Stata), point `$1` at the directory holding the outputs the manuscript actually cites — usually the estimation language's `_outputs/`.
 
 ## Workflow
 

@@ -134,4 +134,4 @@ Save a report to `quality_reports/[package]_package_check.md` and present a verd
 
 ## Long-running checks: use the Monitor tool
 
-`R CMD check --as-cran` and `covr` can run for several minutes. Background-launch via Bash with `run_in_background: true`, capture the `bash_id`, and use the **Monitor tool** to stream progress (e.g. the `checking …` lines or process exit) instead of polling. See [`data-analysis/SKILL.md`](../data-analysis/SKILL.md) for the pattern.
+`R CMD check --as-cran` and `covr` can run for several minutes. Background-launch via Bash with `run_in_background: true`, capture the `bash_id`, and use the **Monitor tool** to stream progress (e.g. the `checking …` lines or process exit) instead of polling. See [`data-analysis-r/SKILL.md`](../data-analysis-r/SKILL.md) for the pattern.

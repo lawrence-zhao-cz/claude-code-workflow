@@ -2619,7 +2619,7 @@ window.Quarto = {
 </tr>
 <tr class="even">
 <td>Multi-agent workflows</td>
-<td>18 specialized agents for proofreading, layout, pedagogy, code review, fact-checking, AI-voice auditing, simulation + R-package review</td>
+<td>20 specialized agents for proofreading, layout, pedagogy, code review (R/Python/Stata), fact-checking, AI-voice auditing, simulation + R-package review</td>
 </tr>
 <tr class="odd">
 <td>Quality review</td>
@@ -2720,7 +2720,7 @@ You see: &quot;Done. Fixed 18 issues. Score: 91/100. Ready to commit?&quot;</cod
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <pre><code>You: &quot;Analyze this dataset and produce publication-ready output&quot;
      ↓
-Claude invokes /data-analysis, which internally:
+Claude invokes /data-analysis-r, which internally:
   → Explores, models, builds tables and figures
   → Spawns /review-r (code quality, reproducibility)
   → Produces R script, tables, and figures
@@ -3672,7 +3672,7 @@ APPROVED   NEEDS WORK
 <p><strong>Retirement notice:</strong> Sonnet 4 and the original Opus 4 retire on <strong>2026-06-15</strong>. If your environment pins one of these (<code>ANTHROPIC_MODEL</code> env, hard-coded model IDs in CI, etc.), migrate before then. See <a href="../TROUBLESHOOTING.md">TROUBLESHOOTING.md</a> for the migration checklist.</p>
 </div>
 </div>
-<p>Not all agents need the same model. Each agent file has a <code>model:</code> field in its YAML frontmatter. In v2.0 all 18 agents are <strong>pinned</strong> to an explicit model + effort tier (no longer <code>inherit</code>), following the 70/20/10 routing pattern below. You can re-tune any agent to optimize cost:</p>
+<p>Not all agents need the same model. Each agent file has a <code>model:</code> field in its YAML frontmatter. All 20 agents are <strong>pinned</strong> to an explicit model + effort tier (no longer <code>inherit</code>, since v2.0), following the 70/20/10 routing pattern below. You can re-tune any agent to optimize cost:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 24%">
@@ -4892,7 +4892,7 @@ Phase 4: Only then extend
 <p>In one course, we discovered that a widely-used R package silently produced <strong>incorrect estimates</strong> due to a subtle specification issue. This bug was caught 3 times in different scripts. Without the replication-first protocol, these wrong numbers would have been taught to PhD students.</p>
 </div>
 </div>
-<p><strong>Source-language coverage:</strong> The pattern is language-agnostic. The template ships <a href="#all-skills"><code>/data-analysis</code></a> for R-first projects and <a href="#all-skills"><code>/stata-replication</code></a> (v1.9.0) for Stata-first projects (mirrors <code>/data-analysis</code> exactly; same numbered-pipeline shape, different language; executes via the <code>stata-mcp</code> MCP server). Python-first projects follow the same convention with the path <code>scripts/python/_outputs/</code>. For Stata users, <a href=".claude/rules/stata-code-conventions.md"><code>stata-code-conventions.md</code></a> (v1.9.0) codifies the header (<code>version 18</code>, <code>clear all</code>, <code>set seed</code>/<code>set sortseed</code>), numbered pipeline (00–99), <code>esttab</code> for <code>\input{}</code> tables, clustering discipline (<code>reghdfe</code>), balance via <code>iebaltab</code>, and AEA Data Editor compliance.</p>
+<p><strong>Source-language coverage:</strong> The pattern is language-agnostic. The template ships <a href="#all-skills"><code>/data-analysis-r</code></a> for R-first projects and <a href="#all-skills"><code>/data-analysis-stata</code></a> (v1.9.0) for Stata-first projects (mirrors <code>/data-analysis-r</code> exactly; same numbered-pipeline shape, different language; executes via the <code>stata-mcp</code> MCP server). Python-first projects follow the same convention with the path <code>scripts/python/_outputs/</code>. For Stata users, <a href=".claude/rules/stata-code-conventions.md"><code>stata-code-conventions.md</code></a> (v1.9.0) codifies the header (<code>version 18</code>, <code>clear all</code>, <code>set seed</code>/<code>set sortseed</code>), numbered pipeline (00–99), <code>esttab</code> for <code>\input{}</code> tables, clustering discipline (<code>reghdfe</code>), balance via <code>iebaltab</code>, and AEA Data Editor compliance.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -5131,7 +5131,7 @@ Phase 4: QUALITY GATE
 </section>
 <section id="long-running-tasks-the-monitor-tool-apr-2026" class="level4" data-number="5.9.1.3">
 <h4 data-number="5.9.1.3" class="anchored" data-anchor-id="long-running-tasks-the-monitor-tool-apr-2026"><span class="header-section-number">5.9.1.3</span> Long-running tasks: the Monitor tool (Apr 2026)</h4>
-<p>For genuinely long jobs — a 30-minute R fit, a <code>/audit-reproducibility</code> batch over many tables, a Quarto render of a 200-slide deck — the <strong>Monitor tool</strong> (Apr 2026 Week 15) lets Claude tail a background process’s stdout in real time and react when something interesting happens. The pattern: launch the long job in the background (Bash with <code>run_in_background: true</code>), then ask Claude to monitor until a condition fires (error, milestone, finish). No polling loop, no sleep cycles. Useful inside <code>/data-analysis</code> for the regression step and inside <code>/audit-reproducibility</code> when re-running the whole script suite.</p>
+<p>For genuinely long jobs — a 30-minute R fit, a <code>/audit-reproducibility</code> batch over many tables, a Quarto render of a 200-slide deck — the <strong>Monitor tool</strong> (Apr 2026 Week 15) lets Claude tail a background process’s stdout in real time and react when something interesting happens. The pattern: launch the long job in the background (Bash with <code>run_in_background: true</code>), then ask Claude to monitor until a condition fires (error, milestone, finish). No polling loop, no sleep cycles. Useful inside <code>/data-analysis-r</code> for the regression step and inside <code>/audit-reproducibility</code> when re-running the whole script suite.</p>
 </section>
 <section id="watching-parallel-agents-claude-agents-may-2026" class="level4" data-number="5.9.1.4">
 <h4 data-number="5.9.1.4" class="anchored" data-anchor-id="watching-parallel-agents-claude-agents-may-2026"><span class="header-section-number">5.9.1.4</span> Watching parallel agents: <code>claude agents</code> (May 2026)</h4>
@@ -5275,7 +5275,7 @@ Decision point (1-2 hours):
 <td>Before submission or after a draft</td>
 </tr>
 <tr class="odd">
-<td><code>/python-analysis [data]</code> · <code>/stata-replication</code> · <code>/data-analysis [data]</code> (R)</td>
+<td><code>/data-analysis-python [data]</code> · <code>/data-analysis-stata</code> · <code>/data-analysis-r [data]</code> (R)</td>
 <td>End-to-end analysis pipeline in your project’s language(s): explore, clean (with validation), estimate, produce publication-ready output</td>
 <td>Empirical analysis phase</td>
 </tr>
@@ -5347,7 +5347,7 @@ Decision point (1-2 hours):
 <h4 data-number="5.9.3.1" class="anchored" data-anchor-id="the-research-lifecycle-as-a-dependency-graph"><span class="header-section-number">5.9.3.1</span> The Research Lifecycle as a Dependency Graph</h4>
 <p>A research project is not a waterfall — it is a <strong>dependency graph</strong>. Some phases run in parallel; others are strictly sequential:</p>
 <pre><code>/research-ideation ─────┐
-                        ├──→ /lit-review ──→ /data-analysis ──→ /review-paper
+                        ├──→ /lit-review ──→ /data-analysis-r ──→ /review-paper
 /interview-me ──────────┘         ↑               ↑
                                   │               │
                           (can run in parallel)   │
@@ -5355,7 +5355,7 @@ Decision point (1-2 hours):
                           (enter mid-pipeline: ───┘
                            start with data and
                            work backwards)</code></pre>
-<p><strong>Enter mid-pipeline.</strong> You do not have to start from ideation. If you already have data, start with <code>/data-analysis</code> and work backwards to the research question. If you already have a draft, start with <code>/review-paper</code>. The skills are modular — use what you need, skip what you don’t.</p>
+<p><strong>Enter mid-pipeline.</strong> You do not have to start from ideation. If you already have data, start with <code>/data-analysis-r</code> and work backwards to the research question. If you already have a draft, start with <code>/review-paper</code>. The skills are modular — use what you need, skip what you don’t.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-35-contents" aria-controls="callout-35" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -6166,7 +6166,7 @@ research-spec.md  ─────────────→  preregistration-dr
 <h2 data-number="6.7" class="anchored" data-anchor-id="stata-mcp-mcp-server-for-stata-execution"><span class="header-section-number">6.7</span> stata-mcp: MCP server for Stata execution</h2>
 <p><strong>Repository:</strong> <a href="https://github.com/SepineTam/stata-mcp">SepineTam/stata-mcp</a> <strong>Author:</strong> SepineTam (171+ stars, 91 releases, v1.17.3 as of May 2026)</p>
 <p>A mature MCP server that lets Claude Code execute Stata <code>.do</code> files via a command-guarded interface — refuses destructive shell ops (<code>!/shell/erase</code> etc.), monitors RAM, and pairs with the Stata Language Server. <strong>Install once per user:</strong> <code>claude mcp add stata-mcp --scope user -- uvx stata-mcp</code> (requires <code>uv</code> and a local Stata install).</p>
-<p><strong>Why it matters for this template:</strong> <a href="#sec-appendix"><code>/stata-replication</code></a> (v1.9.0) depends on this MCP server, and so does the Stata leg of <a href="#sec-appendix"><code>/cross-check</code></a>. The analysis pipeline comes in three parallel languages — <a href="#sec-appendix"><code>/python-analysis</code></a>, <code>/stata-replication</code>, and <a href="#sec-appendix"><code>/data-analysis</code></a> (R) — same pipeline shape, picked per project via the language-roles table in <code>CLAUDE.md</code>. AEA submissions where the replication package is in Stata are the canonical use case for this server.</p>
+<p><strong>Why it matters for this template:</strong> <a href="#sec-appendix"><code>/data-analysis-stata</code></a> (v1.9.0) depends on this MCP server, and so does the Stata leg of <a href="#sec-appendix"><code>/cross-check</code></a>. The analysis pipeline comes in three parallel languages — <a href="#sec-appendix"><code>/data-analysis-python</code></a>, <code>/data-analysis-stata</code>, and <a href="#sec-appendix"><code>/data-analysis-r</code></a> (R) — same pipeline shape, picked per project via the language-roles table in <code>CLAUDE.md</code>. AEA submissions where the replication package is in Stata are the canonical use case for this server.</p>
 <p>For end-to-end Stata workflows, see <a href=".claude/rules/stata-code-conventions.md"><code>.claude/rules/stata-code-conventions.md</code></a> (header scaffold, numbered pipeline, esttab tables, clustering discipline, AEA Data Editor compliance).</p>
 </section>
 <section id="claudecodetools-the-editor-persona" class="level2" data-number="6.8">
@@ -6554,7 +6554,7 @@ research-spec.md  ─────────────→  preregistration-dr
 <li><strong>Verify everything.</strong> The verification rule exists for a reason. Never skip compilation or rendering checks.</li>
 <li><strong>Session logs matter.</strong> Document design decisions, not just what changed. Future-you will thank present-you.</li>
 <li><strong>Devil’s Advocate early.</strong> Challenge slide structure before you’ve built 50 slides on a shaky foundation.</li>
-<li><strong>Progressive disclosure.</strong> Start with CLAUDE.md + 2–3 rules. Add more as your workflow matures. Newcomers should not face all 32 rules on day one.</li>
+<li><strong>Progressive disclosure.</strong> Start with CLAUDE.md + 2–3 rules. Add more as your workflow matures. Newcomers should not face all 33 rules on day one.</li>
 <li><strong>Use <code>CLAUDE.local.md</code> for personal overrides.</strong> This file is automatically gitignored and loaded alongside <code>CLAUDE.md</code>. Put machine-specific paths, personal preferences, and local tool versions here — they won’t pollute the shared repo.</li>
 </ol>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -6828,13 +6828,13 @@ research-spec.md  ─────────────→  preregistration-dr
 <td>R&amp;R cross-reference and response draft</td>
 </tr>
 <tr class="odd">
-<td><code>/data-analysis</code></td>
-<td><code>.claude/skills/data-analysis/</code></td>
+<td><code>/data-analysis-r</code></td>
+<td><code>.claude/skills/data-analysis-r/</code></td>
 <td>End-to-end R analysis</td>
 </tr>
 <tr class="even">
-<td><code>/python-analysis</code></td>
-<td><code>.claude/skills/python-analysis/</code></td>
+<td><code>/data-analysis-python</code></td>
+<td><code>.claude/skills/data-analysis-python/</code></td>
 <td>End-to-end Python analysis (pandas/statsmodels/linearmodels/pyfixest) with a mandatory data-prep validation battery (v2.0)</td>
 </tr>
 <tr class="odd">
@@ -6903,8 +6903,8 @@ research-spec.md  ─────────────→  preregistration-dr
 <td>Five-critic council that votes on whether candidate <code>[LEARN]</code> entries should be promoted from personal-memory.md to MEMORY.md (v1.9.0)</td>
 </tr>
 <tr class="even">
-<td><code>/stata-replication</code></td>
-<td><code>.claude/skills/stata-replication/</code></td>
+<td><code>/data-analysis-stata</code></td>
+<td><code>.claude/skills/data-analysis-stata/</code></td>
 <td>End-to-end Stata pipeline scaffold + execution via the <code>stata-mcp</code> MCP server (the Stata member of the R/Python/Stata pipeline triad; v1.9.0)</td>
 </tr>
 <tr class="odd">

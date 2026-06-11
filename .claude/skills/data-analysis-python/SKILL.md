@@ -1,7 +1,7 @@
 ---
-name: python-analysis
-description: End-to-end Python data analysis pipeline — exploration → cleaning (with a validation battery) → estimation → publication-ready tables and figures. The Python analogue of /data-analysis (R) and /stata-replication (Stata); the default for prep-heavy work. Use when user says "analyze this in Python", "run a regression in Python", "explore this CSV/parquet", "pandas analysis", "statsmodels/linearmodels/pyfixest regression", or points at data and wants Python results. Produces numbered .py scripts in scripts/python/ with outputs in scripts/python/_outputs/.
-argument-hint: "[dataset path or description of analysis goal] [--no-crosscheck]"
+name: data-analysis-python
+description: End-to-end Python data analysis pipeline — exploration → cleaning (with a validation battery) → estimation → publication-ready tables and figures. The Python analogue of /data-analysis-r (R) and /data-analysis-stata (Stata); the default for prep-heavy work. Use when user says "analyze this in Python", "run a regression in Python", "explore this CSV/parquet", "pandas analysis", "statsmodels/linearmodels/pyfixest regression", or points at data and wants Python results. Produces numbered .py scripts in scripts/python/ with outputs in scripts/python/_outputs/.
+argument-hint: "[dataset path or description of analysis goal] [--prep-only] [--no-crosscheck]"
 allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task", "Monitor"]
 ---
 
@@ -20,7 +20,7 @@ Run an end-to-end analysis in Python: load, explore, clean (with validation), es
 - **Persist every computed object** (pickle/joblib fitted results, `.parquet` cleaned data) — table/figure scripts load pre-computed objects, never re-fit.
 - **Use the project palette** for figures (transparent bg, `.pdf` + `.png`).
 - **Run the `python-reviewer` agent** on generated scripts before presenting results.
-- **Respect the project's language roles** (CLAUDE.md "Current Project State"): if Python is the *prep* language and Stata the *estimation* language, this skill produces the cleaned-data handoff (`.dta`/`.parquet`) and stops before estimation unless asked.
+- **Respect the project's language roles** (CLAUDE.md "Project Language Roles"): if Python is the *prep* language and Stata the *estimation* language, this skill produces the cleaned-data handoff (`.dta`/`.parquet`) and stops before estimation. `--prep-only` forces this stop regardless of roles — the explicit "data cleaning only" entry point (Phases 0–3, ending with the validation battery + handoff export).
 
 ---
 
@@ -51,7 +51,7 @@ Header (per conventions), imports at top, `SEED` + `rng = np.random.default_rng(
 Summary statistics, missingness rates, distributions for key continuous vars, relationships (correlations/scatter), time patterns if panel, pre-treatment group comparisons if treatment/control. Save diagnostics to `_outputs/diagnostics/`.
 
 ### Phase 3: Cleaning + Validation Battery
-Produce the cleaned frame, then **end `02_clean.py` with the validation battery** (`python-code-conventions.md` §7): key uniqueness, merge match rates, row counts, value ranges, missingness snapshot — assertions that fail loud. Persist cleaned data (`.parquet`; also `.dta` via `pyreadstat` if it hands off to Stata).
+Produce the cleaned frame, then **end `02_clean.py` with the validation battery** (`python-code-conventions.md` §7): key uniqueness, merge match rates, row counts, value ranges, missingness snapshot — assertions that fail loud. Persist cleaned data (`.parquet`; also `.dta` via `pyreadstat` if it hands off to Stata). **If `--prep-only` was passed (or the language roles assign estimation elsewhere), stop here and report** — the handoff file is the deliverable.
 
 ### Phase 4: Estimation
 - Panel/FE/IV → `pyfixest` (`feols`) or `linearmodels`; general → `statsmodels`; ML-causal → `econml`/`doubleml`.
@@ -80,10 +80,10 @@ Skip when:
 
 ## Long-running fits: use the Monitor tool
 
-For fits/bootstraps/simulations over a couple of minutes, background-launch (`uv run python scripts/python/03_analyze.py`, `run_in_background: true`), capture the `bash_id`, and stream with the **Monitor tool** until a milestone (e.g. `tables written`) or process exit — avoids the `sleep; check` polling anti-pattern. Same pattern as `/data-analysis` and `/stata-replication`.
+For fits/bootstraps/simulations over a couple of minutes, background-launch (`uv run python scripts/python/03_analyze.py`, `run_in_background: true`), capture the `bash_id`, and stream with the **Monitor tool** until a milestone (e.g. `tables written`) or process exit — avoids the `sleep; check` polling anti-pattern. Same pattern as `/data-analysis-r` and `/data-analysis-stata`.
 
 ## Companion skills
-- [`/data-analysis`](../data-analysis/SKILL.md) (R) · [`/stata-replication`](../stata-replication/SKILL.md) (Stata) — same pipeline shape, different language.
+- [`/data-analysis-r`](../data-analysis-r/SKILL.md) (R) · [`/data-analysis-stata`](../data-analysis-stata/SKILL.md) (Stata) — same pipeline shape, different language.
 - [`/cross-check`](../cross-check/SKILL.md) — the Phase 4b independent re-implementation (also has a `--data` mode for high-stakes prep).
 - [`/review-python`](../review-python/SKILL.md) — code review · [`/audit-reproducibility`](../audit-reproducibility/SKILL.md) — numeric verification.
 

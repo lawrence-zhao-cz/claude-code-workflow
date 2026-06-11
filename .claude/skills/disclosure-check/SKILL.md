@@ -129,7 +129,7 @@ Write `quality_reports/disclosure_check_[outputs-dir-slug].md`:
 - [`.claude/rules/confidential-data.md`](../../rules/confidential-data.md) — restricted-data handling contract + the provider-rule profiles this skill loads.
 - [`.claude/rules/replication-protocol.md`](../../rules/replication-protocol.md) — for restricted-data papers the replication package ships code + access path, not the microdata; screen every released output first.
 - [`.claude/skills/audit-reproducibility/SKILL.md`](../audit-reproducibility/SKILL.md) — numeric paper↔code verification: run it on the *retained* values, this skill on the *released* ones.
-- [`.claude/skills/data-analysis/SKILL.md`](../data-analysis/SKILL.md), [`.claude/skills/stata-replication/SKILL.md`](../stata-replication/SKILL.md) — produce the R / Stata / Python outputs this skill screens.
+- [`.claude/skills/data-analysis-r/SKILL.md`](../data-analysis-r/SKILL.md), [`.claude/skills/data-analysis-stata/SKILL.md`](../data-analysis-stata/SKILL.md) — produce the R / Stata / Python outputs this skill screens.
 - [AEA Data Editor checklist](https://aeadataeditor.github.io/) and the [DCAS standard](https://datacodestandard.org/) — disclosure + access expectations for restricted-data deposits (openICPSR restricted-access stub).
 
 ## What this skill does NOT do

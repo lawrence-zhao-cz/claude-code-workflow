@@ -3,6 +3,9 @@ paths:
   - "Slides/**/*.tex"
   - "Quarto/**/*.qmd"
   - "docs/**"
+  - "scripts/**/*.R"
+  - "scripts/**/*.py"
+  - "scripts/**/*.do"
 ---
 
 # Task Completion Verification Protocol
@@ -35,6 +38,18 @@ paths:
 1. Run `Rscript scripts/R/filename.R`
 2. Verify output files (PDF, RDS) were created with non-zero size
 3. Spot-check estimates for reasonable magnitude
+
+## For Python Scripts:
+1. Run `uv run python scripts/python/filename.py` (uv resolves the pinned environment)
+2. Verify output files (`.parquet`, pickle, `.tex`, `.pdf`/`.png`) were created with non-zero size
+3. Confirm the validation battery in `02_clean.py` ran (its assertions print/raise — silence after a clean run means it passed)
+4. Spot-check estimates for reasonable magnitude
+
+## For Stata Scripts:
+1. Dispatch the `.do` file via the `stata-mcp` MCP server (never paste code into a console)
+2. Read the captured log for `r(###)` error codes — a .do file can "finish" with errors unless `set more off` + error checking are in place
+3. Verify outputs in `scripts/stata/_outputs/` (`.dta`, esttab `.tex`, `graph export` PDFs) with non-zero size
+4. Spot-check estimates for reasonable magnitude
 
 ## Common Pitfalls:
 - **PDF images in HTML**: Browsers don't render PDFs inline → convert to SVG

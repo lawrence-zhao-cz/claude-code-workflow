@@ -163,7 +163,7 @@ Headline rules (mirror `r-code-conventions.md` §8 / `r-reviewer` Category 11):
 
 ## Enforcement & cross-references
 
-- [`/python-analysis`](../skills/python-analysis/SKILL.md) — emits pipelines conforming to this rule (analogue of `/data-analysis` for R, `/stata-replication` for Stata).
+- [`/data-analysis-python`](../skills/data-analysis-python/SKILL.md) — emits pipelines conforming to this rule (analogue of `/data-analysis-r` for R, `/data-analysis-stata` for Stata).
 - [`/review-python`](../skills/review-python/SKILL.md) + the `python-reviewer` agent — read-only review against this rule.
 - [`/cross-check`](../skills/cross-check/SKILL.md) — independent re-implementation in a second language (auto after estimation; `--data` mode for prep).
 - [`/audit-reproducibility`](../skills/audit-reproducibility/SKILL.md) — reads `.parquet`/`.dta` outputs; cross-checks manuscript numbers.

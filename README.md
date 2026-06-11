@@ -16,7 +16,7 @@ A ready-to-fork foundation for AI-assisted academic work. You describe what you 
 
 > **Before you start:** Claude Code + git are the minimum. To run the included `HelloWorld` demos end-to-end you also need XeLaTeX (Beamer sample) and Quarto (Quarto sample). R and the GitHub CLI are recommended. Python 3 is used by a few internal scripts (`check-palette-sync.py`, `check-tikz-prevention.py`) and is pre-installed on macOS/Linux. Full list in [Prerequisites](#prerequisites) below. Fastest path: clone first, then run `./scripts/validate-setup.sh` — it reports exactly what's missing with install links.
 >
-> **Only need Python/R/markdown?** You don't need XeLaTeX or Quarto. The agents, rules, skills, and orchestration patterns work for any text/code artifact. Skip the `HelloWorld` demos and head straight to `/python-analysis`, `/data-analysis` (R), `/review-paper`, or `/lit-review`.
+> **Only need Python/R/markdown?** You don't need XeLaTeX or Quarto. The agents, rules, skills, and orchestration patterns work for any text/code artifact. Skip the `HelloWorld` demos and head straight to `/data-analysis-python`, `/data-analysis-r` (R), `/review-paper`, or `/lit-review`.
 >
 > **Session 2 onwards:** [MEMORY.md](MEMORY.md) (committed) collects generic `[LEARN]` entries that help all forkers; `.claude/state/personal-memory.md` (gitignored) is for machine-specific notes. See [`.claude/rules/meta-governance.md`](.claude/rules/meta-governance.md) for the distinction.
 
@@ -168,9 +168,9 @@ The guide covers Claude Code's latest capabilities:
 |---------------|----------------------|
 | Lecture slides (Beamer/Quarto) | Full creation, translation, multi-agent review, deployment |
 | Research papers | Literature review, manuscript review, simulated peer review (`/review-paper --peer [journal]`), reviewer-disposition variance reporting (`--variance N`) |
-| Data analysis | End-to-end pipelines in Python (`/python-analysis`), Stata via `stata-mcp` (`/stata-replication`), or R (`/data-analysis`) — picked per project via the CLAUDE.md language roles — with continuous cross-language verification (`/cross-check`) and publication-ready output |
+| Data analysis | End-to-end pipelines in Python (`/data-analysis-python`), Stata via `stata-mcp` (`/data-analysis-stata`), or R (`/data-analysis-r`) — picked per project via the CLAUDE.md language roles — with continuous cross-language verification (`/cross-check`) and publication-ready output |
 | Monte Carlo simulations | Reproducible simulation studies (`/simulation-study`, v1.10.0) — parameterized DGP, estimator grid, bias/RMSE/coverage/size/power with Monte Carlo SEs, dedicated `sim-reviewer` review pass |
-| Package development | R package release gate (`/r-package-check`, v1.10.0) — `devtools::document()` + tests + `R CMD check --as-cran` + CRAN-policy triage + `r-package-reviewer` (Stata / Python checks on the roadmap) |
+| Package development | R package release gate (`/r-package-check`, v1.10.0) — `devtools::document()` + tests + `R CMD check --as-cran` + CRAN-policy triage + `r-package-reviewer` (Stata / Python **package** checks on the roadmap; the code reviewers `/review-python` + `/review-stata` shipped in v2.1) |
 | Replication packages | AEA-compliant packaging, reproducibility audit trails, `passport.yaml` claims provenance (v1.9.0) |
 | Presentations | Rhetoric of decks principles, visual audit, cognitive load review |
 | Research proposals | Structured drafting with adversarial critique |
@@ -241,8 +241,8 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/research-ideation` | Generate research questions and empirical strategies |
 | `/interview-me` | Interactive interview to formalize a research idea |
 | `/review-paper` | Manuscript review: structure, econometrics, referee objections |
-| `/data-analysis` | End-to-end R analysis with publication-ready output |
-| `/python-analysis` | End-to-end Python analysis (pandas/statsmodels/linearmodels/pyfixest) with publication-ready output |
+| `/data-analysis-r` | End-to-end R analysis with publication-ready output |
+| `/data-analysis-python` | End-to-end Python analysis (pandas/statsmodels/linearmodels/pyfixest) with publication-ready output |
 | `/learn` | Extract non-obvious discoveries into persistent skills |
 | `/context-status` | Show session health and context usage |
 | `/deep-audit` | Repository-wide consistency audit |
@@ -257,7 +257,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/humanize` (v1.9.0) | Detect AI-voice tells in academic prose (10 detection categories; read-only, no rewrite) |
 | `/compress-session` (v1.9.0) | Distil current session into structured notes (decisions, next actions, *discarded-as-noise*) before auto-compaction |
 | `/promote-memory` (v1.9.0) | Five-critic council that votes on which `[LEARN]` entries graduate from personal-memory.md to MEMORY.md |
-| `/stata-replication` (v1.9.0) | End-to-end Stata pipeline via the `stata-mcp` MCP server (the Stata member of the R/Python/Stata pipeline triad) |
+| `/data-analysis-stata` (v1.9.0) | End-to-end Stata pipeline via the `stata-mcp` MCP server (the Stata member of the R/Python/Stata pipeline triad) |
 | `/simulation-study` (v1.10.0) | Scaffold + run a reproducible Monte Carlo study — parameterized DGP, estimator grid, seeded replications, bias/RMSE/coverage/size/power with Monte Carlo SEs |
 | `/r-package-check` (v1.10.0) | R package release gate — `devtools::document()` + tests + `R CMD check --as-cran`, triage ERROR/WARNING/NOTE vs CRAN policy, `r-package-reviewer` pass |
 | `/replication-package` (v2.0) | Assemble a submission-ready DCAS / openICPSR replication package — standard README, dataset manifest, computational-requirements capture, Table/Figure → script:line map, confidential-data deposit note (blocks on `/audit-reproducibility` FAIL) |
@@ -275,7 +275,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/respond-to-eval` (v2.0) | Teaching analogue of `/respond-to-referees` — clusters course-eval comments into themes, weights by frequency (signal vs noise), classifies Keep / Change / Investigate / Out-of-scope, and drafts concrete changes mapped to the syllabus + slide decks; saves the plan to `quality_reports/teaching/` |
 | `/scaffold-exercises` (v2.0) | Scaffold a graded problem set across analytical/empirical/coding types, with worked solutions and "why this matters" explainers emitted to a separate solution key |
 | `/new-skill` (v2.0) | Scaffold a new skill that follows this repo's conventions — interviews for purpose, triggers, and tools, writes `.claude/skills/<name>/SKILL.md` from the template with frontmatter/body that pass `check-skill-integrity.py` first try, then reminds to add the surface-table rows |
-| `/cross-check` (v2.0) | Independent re-implementation of a result in a second language (any Python ↔ Stata ↔ R pair) compared against `replication-protocol.md` tolerances, with culprit diagnosis on divergence (clustering df, FE/singleton handling, SE type, seed/sort, missing-value filters); `--data` mode compares independently produced cleaned datasets; auto-invoked after estimation by `/python-analysis` and `/stata-replication` |
+| `/cross-check` (v2.0) | Independent re-implementation of a result in a second language (any Python ↔ Stata ↔ R pair) compared against `replication-protocol.md` tolerances, with culprit diagnosis on divergence (clustering df, FE/singleton handling, SE type, seed/sort, missing-value filters); `--data` mode compares independently produced cleaned datasets; auto-invoked after estimation by `/data-analysis-python` and `/data-analysis-stata` |
 
 ### Research Workflow
 
@@ -362,11 +362,11 @@ Rules use path-scoped loading: **always-on** rules load every session (~100 line
 |------|-------------|---------|
 | [Claude Code](https://code.claude.com/docs/en/overview) | Everything | [claude.ai/install](https://claude.ai/install) |
 | git | Clone + version control | [git-scm.com](https://git-scm.com/downloads) |
-| Python 3 (3.9+) | Internal checkers (palette sync, TikZ prevention) + analysis pipelines (`/python-analysis`; [uv](https://docs.astral.sh/uv/) recommended as env manager) | Preinstalled on macOS/Linux; [python.org](https://www.python.org/) for Windows |
+| Python 3 (3.9+) | Internal checkers (palette sync, TikZ prevention) + analysis pipelines (`/data-analysis-python`; [uv](https://docs.astral.sh/uv/) recommended as env manager) | Preinstalled on macOS/Linux; [python.org](https://www.python.org/) for Windows |
 | XeLaTeX | LaTeX compilation (Beamer `HelloWorld`, real lectures) | [TeX Live](https://tug.org/texlive/) or [MacTeX](https://tug.org/mactex/) |
 | [Quarto](https://quarto.org) | Web slides (Quarto `HelloWorld`, real lectures) | [quarto.org/docs/get-started](https://quarto.org/docs/get-started/) |
-| R | Figures and analysis (`/data-analysis`, `scripts/R/` template, the default `/cross-check` leg) | [r-project.org](https://www.r-project.org/) |
-| Stata | Stata pipelines (`/stata-replication`, the Stata leg of `/cross-check`) via the `stata-mcp` MCP server | [stata.com](https://www.stata.com/); then `claude mcp add stata-mcp --scope user -- uvx stata-mcp` |
+| R | Figures and analysis (`/data-analysis-r`, `scripts/R/` template, the default `/cross-check` leg) | [r-project.org](https://www.r-project.org/) |
+| Stata | Stata pipelines (`/data-analysis-stata`, the Stata leg of `/cross-check`) via the `stata-mcp` MCP server | [stata.com](https://www.stata.com/); then `claude mcp add stata-mcp --scope user -- uvx stata-mcp` |
 | pdf2svg | TikZ → SVG for Quarto (`/extract-tikz`) | `brew install pdf2svg` (macOS), `apt install pdf2svg` (Debian) |
 | [gh CLI](https://cli.github.com/) | PR / issue workflow | `brew install gh` (macOS), `apt install gh` (Debian) |
 

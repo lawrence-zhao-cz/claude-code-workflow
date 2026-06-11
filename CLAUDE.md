@@ -100,7 +100,7 @@ The full table of all skills lives in [README.md](README.md#skills-claudeskills)
 
 - **Slides / teaching:** `/create-lecture` `/compile-latex` `/deploy` `/qa-quarto` `/slide-excellence` `/syllabus` `/teach-from-paper` `/scaffold-exercises`
 - **Papers / review:** `/review-paper` (`--peer`) `/seven-pass-review` `/respond-to-referees` `/verify-claims` `/proofread` `/humanize`
-- **Data / reproducibility:** `/python-analysis` `/stata-replication` `/cross-check` `/data-analysis` `/did-event-study` `/simulation-study` `/audit-reproducibility` `/diagnose` `/replication-package` `/capture-environment` `/power-analysis` `/disclosure-check`
+- **Data / reproducibility:** `/data-analysis-python` `/data-analysis-stata` `/cross-check` `/data-analysis-r` `/did-event-study` `/simulation-study` `/audit-reproducibility` `/diagnose` `/replication-package` `/capture-environment` `/power-analysis` `/disclosure-check`
 - **Research / writing:** `/interview-me` `/lit-review` `/research-ideation` `/preregister` `/grant-proposal` `/data-management-plan`
 - **Meta / workflow:** `/commit` `/learn` `/new-skill` `/checkpoint` `/context-status` `/deep-audit` `/coauthor-brief` `/triage-inbox`
 
@@ -135,8 +135,8 @@ Language is chosen **per project, by task** — skills read these roles. This is
 
 | Role | Default | Why / tooling |
 | --- | --- | --- |
-| **Data prep** | **Python** (pandas/polars) | Best for messy, multi-source, API/text data → `/python-analysis` |
-| **Estimation** | **Stata** (`reghdfe`/`csdid`/`ivreghdfe`, `esttab`) | Canonical applied-micro estimators + referee/AEA norms → `/stata-replication` |
+| **Data prep** | **Python** (pandas/polars) | Best for messy, multi-source, API/text data → `/data-analysis-python` |
+| **Estimation** | **Stata** (`reghdfe`/`csdid`/`ivreghdfe`, `esttab`) | Canonical applied-micro estimators + referee/AEA norms → `/data-analysis-stata` |
 | **Cross-check / replication** | **R** (`fixest`/`did`/`DRDID`) | Independent of Stata + reference implementations → `/cross-check` |
 
 Replication is **continuous**: data-prep validation battery + independent re-implementation (`/cross-check`), auto cross-check after every estimation, full pre-submission audit (`/audit-reproducibility`), and the accepted-article deposit (`/replication-package`).

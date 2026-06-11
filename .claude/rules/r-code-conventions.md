@@ -124,3 +124,12 @@ See [`r-reviewer.md`](../agents/r-reviewer.md) Category 11 ("Numerical Disciplin
 [ ] Comments explain WHY not WHAT
 [ ] Numerical discipline: no float ==, CDF clamping with eps, pre-allocated vectors
 ```
+
+## Enforcement & cross-references
+
+- [`/data-analysis-r`](../skills/data-analysis-r/SKILL.md) — emits pipelines conforming to this rule (sibling of `/data-analysis-python` and `/data-analysis-stata`).
+- [`/review-r`](../skills/review-r/SKILL.md) + the `r-reviewer` agent — read-only review against this rule.
+- [`/cross-check`](../skills/cross-check/SKILL.md) — R is this project's default cross-check language; the `90_crosscheck_*.R` scripts follow this rule too.
+- [`/audit-reproducibility`](../skills/audit-reproducibility/SKILL.md) — reads `.rds` outputs; cross-checks manuscript numbers.
+- [`replication-protocol.md`](replication-protocol.md) — cross-language tolerance contract + handoff convention.
+- [`python-code-conventions.md`](python-code-conventions.md) · [`stata-code-conventions.md`](stata-code-conventions.md) — sibling disciplines.

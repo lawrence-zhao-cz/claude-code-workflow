@@ -125,7 +125,7 @@ Pre-fill software/package/seed lines from the captured artifacts; leave runtime 
 - [`.claude/rules/simulation-conventions.md`](../../rules/simulation-conventions.md) — L'Ecuyer streams for reproducible parallel/MC work.
 - [`.claude/rules/confidential-data.md`](../../rules/confidential-data.md) — when raw data is restricted, the *environment* still ships even though the data does not; coordinate the README's "data availability" section with this block.
 - [`/audit-reproducibility`](../audit-reproducibility/SKILL.md) — consumes the `sessionInfo.txt` this skill produces; run it after.
-- [`/data-analysis`](../data-analysis/SKILL.md), [`/stata-replication`](../stata-replication/SKILL.md), [`/simulation-study`](../simulation-study/SKILL.md) — the pipelines whose environment this snapshots.
+- [`/data-analysis-r`](../data-analysis-r/SKILL.md), [`/data-analysis-stata`](../data-analysis-stata/SKILL.md), [`/simulation-study`](../simulation-study/SKILL.md) — the pipelines whose environment this snapshots.
 - [AEA Data Editor checklist](https://aeadataeditor.github.io/) / [openICPSR](https://www.openicpsr.org/) / DCAS — the external standards this skill targets.
 
 ## What this skill does NOT do

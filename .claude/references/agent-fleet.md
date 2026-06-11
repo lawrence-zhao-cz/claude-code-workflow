@@ -24,9 +24,9 @@ A wrong "looks fine" from one of these is expensive (a desk-reject, a hallucinat
 
 | Agent | Role | Read/Write | Dispatched by |
 |---|---|---|---|
-| `r-reviewer` | R code quality, reproducibility, idioms | read-only | `/review-r`, `/slide-excellence` (if R), `/data-analysis` |
-| `python-reviewer` | Python code quality, reproducibility, pandas/estimation idioms, numerical discipline | read-only | `/review-python`, `/python-analysis` |
-| `stata-reviewer` | Stata reproducibility, clustering/inference, data-handling traps, esttab, AEA compliance | read-only | `/review-stata`, `/stata-replication` |
+| `r-reviewer` | R code quality, reproducibility, idioms | read-only | `/review-r`, `/slide-excellence` (if R), `/data-analysis-r` |
+| `python-reviewer` | Python code quality, reproducibility, pandas/estimation idioms, numerical discipline | read-only | `/review-python`, `/data-analysis-python` |
+| `stata-reviewer` | Stata reproducibility, clustering/inference, data-handling traps, esttab, AEA compliance | read-only | `/review-stata`, `/data-analysis-stata` |
 | `r-package-reviewer` | R package CRAN-readiness (DESCRIPTION/NAMESPACE/roxygen/testthat/policy) | read-only | `/r-package-check` |
 | `slide-auditor` | Visual layout audit (overflow, font, spacing) | read-only | `/visual-audit`, `/slide-excellence` |
 | `proofreader` | Grammar, typos, overflow, terminology | read-only | `/proofread`, `/slide-excellence`, `/seven-pass-review` (prose lens) |

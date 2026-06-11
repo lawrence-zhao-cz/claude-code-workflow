@@ -107,6 +107,16 @@ SINGULAR_PHRASINGS: list[tuple[str, str]] = [
     # number right after "guide includes"). This prose form matched none of
     # the count regexes at v2.0 and shipped a stale "50" to live users.
     (r"guide includes\s+(\d+)\b",                   "skills"),
+    # "20 specialized agents for proofreading..." — the guide's feature table
+    # + index.html bullet. "for" excludes the clo-author attribution line
+    # ("17 specialized agents organized as ..."), which describes an external
+    # fork. These three phrasings shipped stale 18/18/32 past a green gate
+    # at v2.0 (caught in the 2026-06-10 consistency audit).
+    (r"(\d+)\s+specialized agents(?:</strong>)?\s+(?:for\b|<span)", "agents"),
+    # "All 20 agents are pinned ..." (model-routing prose, qmd + html)
+    (r"[Aa]ll\s+(\d+)\s+agents\s+are\b",            "agents"),
+    # "face all 33 rules on day one" (progressive-disclosure prose)
+    (r"face all\s+(\d+)\s+rules\b",                 "rules"),
 ]
 
 # Enumerative-table markers. A surface opts a markdown table into the

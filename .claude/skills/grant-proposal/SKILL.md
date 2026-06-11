@@ -46,7 +46,7 @@ Economics framing is the primary lens (DiD/event-study, IV, RCT, panel; AEA Data
 1. Resolve `--funder` (or infer from the request wording; default `nsf`). Echo the chosen profile back before drafting.
 2. Locate the research spec: `--input <path>`, else the most recent `quality_reports/specs/research_spec_*.md` from `/interview-me`. If none exists, **stop and recommend `/interview-me`** — do not invent the science.
 3. From the spec, extract: research question, hypotheses (directional), identification strategy (DiD / IV / RDD / RCT / structural), data sources, sample, expected results, contribution. Record any `paper_type:` field.
-4. Scan `quality_reports/` for adjacent artifacts to reuse: a `/lit-review` synthesis (prior work), a `/preregister` PAP (analysis plan), a `passport.yaml` or `/data-analysis` outputs (preliminary results).
+4. Scan `quality_reports/` for adjacent artifacts to reuse: a `/lit-review` synthesis (prior work), a `/preregister` PAP (analysis plan), a `passport.yaml` or `/data-analysis-r` outputs (preliminary results).
 
 ### Phase 1 — Scaffold sections from templates + the spec
 
@@ -55,7 +55,7 @@ Generate the funder's section set. Map spec content into slots:
 - **Specific Aims / Project Summary** — RQ + 2–3 numbered, directional aims drawn from the spec's hypotheses.
 - **Background & Significance** — motivation + prior work; pull citations from the `/lit-review` synthesis if present (do not re-search unless asked).
 - **Research Design & Methods** — lift the identification strategy verbatim from the spec (estimand, treatment/control, identifying assumption, robustness: pre-trends, placebo, clustering). Name the estimator concretely (e.g. `fixest::feols`, `did::att_gt`, Stata `csdid`).
-- **Preliminary Results** — summarize any existing `/data-analysis` / passport outputs; otherwise mark `[PRELIMINARY RESULTS: none yet — describe planned pilot]`.
+- **Preliminary Results** — summarize any existing `/data-analysis-r` / passport outputs; otherwise mark `[PRELIMINARY RESULTS: none yet — describe planned pilot]`.
 - **Timeline & Milestones** — quarter/year table aligned to the aims (every aim gets a milestone).
 - **Broader Impacts / Significance** — sponsor-appropriate framing (NSF Broader Impacts vs NIH Significance vs foundation mission-fit).
 - **Budget Justification skeleton** — personnel / data acquisition / compute / travel / dissemination line-item stubs, each tied to an aim.

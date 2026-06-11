@@ -20,7 +20,7 @@ Install Quarto from [quarto.org/docs/get-started](https://quarto.org/docs/get-st
 
 Required by `/extract-tikz`. `brew install pdf2svg` (macOS) / `apt install pdf2svg` (Debian/Ubuntu) / `dnf install pdf2svg` (Fedora).
 
-### `/stata-replication` halts at "stata-mcp not registered"
+### `/data-analysis-stata` halts at "stata-mcp not registered"
 
 The Stata pipeline skill needs the [`stata-mcp`](https://github.com/SepineTam/stata-mcp) MCP server. Install once per user:
 
@@ -30,7 +30,7 @@ claude mcp add stata-mcp --scope user -- uvx stata-mcp
 
 `uvx` is the `uv` package runner (`brew install uv` if missing). The MCP server requires a local Stata installation — it's a bridge, not a replacement. Once installed, restart your Claude Code session so the MCP server registers.
 
-Verify with `claude mcp list` — `stata-mcp` should appear with status `connected`. The skill also halts if Stata itself is not on `PATH`; the install instructions documented in [`/stata-replication`](.claude/skills/stata-replication/SKILL.md) Phase 0 cover both pre-flight checks.
+Verify with `claude mcp list` — `stata-mcp` should appear with status `connected`. The skill also halts if Stata itself is not on `PATH`; the install instructions documented in [`/data-analysis-stata`](.claude/skills/data-analysis-stata/SKILL.md) Phase 0 cover both pre-flight checks.
 
 ### Claude keeps asking permission for every tool
 
@@ -114,7 +114,7 @@ The palette contract broke. Run `./scripts/check-palette-sync.sh` — it reports
 
 ### `sessionInfo.txt` not updated after analysis changes
 
-You ran `03_analyze.R` directly instead of `00_run_all.R`. Re-run `00_run_all.R` (e.g. via the `/data-analysis` skill or your usual pipeline runner) — that entrypoint writes the session snapshot as its last step.
+You ran `03_analyze.R` directly instead of `00_run_all.R`. Re-run `00_run_all.R` (e.g. via the `/data-analysis-r` skill or your usual pipeline runner) — that entrypoint writes the session snapshot as its last step.
 
 ## Permissions / bypass / statusline (v1.6.0 / v1.8.0)
 

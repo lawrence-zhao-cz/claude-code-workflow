@@ -175,6 +175,6 @@ If you fork this template and add your own multi-vendor or multi-model fan-out, 
 
 `/prompt` is **single-shot input shaping** — one informal request becomes one formatted prompt. The output is the prompt (`/prompt-only`) or the prompt + its first execution (`/prompt`). There is no multi-turn elaboration.
 
-`/interview-me` is **multi-turn project specification** — a fuzzy research idea becomes a structured research spec (RQ, hypotheses, identification strategy, data needs, empirical strategy) via Socratic Q&A. The output is a spec file used by `/preregister`, `/research-ideation`, `/data-analysis`, etc.
+`/interview-me` is **multi-turn project specification** — a fuzzy research idea becomes a structured research spec (RQ, hypotheses, identification strategy, data needs, empirical strategy) via Socratic Q&A. The output is a spec file used by `/preregister`, `/research-ideation`, `/data-analysis-r`, etc.
 
 They don't compete. Use `/prompt` when you want a well-formed ask. Use `/interview-me` when you want a well-formed research project. The former takes 30 seconds; the latter takes 10–20 minutes.

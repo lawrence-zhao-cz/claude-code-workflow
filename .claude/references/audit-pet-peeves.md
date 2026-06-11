@@ -233,7 +233,7 @@ A future mechanical check could count `.claude/{skills,agents,rules}/*` and grep
 
 ## 19. Tool-name parity beyond `Task` (generalize peeve #1)
 
-**Example:** v1.8.0 deep-audit. Two skills (`/data-analysis`, `/audit-reproducibility`) gained "use the Monitor tool" guidance in their bodies but didn't add `Monitor` to `allowed-tools`. Same class as PR #92's `Task` parity bug from v1.7.0 (peeve #1) but a different tool, so the `check-skill-integrity.py` regex (which specifically looks for `Task` patterns) didn't catch it.
+**Example:** v1.8.0 deep-audit. Two skills (`/data-analysis-r`, `/audit-reproducibility`) gained "use the Monitor tool" guidance in their bodies but didn't add `Monitor` to `allowed-tools`. Same class as PR #92's `Task` parity bug from v1.7.0 (peeve #1) but a different tool, so the `check-skill-integrity.py` regex (which specifically looks for `Task` patterns) didn't catch it.
 
 **How to catch.** Generalize the parity check: for EVERY tool name mentioned in a skill body (`Task`, `Bash`, `Edit`, `Write`, `Read`, `Grep`, `Glob`, `WebFetch`, `WebSearch`, `Monitor`, `NotebookEdit`, `TodoWrite`, etc.), verify it appears in `allowed-tools`. The script should maintain a list of known tool names rather than hard-coding `Task` only. New Anthropic tools (Monitor in Apr 2026 Week 15) ship faster than the audit script.
 
