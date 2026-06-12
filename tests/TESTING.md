@@ -16,7 +16,7 @@
 | `fixtures/toy-paper/` | `.tex` manuscript + bib with planted numeric claims and one fabricated citation | `/audit-reproducibility`, `/verify-claims`, `/review-paper`, `claim-verifier` |
 | `fixtures/toy-plan/` | analysis plan + VERBATIM interview log + seeded-divergence plan variant | `plan-auditor` (plan mode), `/analysis-plan` import |
 | `fixtures/legacy-project/` | deliberately messy pre-workflow Stata project (versioned do-files, hardcoded paths, K:-drive data pointers, stray notes, old-style CLAUDE.md) | `/onboard-project` (dossier extraction, migration map, `--dry-run`) |
-| `fixtures/seeded-defects/` | `bad.R`, `bad.py`, `bad.do`, `bad_slide.tex` — each with catalogued planted defects | `r-reviewer`, `python-reviewer`, `stata-reviewer`, `proofreader`, `slide-auditor` |
+| `fixtures/seeded-defects/` | `bad.R`, `bad.py`, `bad.do`, `bad_slide.tex`, `broken.tex` — each with catalogued planted defects | `r-reviewer`, `python-reviewer`, `stata-reviewer`, `proofreader`, `slide-auditor`, `verifier` |
 
 ### Ground truth (toy-panel)
 
@@ -88,6 +88,12 @@ The faithful variant (`toy-panel-study.md`) must come back **PASS** (no DIVERGES
 | T1 | "Programe", "recieve", "teh", "in in", "which which", "the the", "Effect sizes is" | typos / doubled words / agreement (proofreader) |
 | T2 | 11-column `\tiny` table + overlong frame title + `\vspace{-3em}` + prose-stuffed equation | overflow / readability (slide-auditor; the spacing-first principle should reject the `\vspace` hack and demand a split) |
 
+### broken.tex (`verifier`)
+
+| # | Defect | Design |
+|---|---|---|
+| V1 | undefined macro `\attestimate{}` (line 18) — XeLaTeX errors (exit 1) but `nonstopmode` **still emits a PDF** with the ATT estimate silently missing from the slide | the discriminating fail-closed test: a verifier that only checks "PDF exists" passes a degraded artifact; a correct one checks exit code + log and FAILs the claim |
+
 ### legacy-project (`/onboard-project`)
 
 Not defects — **extraction targets** the dossier must capture with `file:line` provenance: spec (y on treat_post, county+year FE, county cluster, 2010–2019) from `analysis_v3_FINAL.do`; the drop-2015 robustness; the v3-not-v2 supersession; the K:-drive data location + DUA note (data must NOT be pulled into git); decisions in `notes/meeting_notes_2024-03.txt` (county clustering kept, log spec dropped). Hard-rule checks: nothing moved/deleted without an approved migration map; legacy code never auto-run.
@@ -105,7 +111,7 @@ Not defects — **extraction targets** the dossier must capture with `file:line`
 
 **A row passes only if the gate names the planted defect specifically** — a generic "could be improved" does not count as a catch.
 
-**Status (2026-06-12):** first T4 run — all 8 autonomous gate rows (3 code reviewers, proofreader, slide-auditor, plan-auditor ×2, claim-verifier) **16/16 PASS incl. both negative controls; zero misses**. Deferred rows (cross-check, audit-reproducibility, verifier/compile, onboarding, live interviews) await the T2/T3 session + XeLaTeX/Quarto install. Full results: `quality_reports/testing/` (local).
+**Status (2026-06-12):** first T4 run — all 9 autonomous gate rows (3 code reviewers, proofreader, slide-auditor, plan-auditor ×2, claim-verifier, verifier) **17/17 PASS incl. both negative controls; zero misses**. The verifier row passed the discriminating version: PDF existed but it FAILed the claim on exit code + log + missing content. Deferred rows (cross-check, audit-reproducibility, onboarding, live interviews, qa-quarto loop) await the T2/T3 session. Full results: `quality_reports/testing/` (local).
 
 ### Environment prerequisites
 
@@ -114,10 +120,10 @@ Not defects — **extraction targets** the dossier must capture with `file:line`
 | uv + Python (numpy/pandas) | toy-panel generator, `/data-analysis-python` | ✅ installed |
 | Stata (via `stata-mcp`) | `/data-analysis-stata`, bad.do runs | ✅ installed |
 | R (fixest/did) | `/cross-check`, `/data-analysis-r` | ✅ installed |
-| **XeLaTeX** | toy-lecture compile, toy-paper compile, T3 lecture chain | ❌ **not installed** — install MiKTeX or TeX Live before T2 lecture tests |
-| **Quarto** | toy-lecture Quarto mirror render, `/qa-quarto` | ❌ **not installed** — install before T2 lecture tests |
+| XeLaTeX | toy-lecture compile, toy-paper compile, T3 lecture chain | ✅ MiKTeX (user-mode), installed 2026-06-12; AutoInstall enabled |
+| Quarto | toy-lecture Quarto mirror render, `/qa-quarto` | ✅ installed 2026-06-12 |
 
-The toy-lecture deck is written but **compile-unverified** until XeLaTeX is available (it is deliberately self-contained — `xelatex toy-lecture` from its directory, 3-pass + bibtex).
+Compile status (2026-06-12): toy-lecture.pdf (5 pp, 3-pass + bibtex), toy-paper.pdf (2 pp), bad_slide.pdf (3 pp — planted overflow confirmed as real `Overfull \hbox` log warnings, up to 387pt), toy-lecture.html (Quarto revealjs) all build. Build artifacts are gitignored — regenerate per the commands above.
 
 ### Public-facing caution
 

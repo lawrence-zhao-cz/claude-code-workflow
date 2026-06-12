@@ -84,6 +84,12 @@ quality_reports/testing/*
 !quality_reports/diagnoses/.gitkeep
 !quality_reports/testing/.gitkeep
 
+# Test-fixture build artifacts (regenerable; see tests/TESTING.md)
+tests/fixtures/**/*.pdf
+tests/fixtures/**/*.html
+tests/fixtures/**/toy-lecture_files/
+tests/fixtures/**/texput.log
+
 # R analysis outputs (generated artifacts; keep scripts, ignore outputs)
 scripts/R/_outputs/
 
