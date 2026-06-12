@@ -73,6 +73,7 @@ quality_reports/preregistrations/*
 quality_reports/audits/*
 quality_reports/diagnoses/*
 quality_reports/testing/*
+quality_reports/research_spec_*.md
 !quality_reports/plans/.gitkeep
 !quality_reports/specs/.gitkeep
 !quality_reports/session_logs/.gitkeep
@@ -89,6 +90,8 @@ tests/fixtures/**/*.pdf
 tests/fixtures/**/*.html
 tests/fixtures/**/toy-lecture_files/
 tests/fixtures/**/texput.log
+tests/fixtures/**/*.dvi
+tests/fixtures/**/*.xdv
 tests/fixtures/**/_outputs/
 
 # R analysis outputs (generated artifacts; keep scripts, ignore outputs)
