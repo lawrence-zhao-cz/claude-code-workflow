@@ -1,6 +1,6 @@
 ---
 name: review-paper
-description: Comprehensive manuscript review with three modes: single-pass (default), --adversarial critic-fixer loop, and --peer [journal] simulated peer-review pipeline (editor + 2 dispositioned referees + editorial decision, calibrated to a target journal). R&R continuation via --peer --r2/--r3; hostile-editor stress test via --peer --stress; reviewer-disposition variance reporting via --peer --variance N. Auto-invokes /review-r + /audit-reproducibility on referenced scripts unless --no-cross-artifact.
+description: Comprehensive manuscript review with three modes: single-pass (default), --adversarial critic-fixer loop, and --peer [journal] simulated peer-review pipeline (editor + 2 dispositioned referees + editorial decision, calibrated to a target journal). R&R continuation via --peer --r2/--r3; hostile-editor stress test via --peer --stress; reviewer-disposition variance reporting via --peer --variance N. Auto-invokes the per-language code review (/review-r, /review-python, /review-stata) + /audit-reproducibility on referenced scripts unless --no-cross-artifact.
 argument-hint: "[paper path] [--adversarial | --peer <journal> [--r2 | --r3 | --stress | --variance N] [--no-novelty-check]] [--no-cross-artifact]"
 allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task"]
 ---
@@ -24,7 +24,7 @@ Produce a thorough, constructive review of an academic manuscript — the kind o
 - `--stress` — hostile-editor stress test (requires `--peer`). Forces SKEPTIC dispositions, doubles critical peeves.
 - `--variance` (followed by integer **N**, default 3) — reviewer-disposition variance mode (requires `--peer`). Runs **N** referees with **independently sampled** dispositions from the 6-way taxonomy. Editor aggregates into a **decision distribution**, not a point estimate. Mutually exclusive with `--stress` and `--r2`/`--r3`.
 - `--no-novelty-check` — skip editor's WebSearch novelty probe (default is ON).
-- `--no-cross-artifact` — skip auto-invocation of `/review-r` + `/audit-reproducibility` on referenced scripts.
+- `--no-cross-artifact` — skip auto-invocation of the per-language code review + `/audit-reproducibility` on referenced scripts.
 
 > **Already received referee comments?** Use [`/respond-to-referees`](../respond-to-referees/SKILL.md) instead. That skill cross-references each referee concern against the revised manuscript and drafts a complete response document.
 
@@ -113,8 +113,8 @@ Variance mode runs N independent referees (default N=3, max N=5 for token-cost d
 
 6. **Save to** `quality_reports/paper_review_[sanitized_name]_round[N].md` (N=1 in default mode; N increments in adversarial mode).
 
-6b. **Cross-artifact integration.** Unless `$ARGUMENTS` contains `--no-cross-artifact`, and if the manuscript references analysis scripts (detected via `\input{scripts/...}`, `%% source:` comments, or matching `scripts/R/_outputs/` filenames), auto-invoke:
-   - `/review-r` on each referenced script (forked subagent, results to `quality_reports/cross_artifact_[paper]/review_r_*.md`)
+6b. **Cross-artifact integration.** Unless `$ARGUMENTS` contains `--no-cross-artifact`, and if the manuscript references analysis scripts (detected via `\input{scripts/...}`, `%% source:` comments, or matching `scripts/*/_outputs/` filenames), auto-invoke:
+   - the matching review skill (`/review-r` / `/review-python` / `/review-stata`) on each referenced script (forked subagent, results to `quality_reports/cross_artifact_[paper]/review_[lang]_*.md`)
    - `/audit-reproducibility` on the manuscript + outputs dir (results to `quality_reports/cross_artifact_[paper]/reproducibility.md`)
 
    Merge critical cross-artifact findings (code bug invalidates paper claim, reproducibility FAIL) into a new "Cross-Artifact Findings" section at the top of the paper review report. See [`.claude/rules/cross-artifact-review.md`](../../rules/cross-artifact-review.md) for the full protocol.
@@ -425,7 +425,7 @@ quality_reports/
     (R&R rounds: desk_review_r2.md, referee_domain_r2.md, ...)
   cross_artifact_[sanitized_paper_name]/
     reproducibility.md                   # Phase 0
-    review_r_*.md                        # Phase 0 (one per referenced script)
+    review_[lang]_*.md                   # Phase 0 (one per referenced script)
 ```
 
 ---

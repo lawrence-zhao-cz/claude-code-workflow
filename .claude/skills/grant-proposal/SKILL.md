@@ -125,6 +125,8 @@ Claims extracted: N · Verified: N · Outcome: PASS / PARTIAL / FAIL
 
 - `--funder` `<nsf|nih|erc|foundation>` — Select the funder profile that shapes section structure and the requirements checklist.
 - `--input` `<spec>` — Path to an existing `/interview-me` research spec to seed Aims and Methods (otherwise the skill elicits them).
+- `--out` `<dir>` — Output directory for the proposal sections. Default: `quality_reports/grants/YYYY-MM-DD_<slug>/`.
+- `--no-verify` — Skip the post-flight `claim-verifier` pass on Background/Significance citations (not recommended).
 
 ## Cross-references
 

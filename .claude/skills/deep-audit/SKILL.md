@@ -2,13 +2,11 @@
 name: deep-audit
 description: |
   Deep consistency audit of the entire repository infrastructure.
-  Launches 4 parallel specialist agents to find factual errors, code bugs,
+  Launches 5 parallel specialist agents to find factual errors, code bugs,
   count mismatches, and cross-document inconsistencies. Then fixes all issues
   and loops until clean.
   Use when: after making broad changes, before releases, or when user says
   "audit", "find inconsistencies", "check everything".
-author: Claude Code Academic Workflow
-version: 1.0.0
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Glob", "Grep", "Task"]
 disable-model-invocation: true
 ---
@@ -40,11 +38,11 @@ This catches four classes of bug that agent-based audits have historically misse
 3. Internal markdown anchors resolve (no broken `[text](path#anchor)` links — the `#category-11-numerical-discipline` miss on PR #87).
 4. Rule `paths:` ↔ skill implementation parity (rule claims skill follows protocol but skill body has none of the protocol keywords — the `/interview-me` miss on PR #92).
 
-If Phase 0 reports P0 or P1 findings, fix them (or tune the regex if they are false positives) **before** launching the 4 agents. The mechanical layer is cheaper and more precise than agent prompts for these classes.
+If Phase 0 reports P0 or P1 findings, fix them (or tune the regex if they are false positives) **before** launching the 5 agents. The mechanical layer is cheaper and more precise than agent prompts for these classes.
 
-### PHASE 1: Launch 4 Parallel Audit Agents
+### PHASE 1: Launch 5 Parallel Audit Agents
 
-Launch these 4 agents simultaneously using `Task` with `subagent_type=general-purpose`. Each agent's prompt **must** tell it to read `.claude/references/audit-pet-peeves.md` and explicitly check for each class of bug before reporting clean. The pet-peeves file is a living catalogue of drift patterns review bots have caught; it grows with each PR.
+Launch these 5 agents simultaneously using `Task` with `subagent_type=general-purpose`. Each agent's prompt **must** tell it to read `.claude/references/audit-pet-peeves.md` and explicitly check for each class of bug before reporting clean. The pet-peeves file is a living catalogue of drift patterns review bots have caught; it grows with each PR.
 
 #### Agent 1: Guide Content Accuracy
 Focus: `guide/workflow-guide.qmd`
@@ -94,6 +92,15 @@ Focus: `README.md`, `docs/index.html`, `docs/workflow-guide.html`
 - Directory tree matches actual structure
 - No stale counts from previous versions
 
+#### Agent 5: Agent Fleet & Verification-Layer Consistency (added Workstream B, 2026-06-12)
+Focus: `.claude/agents/*.md` + the verification-chain skills (`analysis-plan`, `onboard-project`, `cross-check`, the three `data-analysis-*` pipelines, `audit-reproducibility`)
+- **Persona standard** (`agent-fleet.md` §Persona standard): every agent opening states role + concrete external standard, severity stance, and non-goals.
+- **Frontmatter ↔ fleet parity:** each agent's `model:`/`effort:` matches its `agent-fleet.md` tier row and `model-routing.md` listing.
+- **Reviewer-dispatch parity:** the dispatch text in the pipeline skills matches what the reviewer agents expect (plan path + spec IDs; report save paths; severity labels Critical/High/Medium/Low for code reviewers, the FINDING schema elsewhere — flag mixtures within one artifact).
+- **Plan-layer wiring:** spec-ID flow is mutually consistent across `/analysis-plan` (§2 columns) ↔ `/onboard-project` dossier (column-compatible) ↔ pipelines (execute by ID, RUN write-back) ↔ `/cross-check` (plan-row spec extraction) ↔ `plan-auditor` (both modes).
+- **Effort-pin convention:** main-loop judgment skills carry NO `effort:` pin (a pin caps sessions running above `high`); hard-gate skills may pin as a floor. Flag violations either way.
+- **Description ↔ body summary-parity** (per `summary-parity.md`): every enumerative or behavioral claim in a frontmatter `description:` is implemented in the body.
+
 ### PHASE 2: Triage Findings
 
 Categorize each finding:
@@ -132,7 +139,7 @@ cp guide/workflow-guide.html docs/workflow-guide.html
 
 ### PHASE 5: Loop-until-dry or Declare Clean
 
-After fixing, launch a fresh set of 4 agents to verify. This is the **loop-until-dry** primitive ([`orchestrator-protocol.md`](../../rules/orchestrator-protocol.md)):
+After fixing, launch a fresh set of 5 agents to verify. This is the **loop-until-dry** primitive ([`orchestrator-protocol.md`](../../rules/orchestrator-protocol.md)):
 - **Converge** when a round surfaces **0 new genuine issues** (deduped on file+issue) — declare clean and report summary.
 - If new issues found → fix and loop again.
 - **Fallback cap: 5 loops** bounds a non-converging audit (prevents infinite cycling); a finding that survives rounds N and N+2 is escalated to the user rather than re-patched ([`summary-parity.md`](../../rules/summary-parity.md)).

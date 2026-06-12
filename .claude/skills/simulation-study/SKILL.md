@@ -1,8 +1,6 @@
 ---
 name: simulation-study
 description: Scaffold and run a reproducible Monte Carlo simulation study in R — parameterized DGP, an estimator grid, a seeded replication loop, and a summary of bias, RMSE, empirical SE, coverage, size/power with Monte Carlo standard errors. Use when the user says "run a Monte Carlo simulation", "simulation study", "check the bias/coverage of an estimator", "compare estimators in simulation", "size and power simulation", "Monte Carlo experiment", or wants to demonstrate an estimator's finite-sample properties. Produces a numbered R script in `scripts/R/` and saves per-replication raw results + a summary table to `scripts/R/_outputs/`.
-author: Claude Code Academic Workflow
-version: 1.0.0
 argument-hint: "[estimator(s) and DGP to study, or path to a script/paper to simulate from]"
 disable-model-invocation: true
 allowed-tools: ["Read", "Grep", "Glob", "Write", "Edit", "Bash", "Task", "Monitor"]

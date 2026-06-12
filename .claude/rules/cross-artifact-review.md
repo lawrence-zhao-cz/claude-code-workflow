@@ -1,5 +1,5 @@
 ---
-description: Paper ↔ code cross-artifact review — when /review-paper runs, auto-invoke /review-r on referenced scripts and /audit-reproducibility on the pair. Surface cross-artifact findings alongside the paper review.
+description: Paper ↔ code cross-artifact review — when /review-paper runs, auto-invoke the per-language code review (/review-r | /review-python | /review-stata) on referenced scripts and /audit-reproducibility on the pair. Surface cross-artifact findings alongside the paper review.
 globs: ["master_supporting_docs/**/*.tex", "master_supporting_docs/**/*.qmd", "Slides/**/*.tex", "*.tex", "*.qmd"]
 alwaysApply: false
 ---
@@ -23,7 +23,7 @@ A bug in `02_clean.R` invalidates Table 2. Reviewing `manuscript.tex` without to
 
 ## When to apply
 
-Applies when `/review-paper` runs on a manuscript that references analysis scripts. Detection is **pattern-based** — if the manuscript has none of the signals below, no cross-artifact work happens (and `--no-cross-artifact` is a no-op). To force invocation on a paper without these detection signals, point `/review-paper` at a manuscript that `\input{}`s the script outputs, or invoke `/review-r` and `/audit-reproducibility` directly alongside `/review-paper`.
+Applies when `/review-paper` runs on a manuscript that references analysis scripts. Detection is **pattern-based** — if the manuscript has none of the signals below, no cross-artifact work happens (and `--no-cross-artifact` is a no-op). To force invocation on a paper without these detection signals, point `/review-paper` at a manuscript that `\input{}`s the script outputs, or invoke the matching code-review skill (`/review-r` / `/review-python` / `/review-stata`) and `/audit-reproducibility` directly alongside `/review-paper`.
 
 Detection signals:
 
@@ -44,17 +44,17 @@ Scan the manuscript for:
 
 - `\input{path}` commands (tables, figures pulled from files)
 - Line comments `%% from: scripts/...`
-- Table labels that match filenames in `scripts/R/_outputs/` (e.g., `Table:main_ATT` ↔ `results_main.rds`)
+- Table labels that match filenames in `scripts/*/_outputs/` (e.g., `Table:main_ATT` ↔ `results_main.rds`)
 
 Build a list of scripts that produced content in this paper.
 
-### 2. Auto-invoke `/review-r`
+### 2. Auto-invoke the per-language code review
 
-For each identified R script, launch `/review-r` in a forked subagent (`context: fork`). Save reports to `quality_reports/cross_artifact_[paper]/review_r_[script].md`.
+For each identified script, launch the matching review skill (`/review-r`, `/review-python`, `/review-stata`) in a forked subagent (`context: fork`). Save reports to `quality_reports/cross_artifact_[paper]/review_[lang]_[script].md`.
 
 ### 3. Auto-invoke `/audit-reproducibility`
 
-Run `/audit-reproducibility $manuscript scripts/R/_outputs/` once. Save to `quality_reports/cross_artifact_[paper]/reproducibility.md`.
+Run `/audit-reproducibility $manuscript` once against the referenced `scripts/*/_outputs/` directories. Save to `quality_reports/cross_artifact_[paper]/reproducibility.md`.
 
 ### 4. Surface cross-artifact findings
 
@@ -65,7 +65,7 @@ In the paper review report, add a new section:
 
 **Scripts reviewed:** N (see `quality_reports/cross_artifact_[paper]/`)
 **Reproducibility:** PASS / FAIL — k of m claims within tolerance
-**Code quality (merged from /review-r reports):** C critical, M major, L minor
+**Code quality (merged from the /review-* reports):** C critical, M major, L minor
 
 ### Critical cross-artifact issues (paper + code together)
 | Paper claim | Code location | Issue |
@@ -91,7 +91,7 @@ In the paper review report, add a new section:
 ## Cross-references
 
 - `.claude/skills/review-paper/SKILL.md` — the orchestrator.
-- `.claude/skills/review-r/SKILL.md` — code reviewer.
+- `.claude/skills/review-r/SKILL.md` (and `review-python`, `review-stata`) — the per-language code reviewers.
 - `.claude/skills/audit-reproducibility/SKILL.md` — numeric claims verifier.
 - `.claude/rules/replication-protocol.md` — tolerance contract.
 

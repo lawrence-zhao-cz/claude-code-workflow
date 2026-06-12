@@ -1,8 +1,6 @@
 ---
 name: coauthor-brief
 description: Generate a co-author / collaborator handoff brief for a multi-author, multi-machine project — summarizing what changed since the last brief (git delta), the current state of each artifact (manuscript, analysis, slides), open questions, how to reproduce locally, and any restricted-data access steps. Use when user says "coauthor brief", "handoff brief", "bring my coauthor up to speed", "what changed since last week", "onboard a collaborator", "write a handoff for [name]", or before sending a co-author the repo. NOT a commit or a checkpoint — it is the cross-machine, cross-person summary `meta-governance.md` only partially covers.
-author: Claude Code Academic Workflow
-version: 1.0.0
 argument-hint: "[--since <tag|date|Ndays>] [--for <collaborator-name>] [--no-data-section]"
 disable-model-invocation: true
 allowed-tools: ["Read", "Write", "Glob", "Grep", "Bash"]
@@ -115,6 +113,7 @@ A single Markdown handoff doc at `quality_reports/handoffs/YYYY-MM-DD_coauthor-b
 
 - `--since` `<tag|date|Ndays>` — Baseline to diff against — a git tag, an ISO date, or `Ndays` (e.g. `14days`). Default: the previous brief in `quality_reports/handoffs/`, else the last tag.
 - `--for` `<name>` — Tailor the brief to a specific collaborator (e.g. surface the restricted-data access steps they still need).
+- `--no-data-section` — Skip step 5 (restricted-data access steps); use when the repo touches no confidential data or the recipient already has access.
 
 ## Cross-references
 

@@ -1,8 +1,6 @@
 ---
 name: preregister
 description: Draft a structured preregistration document (OSF, AsPredicted, or AEA RCT Registry style) from a research spec or free-form study description. Output is a Markdown file with hypotheses, design, sampling plan, analysis plan, exclusions, and inference criteria — annotated with MUST / SHOULD / MAY clarity flags. Use when user says "preregister", "draft a preregistration", "OSF preregistration", "AsPredicted", "AEA RCT registry", "PAP", "preanalysis plan", or before launching an experiment / data collection / analysis on data the analyst has not yet seen. NOT a registry submission tool — produces a document the user uploads to OSF / AsPredicted / AEA themselves.
-author: Claude Code Academic Workflow
-version: 1.0.0
 argument-hint: "[--style osf|aspredicted|aea-rct] [--input <spec-or-description>] [--no-verify]"
 disable-model-invocation: true
 allowed-tools: ["Read", "Write", "Task"]

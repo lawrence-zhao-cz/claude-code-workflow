@@ -5,6 +5,8 @@ paths:
   - ".claude/skills/respond-to-referees/SKILL.md"
   - ".claude/skills/review-paper/SKILL.md"
   - ".claude/skills/interview-me/SKILL.md"
+  - ".claude/skills/respond-to-eval/SKILL.md"
+  - ".claude/skills/grant-proposal/SKILL.md"
 alwaysApply: false
 ---
 

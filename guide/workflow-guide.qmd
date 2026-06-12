@@ -2597,7 +2597,7 @@ Cross-references in-text citations against bibliography entries. Identifies miss
 ::: {.callout-tip}
 ## Real Example: /deep-audit Was Created with /learn
 
-The `/deep-audit` skill was itself extracted from a repeating workflow using `/learn`. After running 7 rounds of manual consistency audits --- each time launching 4 parallel agents to check guide accuracy, hook code quality, skills/rules consistency, and cross-document counts --- the pattern was codified into a skill. Now `/deep-audit` launches those same 4 agents, triages findings, applies fixes, and loops until clean (loop-until-dry: converges after 2 dry rounds, with a fallback cap). It also encodes a table of known bug patterns from past audits so future rounds catch regressions faster.
+The `/deep-audit` skill was itself extracted from a repeating workflow using `/learn`. After running 7 rounds of manual consistency audits --- each time launching 4 parallel agents to check guide accuracy, hook code quality, skills/rules consistency, and cross-document counts --- the pattern was codified into a skill. Now `/deep-audit` launches 5 agents (the original 4 plus a fleet/verification-layer consistency lens added in v2.1), triages findings, applies fixes, and loops until clean (loop-until-dry: converges after 2 dry rounds, with a fallback cap). It also encodes a table of known bug patterns from past audits so future rounds catch regressions faster.
 
 This is the `/learn` lifecycle in action: discover a repeating workflow → extract it → never repeat the manual steps again.
 :::

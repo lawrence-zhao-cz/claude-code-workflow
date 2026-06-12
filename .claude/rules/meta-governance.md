@@ -227,8 +227,8 @@ As this repository evolves, meta-governance may need updates.
 | Rules (path-scoped, generic) | ✅ Yes | .claude/rules/ | ✅ Yes |
 | Agents (generic) | ✅ Yes | .claude/agents/ | ✅ Yes |
 | Hooks (generic behavior) | ✅ Yes | .claude/hooks/ | ✅ Yes |
-| Session logs | ✅ Yes | quality_reports/session_logs/ | ✅ Yes |
-| Plans | ✅ Yes | quality_reports/plans/ | ✅ Yes |
+| Session logs | ❌ No (gitignored — `quality_reports` is internal-only) | quality_reports/session_logs/ | ❌ No |
+| Plans | ❌ No (gitignored — `quality_reports` is internal-only) | quality_reports/plans/ | ❌ No |
 | Local settings | ❌ No | .claude/settings.local.json | ❌ No (gitignored) |
 | Session state | ❌ No | .claude/state/ | ❌ No (gitignored) |
 | Build artifacts | ❌ No | .aux, .log, .synctex.gz | ❌ No (gitignored) |

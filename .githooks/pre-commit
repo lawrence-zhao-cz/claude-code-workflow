@@ -13,7 +13,8 @@
 # failure:
 #   1. Surface-sync (ALWAYS): count + enumerative-table-row consistency,
 #      skill integrity, model-version currency — deterministic and fast.
-#   2. Quality score (>= 80) on staged .qmd / .tex / .R files with rubrics.
+#   2. Quality score (>= 80) on staged .qmd / .tex / .R / .py / .do files
+#      with rubrics (tests/fixtures/** exempt: deliberately-defective test beds).
 #
 # Escape hatches (use sparingly; record the reason in the commit message):
 #   SKIP_QUALITY_GATE=1 git commit ...   # skip only the quality score
@@ -60,7 +61,7 @@ if [ "${SKIP_QUALITY_GATE:-0}" = "1" ]; then
     echo "── pre-commit: quality gate SKIPPED (SKIP_QUALITY_GATE=1) ──"
 else
     # Staged, added-or-modified files that have quality rubrics.
-    STAGED="$(git diff --cached --name-only --diff-filter=ACM | grep -Ei '\.(qmd|tex|R)$' || true)"
+    STAGED="$(git diff --cached --name-only --diff-filter=ACM | grep -Ei '\.(qmd|tex|R|py|do)$' | grep -Ev '^tests/fixtures/' || true)"
     if [ -n "$STAGED" ]; then
         n="$(printf '%s\n' "$STAGED" | grep -c .)"
         echo ""
@@ -82,7 +83,7 @@ else
         done <<< "$STAGED"
     else
         echo ""
-        echo "── pre-commit: no staged .qmd/.tex/.R files to score ──"
+        echo "── pre-commit: no staged scoreable files (.qmd/.tex/.R/.py/.do) to score ──"
     fi
 fi
 

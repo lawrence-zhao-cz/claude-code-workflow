@@ -1,8 +1,6 @@
 ---
 name: promote-memory
 description: Review candidate `[LEARN]` entries in `.claude/state/personal-memory.md` (gitignored) and run them through a five-critic council in parallel: generality, staleness, redundancy, evidence, format. Majority vote (3+ of 5) promotes the entry to MEMORY.md. Use when user says "promote memory", "review my learnings", "what should graduate to MEMORY.md", "five-critic council", or as monthly memory maintenance.
-author: Claude Code Academic Workflow
-version: 1.0.0
 argument-hint: "[entry-substring or 'all']"
 disable-model-invocation: true
 allowed-tools: ["Read", "Write", "Glob", "Grep", "Task", "Bash"]
@@ -85,7 +83,7 @@ Five `Task` invocations in parallel, one per critic, each with `context: fork`:
 - **Evidence critic** — context: the candidate entry only. Vote based on whether the entry self-describes its motivation.
 - **Format critic** — context: the candidate entry + [`.claude/rules/meta-governance.md`](.claude/rules/meta-governance.md) for the schema reference.
 
-Use the **Haiku tier** for all five critics (per [`.claude/rules/model-routing.md`](../../rules/model-routing.md): mechanical-ish review work). The user can override via the agent's `model:` field if they want Sonnet for the harder calls.
+Use the **Sonnet tier** for all five critics (promoted from Haiku 2026-06-11 — see [`.claude/references/agent-fleet.md`](../../references/agent-fleet.md); the agent's `model:` frontmatter is authoritative). The user can override via the agent's `model:` field.
 
 ### Step 3: Aggregate votes
 
@@ -139,5 +137,5 @@ Do **not** auto-promote — even on 5-of-5 YES votes. The user's approval is the
 
 - [`.claude/rules/meta-governance.md`](../../rules/meta-governance.md) — the two-tier memory contract this skill operationalizes.
 - [`.claude/agents/promote-memory-council.md`](../../agents/promote-memory-council.md) — the five-critic implementation (one agent file with five role specs, dispatched in parallel via `Task`).
-- [`.claude/rules/model-routing.md`](../../rules/model-routing.md) — why critics default to Haiku tier.
+- [`.claude/rules/model-routing.md`](../../rules/model-routing.md) — tier-routing rationale (critics run at Sonnet since 2026-06-11).
 - `/learn` (existing skill) — captures new `[LEARN]` entries; pairs with `/promote-memory` (which decides what graduates).

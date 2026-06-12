@@ -1,8 +1,6 @@
 ---
 name: r-package-check
 description: Run the full R package release gate — regenerate docs, run the test suite, run R CMD check --as-cran, and triage every ERROR / WARNING / NOTE against CRAN policy before a release or submission. Use when the user says "check my R package", "R CMD check", "is this package CRAN-ready", "run devtools::check", "prepare for CRAN submission", or points at a directory containing a DESCRIPTION file. Produces a check report + CRAN-submission checklist in `quality_reports/`.
-author: Claude Code Academic Workflow
-version: 1.0.0
 argument-hint: "[path to package root, or blank to autodetect from DESCRIPTION]"
 disable-model-invocation: true
 allowed-tools: ["Read", "Grep", "Glob", "Bash", "Task", "Monitor"]

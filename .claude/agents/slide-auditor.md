@@ -105,6 +105,8 @@ Standard LaTeX checks:
 
 ## Report Format
 
+Save the report to `quality_reports/[FILENAME_WITHOUT_EXT]_visual_audit.md` (the path `/slide-excellence` expects), then return it as your final response.
+
 ```markdown
 ### Slide: "[Slide Title]" (slide N)
 - **Issue:** [description]
