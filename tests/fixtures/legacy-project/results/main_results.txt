@@ -1,0 +1,15 @@
+(pasted from Stata window, 2024-04-02)
+
+Linear regression, absorbing indicators         Number of obs     =        200
+                                                F(  10,     19)   =      31.42
+                                                Prob > F          =     0.0000
+
+                              (Std. err. adjusted for 20 clusters in county)
+------------------------------------------------------------------------------
+             |               Robust
+           y | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+  treat_post |   1.712368   .3680714     4.65   0.000     .9420112    2.482725
+------------------------------------------------------------------------------
+
+robustness (drop 2015): treat_post = 1.6236 (se .3747), N = 180

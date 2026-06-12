@@ -1,0 +1,65 @@
+% toy-paper.tex — fixture manuscript for /audit-reproducibility, /verify-claims,
+% and /review-paper testing (Workstream B-II). The answer key for the planted
+% claims lives in tests/TESTING.md, NOT here — auditors must not be tipped off.
+%% source: tests/fixtures/toy-panel/expected_estimates.json
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{natbib}
+\usepackage[margin=1in]{geometry}
+
+\title{Treatment Effects in the Toy County Panel:\\ A Fixture Manuscript}
+\author{Workflow Test Bed}
+\date{June 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We estimate the effect of the 2015 program on county outcomes using a
+balanced county-by-year panel. Two-way fixed effects estimates indicate a
+treatment effect of 1.94 units, consistent with program projections.
+This manuscript exists to be audited, not believed.
+\end{abstract}
+
+\section{Introduction}
+
+Difference-in-differences designs with a single adoption date avoid the
+negative-weighting problems that arise under staggered timing
+\citep{goodmanbacon2021}. Prior work on placebo program evaluation reports
+that county-level interventions of this scale typically yield effects
+between 1.5 and 2.5 units \citep{smith2019placebo}.
+
+\section{Data and Design}
+
+The sample is a balanced panel of $N = 200$ county-year observations:
+20 counties observed annually from 2010 to 2019. Counties 11--20 adopt the
+program in 2015; counties 1--10 never adopt. The estimating equation is
+\begin{equation}
+  y_{it} = \alpha_i + \gamma_t + \tau \, D_{it} + \varepsilon_{it},
+\end{equation}
+with standard errors clustered at the county level (20 clusters).
+
+\section{Results}
+
+\subsection{Main estimate}
+
+The two-way fixed effects estimate of the treatment effect is
+$\hat{\tau} = 1.71$ (cluster-robust SE $= 0.37$), statistically
+distinguishable from zero at the one percent level.
+
+\subsection{Robustness}
+
+Excluding the 2015 transition year --- when treatment exposure is
+partial --- the estimated effect is $\hat{\tau} = 1.62$ ($N = 180$),
+close to the main estimate.
+
+\section{Conclusion}
+
+The program raised county outcomes by approximately 1.7 units. The
+magnitude is in line with the placebo-studies benchmark range documented
+by \citet{smith2019placebo}.
+
+\bibliographystyle{plainnat}
+\bibliography{toy-paper}
+
+\end{document}

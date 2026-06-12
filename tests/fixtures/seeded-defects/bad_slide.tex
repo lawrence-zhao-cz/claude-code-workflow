@@ -1,0 +1,42 @@
+% bad_slide.tex -- seeded-defect fixture for the proofreader + slide-auditor
+% gates (Workstream B-II). Planted defects catalogued in tests/TESTING.md.
+\documentclass[11pt]{beamer}
+\usetheme{default}
+\usepackage{amsmath}
+
+\title{Toy Panel Results}
+\author{Workflow Test Bed}
+\date{June 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Programe rollout}
+  \begin{itemize}
+    \item Counties recieve teh treatment beginning in in 2015.
+    \item Control counties never adopt, which which makes the the design a clean two-group comparison.
+    \item Effect sizes is measured in outcome units.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Full estimation results, every specification, every sample, every estimator, all on one slide}
+  \tiny
+  \begin{tabular}{lcccccccccc}
+    \hline
+    Spec & ATT & SE & N & Clusters & FE & Sample & Weights & Estimator & Language & Notes on identification and inference assumptions \\
+    \hline
+    S1 main & 1.71 & 0.37 & 200 & 20 & county+year & full balanced panel 2010--2019 & none & TWFE reghdfe & Stata & common timing, homogeneous effects, county-clustered CRVE with few-cluster caveat \\
+    S2 robust & 1.62 & 0.37 & 180 & 20 & county+year & excluding the 2015 partial-exposure adoption year & none & TWFE reghdfe & Stata & same identification, transition year removed \\
+    S1 xcheck & 1.71 & 0.37 & 200 & 20 & county+year & full balanced panel 2010--2019 & none & fixest::feols & R & independent reimplementation from the analysis plan rows \\
+    \hline
+  \end{tabular}
+  \vspace{-3em}
+  \begin{equation*}
+    y_{it} = \alpha_i + \gamma_t + \tau D_{it} + \varepsilon_{it} \quad \text{where } D_{it} = \mathbf{1}\{i \in \text{treated}\}\cdot\mathbf{1}\{t \geq 2015\} \text{ and } \varepsilon_{it} \text{ is clustered within counties for all inference reported anywhere on this slide}
+  \end{equation*}
+\end{frame}
+
+\end{document}

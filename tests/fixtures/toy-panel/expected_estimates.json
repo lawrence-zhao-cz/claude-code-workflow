@@ -1,0 +1,18 @@
+{
+  "seed": 20260612,
+  "dgp": "y = county FE + year FE + ATT*D + N(0,1); common timing 2015",
+  "true_att": 2.0,
+  "main": {
+    "att_hat": 1.712367925953916,
+    "se_cluster_county": 0.36807141469884314,
+    "n": 200,
+    "n_clusters": 20
+  },
+  "alt_excl_2015": {
+    "note": "same TWFE spec, sample excludes the 2015 transition year",
+    "att_hat": 1.623585392878277,
+    "se_cluster_county": 0.37468130137444433,
+    "n": 180,
+    "n_clusters": 20
+  }
+}

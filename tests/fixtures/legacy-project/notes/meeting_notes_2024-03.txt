@@ -1,0 +1,7 @@
+meeting w/ coauthor 3/14/2024
+
+- stick with county clustering (20 clusters, note the caveat in the text)
+- drop 2015 as robustness, partial exposure year
+- R2 wants the log spec gone -> moved to comments in the do file, not reporting it
+- target: short paper, Table 1 = main TWFE estimate
+- TODO: rerun everything on the new laptop before submission (paths!!)
