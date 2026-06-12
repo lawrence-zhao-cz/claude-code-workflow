@@ -105,6 +105,8 @@ Not defects — **extraction targets** the dossier must capture with `file:line`
 
 **A row passes only if the gate names the planted defect specifically** — a generic "could be improved" does not count as a catch.
 
+**Status (2026-06-12):** first T4 run — all 8 autonomous gate rows (3 code reviewers, proofreader, slide-auditor, plan-auditor ×2, claim-verifier) **16/16 PASS incl. both negative controls; zero misses**. Deferred rows (cross-check, audit-reproducibility, verifier/compile, onboarding, live interviews) await the T2/T3 session + XeLaTeX/Quarto install. Full results: `quality_reports/testing/` (local).
+
 ### Environment prerequisites
 
 | Tool | Needed by | Status on this box (2026-06-12) |

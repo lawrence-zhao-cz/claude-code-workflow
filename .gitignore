@@ -72,6 +72,7 @@ quality_reports/checkpoints/*
 quality_reports/preregistrations/*
 quality_reports/audits/*
 quality_reports/diagnoses/*
+quality_reports/testing/*
 !quality_reports/plans/.gitkeep
 !quality_reports/specs/.gitkeep
 !quality_reports/session_logs/.gitkeep
@@ -81,6 +82,7 @@ quality_reports/diagnoses/*
 !quality_reports/preregistrations/.gitkeep
 !quality_reports/audits/.gitkeep
 !quality_reports/diagnoses/.gitkeep
+!quality_reports/testing/.gitkeep
 
 # R analysis outputs (generated artifacts; keep scripts, ignore outputs)
 scripts/R/_outputs/
