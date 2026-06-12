@@ -89,6 +89,7 @@ tests/fixtures/**/*.pdf
 tests/fixtures/**/*.html
 tests/fixtures/**/toy-lecture_files/
 tests/fixtures/**/texput.log
+tests/fixtures/**/_outputs/
 
 # R analysis outputs (generated artifacts; keep scripts, ignore outputs)
 scripts/R/_outputs/

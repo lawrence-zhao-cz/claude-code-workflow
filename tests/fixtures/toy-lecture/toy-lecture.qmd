@@ -2,10 +2,11 @@
 title: "Difference-in-Differences on the Toy Panel"
 subtitle: "A five-frame fixture deck"
 author: "Workflow Test Bed"
-date: "June 2026"
+date: "2026-06-01"
+date-format: "MMMM YYYY"
 format:
   revealjs:
-    theme: simple
+    theme: [simple, toy-lecture.scss]
 bibliography: toy-lecture.bib
 ---
 
@@ -23,7 +24,7 @@ The fixture outcome follows
 $$
 y_{it} = \alpha_i + \gamma_t + \tau \, D_{it} + \varepsilon_{it},
 \qquad \varepsilon_{it} \sim \mathcal{N}(0, 1),
-$$
+$$ {#eq-dgp}
 
 with $D_{it} = \mathbf{1}\{i \text{ treated}\} \cdot \mathbf{1}\{t \ge 2015\}$.
 
@@ -34,13 +35,13 @@ reference estimate is $\hat{\tau} = 1.71$ (cluster SE $0.37$).
 
 ## Design timeline
 
-Counties 11--20 are treated from 2015 onward; counties 1--10 are never
-treated. (The Beamer source renders this as a TikZ timeline; the parity
-test extracts it to SVG.)
+Counties 11--20 are treated from 2015 onward; counties 1--10 are never treated.
+
+![Design timeline](toy-lecture-timeline.svg){fig-align="center"}
 
 ## Summary
 
-- The DGP equation is the single source of truth for every test.
+- Equation @eq-dgp is the single source of truth for every test.
 - Balanced panel: 20 counties $\times$ 10 years $= 200$ observations.
 - Regenerate with `make_fixtures.py` (seeded).
 

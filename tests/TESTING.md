@@ -11,7 +11,7 @@
 
 | Fixture | Contents | Exercises |
 |---|---|---|
-| `fixtures/toy-panel/` | `make_fixtures.py` (seeded generator), `panel.csv`, `panel.dta`, `expected_estimates.json` | `/data-analysis-{python,stata,r}`, `/cross-check`, `/audit-reproducibility` |
+| `fixtures/toy-panel/` | `make_fixtures.py` (seeded generator), `panel.csv`, `panel.dta`, `expected_estimates.json`, `run_estimates.do` (Stata primary), `90_crosscheck.R` (R re-implementation + tolerance comparison; `--seed-wrong-filter` plants the DIVERGENT case) | `/data-analysis-{python,stata,r}`, `/cross-check`, `/audit-reproducibility` |
 | `fixtures/toy-lecture/` | 5-frame self-contained Beamer deck + bib + Quarto mirror (equation, citation, box env, TikZ timeline) | `/compile-latex`, `/translate-to-quarto`, `/qa-quarto`, `/extract-tikz` |
 | `fixtures/toy-paper/` | `.tex` manuscript + bib with planted numeric claims and one fabricated citation | `/audit-reproducibility`, `/verify-claims`, `/review-paper`, `claim-verifier` |
 | `fixtures/toy-plan/` | analysis plan + VERBATIM interview log + seeded-divergence plan variant | `plan-auditor` (plan mode), `/analysis-plan` import |
@@ -111,7 +111,7 @@ Not defects — **extraction targets** the dossier must capture with `file:line`
 
 **A row passes only if the gate names the planted defect specifically** — a generic "could be improved" does not count as a catch.
 
-**Status (2026-06-12):** first T4 run — all 9 autonomous gate rows (3 code reviewers, proofreader, slide-auditor, plan-auditor ×2, claim-verifier, verifier) **17/17 PASS incl. both negative controls; zero misses**. The verifier row passed the discriminating version: PDF existed but it FAILed the claim on exit code + log + missing content. Deferred rows (cross-check, audit-reproducibility, onboarding, live interviews, qa-quarto loop) await the T2/T3 session. Full results: `quality_reports/testing/` (local).
+**Status (2026-06-12, updated):** **23/23 PASS across 12 gates; zero misses.** First T4 run: 9 autonomous gate rows (3 code reviewers, proofreader, slide-auditor, plan-auditor ×2, claim-verifier, verifier fail-closed) 17/17 incl. both negative controls. Second run (toolchain live): `/cross-check` faithful Stata↔R = MATCH exit 0 (reghdfe vs fixest agree to ~1e-15; nested-FE dof conventions identical) and seeded wrong-filter = DIVERGENT exit 1 — note N stayed 180 vs 180, so the estimate tolerance, not N-exactness, is what catches wrong-filter defects; `/audit-reproducibility` rows P1 PASS / P2 PASS / P3 FAIL / P4 EXPLAINED, all as designed; `/qa-quarto` loop ran 3 rounds end-to-end (REJECTED → fix → critic caught a fix-induced regression: dvisvgm dropped all stroked geometry from the xelatex .xdv; corrected via the `dvisvgm` standalone class option + plain `latex` → APPROVED with coordinate-matched geometry verification). SE convention note: reghdfe/fixest treat county FE as nested-in-cluster (SE 0.3491) vs the numpy reference's full-K CR1 (0.3681) — ~5% apart, exactly why the SE tolerance is 5% and why the toy-paper's declared source is the JSON. Remaining rows: `/onboard-project --dry-run`, live interviews. Full results: `quality_reports/testing/` (local).
 
 ### Environment prerequisites
 
