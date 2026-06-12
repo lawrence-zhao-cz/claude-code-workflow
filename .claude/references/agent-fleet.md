@@ -4,6 +4,10 @@ The 20 specialist subagents, what each is for, the model tier it runs at ([`mode
 
 > **Keep this in sync** with `.claude/agents/*.md` frontmatter (`model:` / `effort:`) and with `model-routing.md`. The surface-sync gate counts agents; it does not yet diff this table row-for-row, so update it when you add or retier an agent. (It is a `references/` file, so it is not itself counted as an agent.)
 
+## Persona standard (2026-06-12)
+
+Every agent's opening persona states three load-bearing things — (1) **role + a concrete external standard** (AEA Data Editor, CRAN human review, top-journal referee, back-row-readable), (2) **severity stance** (harsh stances are deliberate on adversarial critics — they counteract agreeableness), (3) **non-goals** (which sibling lens it must not duplicate — the referee-disclaimer pattern). Decoration carries no weight. Skills stay persona-free (they run in the main session; `prompt-shaping.md` covers role). Workstream-B inspections cite this section.
+
 ## High-judgment tier — Opus 4.8 (effort: high; `editor` / `methods-referee` / `domain-referee` / `sim-reviewer` pinned at xhigh since 2026-06-11)
 
 A wrong "looks fine" from one of these is expensive (a desk-reject, a hallucinated citation, a biased estimator shipped). Never demote to save cost ([`model-routing.md`](../rules/model-routing.md) anti-pattern).
