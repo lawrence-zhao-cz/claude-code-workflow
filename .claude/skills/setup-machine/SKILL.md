@@ -1,6 +1,6 @@
 ---
 name: setup-machine
-description: Bootstrap a fresh Mac or Windows PC into a working workflow environment from scratch — first takes a READ-ONLY status pass across all four stacks (system apps, the standalone Python env, R packages, Stata + stata-mcp) so it installs only what is missing, then detects the OS and installs the system toolchain (XeLaTeX, Quarto, R, uv, git, gh, the Claude CLI) via Homebrew or winget, builds the STANDALONE uv-managed Python environment every analysis runs inside, installs the canonical R and Stata packages, wires up stata-mcp, enforces the LF line-ending guardrail that cross-platform Dropbox-synced repos need, and verifies the result with the same status pass. Use when user says "set up a new machine", "install the environment", "I'm on a new laptop", "bootstrap this repo", "get my Mac/PC ready", "install all the apps and packages", "check my environment", "what's installed", "verify my setup", or after cloning/forking the template onto fresh hardware. NOT for pinning exact versions for a replication package — that is /capture-environment.
+description: Bootstrap a fresh Mac or Windows PC into a working workflow environment from scratch — first takes a READ-ONLY status pass across all five layers (system apps, the standalone Python env, R packages, Stata + stata-mcp, GitHub auth) so it installs only what is missing, then detects the OS and installs the system toolchain (XeLaTeX, Quarto, R, uv, git, gh, the Claude CLI) via Homebrew or winget, builds the STANDALONE uv-managed Python environment every analysis runs inside, installs the canonical R and Stata packages, wires up stata-mcp, enforces the LF line-ending guardrail that cross-platform Dropbox-synced repos need, and verifies the result with the same status pass. Use when user says "set up a new machine", "install the environment", "I'm on a new laptop", "bootstrap this repo", "get my Mac/PC ready", "install all the apps and packages", "check my environment", "what's installed", "verify my setup", or after cloning/forking the template onto fresh hardware. NOT for pinning exact versions for a replication package — that is /capture-environment.
 argument-hint: "[--check] [--apps-only] [--packages-only] [--no-stata]"
 allowed-tools: ["Read", "Write", "Edit", "Bash", "Grep", "Glob"]
 disable-model-invocation: true
@@ -23,7 +23,7 @@ You sit down at a fresh laptop, clone (or Dropbox-sync) this repo, and nothing r
 
 ## Inputs (flags)
 
-- `--check` — run only the deep status pass (all four stacks) and report present/missing; install nothing.
+- `--check` — run only the deep status pass (all five layers) and report present/missing; install nothing.
 - `--apps-only` — install the system toolchain (Phase 1) but skip the language packages (Phases 2–4).
 - `--packages-only` — assume the apps are present; do only the Python / R / Stata package phases.
 - `--no-stata` — skip the Stata ado install and stata-mcp wiring (for a machine without a Stata license).
@@ -34,7 +34,7 @@ You sit down at a fresh laptop, clone (or Dropbox-sync) this repo, and nothing r
 
 Before touching anything, take a READ-ONLY inventory of the *whole* provisioned state — not just whether the apps exist, but whether the standalone Python env imports, the R packages load, and stata-mcp can drive Stata — so the install phases only fill genuine gaps. This is the same check Phase 6 re-runs to verify, so "did it work?" and "what's missing?" share one source of truth.
 
-- **macOS / Linux:** `bash scripts/check-environment.sh` — reports all four layers: (1) the system toolchain (it wraps `validate-setup.sh` for apps + git + hooks + pre-commit gate + palette), (2) the standalone uv Python env + analysis-package imports, (3) the canonical R packages, (4) Stata + `uvx stata-mcp doctor`. Exit 0 means the required layers (apps + Python) are healthy; R/Stata gaps surface as warnings.
+- **macOS / Linux:** `bash scripts/check-environment.sh` — reports all five layers: (1) the system toolchain (it wraps `validate-setup.sh` for apps + git + hooks + pre-commit gate + palette), (2) the standalone uv Python env + analysis-package imports, (3) the canonical R packages, (4) Stata + `uvx stata-mcp doctor`, (5) GitHub auth (`gh auth status`, so push/PR/merge work). Exit 0 means the required layers (apps + Python) are healthy; R/Stata/GitHub-auth gaps surface as warnings.
 - **Windows:** run the same script in Git Bash (`bash scripts/check-environment.sh` — Git for Windows ships bash), or fall back to per-layer probes: `winget list` / `Get-Command` for apps, `uv run python -c "import pandas, pyfixest"`, `Rscript -e 'requireNamespace("fixest")'`, `uvx stata-mcp doctor`.
 
 Determine the platform with `uname -s` (`Darwin` → macOS, `Linux` → Linux; on Windows you are in PowerShell/Git Bash). Read the report and install only what it marks ✗/missing. If `--check` is set, **stop here** — print the status and exit, changing nothing.
