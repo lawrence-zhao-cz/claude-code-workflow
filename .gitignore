@@ -26,6 +26,14 @@ __pycache__/
 *.pyc
 *.pyo
 
+# uv-managed STANDALONE Python env — rebuilt per machine via `uv sync`.
+# uv.lock + pyproject.toml + .python-version are committed; the venv itself is
+# a local, platform-specific artifact that must NOT sync across machines.
+.venv/
+.ipynb_checkpoints/
+.mypy_cache/
+.ruff_cache/
+
 # R
 .Rproj.user/
 .Rhistory

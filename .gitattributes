@@ -1,0 +1,75 @@
+# =============================================================================
+# Line-ending policy for a cross-platform repo synced via Dropbox (Mac + PC).
+#
+# Why: Windows git defaults to core.autocrlf=true, which checks out CRLF into
+# the working tree. Dropbox then syncs those raw CRLF bytes to macOS/Linux,
+# where git sees every file as "modified" and CRLF breaks shell scripts and
+# hooks (#!/bin/bash\r is not a valid interpreter). Forcing eol=lf here makes
+# the working tree LF on ALL platforms, overriding autocrlf. Authoritative.
+# =============================================================================
+
+# Default: treat everything as text, normalize to LF in the working tree.
+* text=auto eol=lf
+
+# --- Files that MUST be LF (executable / interpreted) ---
+*.sh    text eol=lf
+*.bash  text eol=lf
+*.py    text eol=lf
+*.R     text eol=lf
+*.r     text eol=lf
+*.do    text eol=lf
+*.ado   text eol=lf
+
+# --- Source / markup (LF) ---
+*.tex   text eol=lf
+*.bib   text eol=lf
+*.qmd   text eol=lf
+*.md    text eol=lf
+*.txt   text eol=lf
+*.csv   text eol=lf
+*.tsv   text eol=lf
+*.json  text eol=lf
+*.yml   text eol=lf
+*.yaml  text eol=lf
+*.toml  text eol=lf
+*.scss  text eol=lf
+*.css   text eol=lf
+*.js    text eol=lf
+*.html  text eol=lf
+*.svg   text eol=lf
+
+# --- Windows-only scripts genuinely want CRLF ---
+*.bat   text eol=crlf
+*.cmd   text eol=crlf
+*.ps1   text eol=crlf
+
+# --- Binary: never touch (no eol conversion, no diff munging) ---
+*.pdf       binary
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.eps       binary
+*.dvi       binary
+*.xdv       binary
+*.otf       binary
+*.ttf       binary
+*.woff      binary
+*.woff2     binary
+*.dta       binary
+*.rds       binary
+*.RData     binary
+*.rdata     binary
+*.parquet   binary
+*.feather   binary
+*.sav       binary
+*.mat       binary
+*.xlsx      binary
+*.xls       binary
+*.docx      binary
+*.pptx      binary
+*.zip       binary
+*.gz        binary
+*.tar       binary
+*.7z        binary

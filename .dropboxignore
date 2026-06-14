@@ -1,0 +1,7 @@
+# Keep Dropbox from syncing per-machine build artifacts across Mac <-> PC.
+# These are rebuilt locally (`uv sync`) and are platform-specific — syncing an
+# arm64 macOS venv to a Windows PC just ships broken, heavy junk.
+.venv
+.mypy_cache
+.ruff_cache
+__pycache__
