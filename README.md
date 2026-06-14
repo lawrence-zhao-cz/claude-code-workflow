@@ -188,7 +188,7 @@ This workflow is designed as a **single hub for an entire research program** —
 ## What's Included
 
 <details>
-<summary><strong>21 agents, 58 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
+<summary><strong>21 agents, 59 skills, 33 rules, 7 hooks</strong> (click to expand)</summary>
 
 ### Agents (`.claude/agents/`)
 
@@ -280,6 +280,7 @@ This workflow is designed as a **single hub for an entire research program** —
 | `/analysis-plan` (v2.1) | Living analysis plan — cleaning filters, specification table (R1…/A1…), output registry; pipelines execute by ID, `plan-auditor` verifies fidelity to your verbatim words; `--amend` / `--log-adhoc` / `--no-verify` |
 | `/onboard-project` (v2.1) | Intake an existing project folder — deep-scan, provenance-cited Project Dossier (what's known + what was attempted), non-destructive migration into a standalone template repo; pre-seeds `/interview-me` + `/analysis-plan`; `--dry-run` stops at the proposal |
 | `/setup-machine` (v2.1) | Bootstrap a fresh Mac/Windows PC — OS-detected toolchain install (XeLaTeX, Quarto, R, uv, gh, Claude CLI), standalone uv Python env, R/Stata packages, stata-mcp wiring, LF line-ending guardrail, then validate; `--check` / `--apps-only` / `--packages-only` / `--no-stata` |
+| `/test-reviewers` (v2.1) | Behavioral regression suite for the reviewer/auditor agent layer — re-runs seeded-defect fixtures through each gate blind, a forked different-tier judge grades whether the defect was named specifically, N=3 catch-rate diffed against a baseline; a signal, never a commit gate; `--gate` / `--runs` / `--no-conversational` / `--update-baseline` / `--strict` |
 
 ### Research Workflow
 
