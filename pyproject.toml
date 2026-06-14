@@ -1,0 +1,61 @@
+# =============================================================================
+# Python analysis environment for the academic workflow.
+#
+# This is the single source of truth for the Python packages the workflow's
+# skills (/data-analysis-python, /cross-check, /power-analysis, /simulation-
+# study) rely on. It is NOT a distributable package — it exists so `uv sync`
+# can build a reproducible, STANDALONE Python environment that every analysis
+# runs inside (via `uv run`), independent of the macOS/Windows system Python.
+#
+#   uv python install 3.13     # fetch the pinned standalone interpreter
+#   uv sync                    # create .venv + uv.lock from this file
+#   uv run python scripts/python/00_run_all.py   # everything runs here
+#
+# /capture-environment pins exact versions (uv.lock / requirements.txt) at
+# replication-package time; this file is the curated baseline, not the pin.
+# =============================================================================
+
+[project]
+name = "claude-workflow-analysis"
+version = "0.0.0"
+description = "Standalone Python analysis environment for the academic research workflow"
+requires-python = ">=3.13"
+
+dependencies = [
+    # --- data: load / clean / typed handoff ---
+    "numpy",
+    "pandas",
+    "polars",
+    "pyarrow",       # parquet I/O (R <-> Python handoff)
+    "pyreadstat",    # .dta / .sas7bdat I/O (Stata <-> Python handoff)
+    "openpyxl",      # .xlsx ingest
+
+    # --- estimation (applied micro) ---
+    "scipy",
+    "statsmodels",
+    "linearmodels",  # PanelOLS, IV2SLS, GMM
+    "pyfixest",      # high-dim FE, IV, event study (reghdfe-equivalent)
+
+    # --- figures ---
+    "matplotlib",
+    "seaborn",
+
+    # --- persistence ---
+    "joblib",        # pickle fitted estimation objects
+]
+
+[project.optional-dependencies]
+# Heavier / less-frequently used — install with: uv sync --extra causal-ml
+causal-ml = [
+    "econml",
+    "doubleml",
+]
+
+[dependency-groups]
+# Dev tooling (lint/format/notebooks) — installed by `uv sync` by default.
+dev = [
+    "ruff",
+    "mypy",
+    "jupyter",
+    "ipykernel",
+]
