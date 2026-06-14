@@ -3,12 +3,13 @@
 # check-environment.sh — READ-ONLY deep status of the workflow environment.
 #
 # validate-setup.sh answers "are the APPS installed?". This goes a layer
-# deeper and reports the whole provisioned state across all four stacks:
+# deeper and reports the whole provisioned state across five layers:
 #
 #   1. System toolchain   (delegates to validate-setup.sh)
 #   2. Python             (standalone uv env exists + analysis packages import)
 #   3. R                  (canonical analysis packages load)
 #   4. Stata + stata-mcp  (uvx stata-mcp doctor: Stata detected + executes)
+#   5. GitHub auth        (gh logged in — so commit/push/PR work on this box)
 #
 # Installs NOTHING. Used by /setup-machine for the Phase 0 inventory (decide
 # what to install) and the Phase 6 verify (confirm what was installed), and
@@ -18,8 +19,9 @@
 # Git for Windows). Stata is auto-detected by stata-mcp, so no hardcoded path.
 #
 # Exit: 0 if the required layers (apps + Python env) are healthy; 1 otherwise.
-# R and Stata gaps are reported as warnings (a machine may legitimately lack a
-# Stata license — see /setup-machine --no-stata).
+# R, Stata, and GitHub-auth gaps are reported as warnings, not failures (a
+# machine may legitimately lack a Stata license — see /setup-machine --no-stata
+# — and `gh auth login` is an interactive step the user runs in their terminal).
 # =============================================================================
 
 set -uo pipefail
@@ -110,15 +112,28 @@ else
     fi
 fi
 
+# --- Layer 5: GitHub auth (so commit/push/PR work on this machine) -----------
+hdr "5. GitHub auth"
+if ! command -v gh >/dev/null 2>&1; then
+    echo -e "  ${YELLOW}⚠${RESET} gh not installed (optional) — /setup-machine installs it"
+    warn=1
+elif gh auth status >/dev/null 2>&1; then
+    acct="$(gh auth status 2>&1 | sed -n 's/.*Logged in to [^ ]* account \([^ ]*\).*/\1/p' | head -n1)"
+    echo -e "  ${GREEN}✓${RESET} gh logged in${acct:+ (account: $acct)} — push / PR / merge work"
+else
+    echo -e "  ${YELLOW}⚠${RESET} gh not authenticated — run: gh auth login  (needed for push / PR / merge)"
+    warn=1
+fi
+
 # --- Summary -----------------------------------------------------------------
 hdr "Summary"
 if [ "$fail" -ne 0 ]; then
     echo -e "  ${RED}Required layers incomplete.${RESET} Run /setup-machine to fill the gaps above."
     exit 1
 elif [ "$warn" -ne 0 ]; then
-    echo -e "  ${GREEN}Required layers OK${RESET}, ${YELLOW}with warnings${RESET} (R and/or Stata) — see above."
+    echo -e "  ${GREEN}Required layers OK${RESET}, ${YELLOW}with warnings${RESET} (R / Stata / GitHub auth) — see above."
     exit 0
 else
-    echo -e "  ${GREEN}All four layers healthy.${RESET} Environment is fully provisioned."
+    echo -e "  ${GREEN}All five layers healthy.${RESET} Environment is fully provisioned."
     exit 0
 fi
